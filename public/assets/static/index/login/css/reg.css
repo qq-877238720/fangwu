@@ -1,0 +1,22 @@
+@charset "utf-8";
+/* CSS Document */
+
+*{margin:0;padding: 0;  font-family:"Microsoft Yahei","微软雅黑";}
+html{ height: 100%; background: url(../images/lgbg.jpg) bottom no-repeat; background-size: cover}
+a{color: #3E3E3E; text-decoration: none;}
+.regbox{width: 600px;  position: absolute; top:calc(50% - 250px); left:calc(50% - 300px);background: #fff; height: 600px; opacity: 0.2;}
+.regmain{ position: absolute; top:calc(50% - 240px); left:calc(50% - 290px);width: 580px; background: #fff; height: 580px; }
+
+.regtt{ text-align: center; font-size: 30px; padding-top: 30px;}
+
+.reginput{width: 400px;  margin: 50px auto auto}
+.regtext{ font-size: 14px; text-align: left; color: #2F2F2F; height: 40px; line-height: 40px;}
+.reginput input{ height: 36px; outline:none;  font-size: 14px; color: #807C7C; padding-left: 10px}
+.phone{ width:390px; }
+.codebox{margin-top: 20px;}
+.codeinput{width: 220px; float: left}
+.send{width:150px; float: right; height: 40px; text-align: center; line-height: 40px; font-size: 16px;background:#01a1fa; color: #FFFFFF}
+.password,.password2,.company,.companyid{width:390px; margin-top: 20px}
+
+.regbt{width:400px; margin-top: 20px;background:#01a1fa; color:#fff; border:none; display: block; height: 40px; text-align: center; line-height: 40px; font-size: 18px;outline:none; }
+.login{ height: 40px; display: block; line-height: 40px; text-align: center; margin-top: 20px}
