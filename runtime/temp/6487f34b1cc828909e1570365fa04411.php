@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:4:{s:65:"D:\project\house\public/../application/index\view\user\login.html";i:1571646999;s:59:"D:\project\house\application\index\view\layout\default.html";i:1571627654;s:56:"D:\project\house\application\index\view\common\meta.html";i:1562338655;s:58:"D:\project\house\application\index\view\common\script.html";i:1562338655;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:4:{s:65:"D:\project\house\public/../application/index\view\user\login.html";i:1571648349;s:59:"D:\project\house\application\index\view\layout\default.html";i:1571627654;s:56:"D:\project\house\application\index\view\common\meta.html";i:1562338655;s:58:"D:\project\house\application\index\view\common\script.html";i:1562338655;}*/ ?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -39,6 +39,7 @@
 
         <main class="content">
             <link rel="stylesheet" href="/assets/static/index/layuiadmin/layui/css/layui.css" media="all">
+
 <link href="/assets/static/index/login/css/login.css" rel="stylesheet" type="text/css">
 
 <div id="content-container" class="container">
@@ -63,6 +64,7 @@
 
 		</div>
 		<div class="reg"><a href="<?php echo url('user/register'); ?>?url=<?php echo urlencode($url); ?>">没有账号？立即注册</a></div>
+
 		</div>
 	</div>
 </form>

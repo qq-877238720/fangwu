@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:4:{s:68:"D:\project\house\public/../application/index\view\user\register.html";i:1571647953;s:59:"D:\project\house\application\index\view\layout\default.html";i:1571627654;s:56:"D:\project\house\application\index\view\common\meta.html";i:1562338655;s:58:"D:\project\house\application\index\view\common\script.html";i:1562338655;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:4:{s:68:"D:\project\house\public/../application/index\view\user\register.html";i:1571648358;s:59:"D:\project\house\application\index\view\layout\default.html";i:1571627654;s:56:"D:\project\house\application\index\view\common\meta.html";i:1562338655;s:58:"D:\project\house\application\index\view\common\script.html";i:1562338655;}*/ ?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -105,6 +105,7 @@
         color: white;
     }*/
 </style>
+
 </div>
         </main>
 
