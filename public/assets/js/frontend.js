@@ -36,7 +36,7 @@ define(['fast', 'template', 'moment'], function (Fast, Template, Moment) {
                                     clearInterval(si);
                                     $(that).removeClass("disabled").text("发送验证码");
                                 } else {
-                                    $(that).addClass("disabled").text(seconds + "秒后可再次发送");
+                                    $(that).addClass("disabled").text('重新获取 '+seconds + " 秒");
                                 }
                             }, 1000);
                         }, function () {

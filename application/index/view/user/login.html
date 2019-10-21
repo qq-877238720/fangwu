@@ -1,6 +1,5 @@
 <link rel="stylesheet" href="__INDEX__/layuiadmin/layui/css/layui.css" media="all">
-<!-- <link rel="stylesheet" href="__INDEX__/layuiadmin/style/admin.css" media="all"> -->
-<!-- <link rel="stylesheet" href="__INDEX__/layuiadmin/style/login.css" media="all"> -->
+
 <link href="__INDEX__/login/css/login.css" rel="stylesheet" type="text/css">
 
 <div id="content-container" class="container">
@@ -12,14 +11,20 @@
 		<div class="login_r">
 			<div class="tt">用户登录</div>
 		<div class="layadmin-user-login-box layadmin-user-login-body layui-form"  for="account">
+
   			<div class="inputtxt mt">手机号：</div>
-  			<input class="inputmb" type="text" name="account" data-rule="required" placeholder="{:__('Email/Mobile/Username')}">
+  			<input class="inputmb" type="text" name="account" data-rule="required" placeholder="{:__('Mobile')}">
+
   			<div class="inputtxt mt15">密&nbsp;&nbsp;&nbsp;码：</div>
   			<input class="inputpw" type="password" name="password" data-rule="required;password"placeholder="{:__('Password')}" autocomplete="off">
-  			<div class="inputtxt mt15 btn-forgot"><a href="#">忘记密码？</a></div>
-  			<button class="lgbt mt15" lay-submit id="LAY-user-login-submit" lay-filter="LAY-user-login-submit">登&nbsp;&nbsp;录</button>
+
+  			<div class="inputtxt mt15"><a class="btn-forgot" href="#">忘记密码？</a></div>
+
+  			<button type="submit" class="btn btn-lg btn-block" style="background: #01a1fa;border-radius: 20px;color: white;margin-top: 15px;">{:__('Sign in')}</button>
+
 		</div>
-		<div class="reg"><a href="{:url('register')}">没有账号？立即注册</a></div>
+		<div class="reg"><a href="{:url('user/register')}?url={$url|urlencode}">没有账号？立即注册</a></div>
+
 		</div>
 	</div>
 </form>
@@ -79,3 +84,25 @@
         </div>
     </form>
 </script>
+<style type="text/css">
+    .n-default .n-left, .n-default .n-right {
+        margin-top: 1px;
+    }
+    .n-right {
+        margin-top: 0;
+        top: 6px;
+    }
+    .n-default .msg-wrap {
+        position: absolute;
+        z-index: 1;
+        right: 4px;
+    }
+
+    .fjs .n-right{
+        display: none;
+    }
+    /*.nav-tabs > li.active > a{
+        background-color: #cccccc;
+        color: white;
+    }*/
+</style>

@@ -20,26 +20,50 @@
 	<div class="layadmin-user-login-box layadmin-user-login-body layui-form">
 	  <div class="reginput">
 		<input class="phone" id="mobile" type="text" name="mobile" data-rule="required;mobile" placeholder="请输入11位手机号码">
-		<div class="codebox">
-		  <input class="codeinput"  name="captcha" type="text" placeholder="请输你收到的验证码" data-rule="required;length(4);integer[+];remote(/api/validate/check_sms_correct.html, event=register, mobile:#mobile)">
-		  <a class="send btn-captcha" href="javascript:;" id="LAY-user-getsmscode" id="LAY-user-getsmscode" data-url="{:url('api/sms/send')}" data-type="mobile" data-event="register">发送验证码 </a>
-		</div>
+		<div class="codebox" style="height: 36px;">
+            <input class="codeinput"  name="captcha" type="text" placeholder="请输你收到的验证码" data-rule="required;length(4);integer[+];remote({:url('api/validate/check_sms_correct')}, event=register, mobile:#mobile)" style="width: 282px;">
+            <span class="input-group-btn" style="padding:0;border:none;float: left;">
+                <a href="javascript:;" style="    padding: 7.5px 16px;" class="btn btn-info btn-captcha btn-lg" data-url="{:url('api/sms/send')}" data-type="mobile" data-event="register">发送验证码</a>
+            </span>
+        </div>
+        <div style="height: 20px;"></div>
+		<input class="password" name="password" type="password"  data-rule="required;password"  placeholder="请输入密码" style="margin-top: 0px;">
+		<div style="height: 20px;"></div>
+		<input class="company" name="username" type="text" data-rule="required" placeholder="请输入企业名称"  style="margin-top: 0px;">
 
-		<input class="password" name="password" type="password" data-rule="required;password" placeholder="请输入密码">
-		<!-- <input class="password2"  name="repass" type="password" lay-verify="required" placeholder="请再次输入密码"> -->
-		<input class="company" name="username" type="text" data-rule="required" placeholder="请输入企业名称">
-
-		<div class="codebox">
+		<!-- <div class="codebox">
 		  <input class="codeinput"  name="captcha1" type="text" data-rule="required;length(4)" placeholder="请输入验证码">
 		  <span class="input-group-addon" href="javascript:;"><img src="{:captcha_src()}" width="140" height="36" onclick="this.src = '{:captcha_src()}?r=' + Math.random();"/> </span>
-		</div>
+		</div> -->
 
 		<button class="regbt"  type="submit">提交</button>
-		<a class="login" href="{:url('login')}">已有账号？ 点此立即登录</a>
+		<a class="login" href="{:url('user/login')}?url={$url|urlencode}">已有账号？ 点此立即登录</a>
 	  </div>
 	</div>
 </form>
 </div>
 
-    
+<style type="text/css">
+    .n-default .n-left, .n-default .n-right {
+        margin-top: 3px;
+    }
+    .n-right {
+        margin-top: 0;
+        top: 6px;
+    }
+    .n-default .msg-wrap {
+        position: absolute;
+        z-index: 1;
+        right: 8px;
+    }
+
+    .fjs .n-right{
+        display: none;
+    }
+    /*.nav-tabs > li.active > a{
+        background-color: #cccccc;
+        color: white;
+    }*/
+</style>
+
 </div>
