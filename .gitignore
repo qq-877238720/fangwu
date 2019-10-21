@@ -1,11 +1,6 @@
 /.idea
 /.vscode
 /vendor
-/workerman
 *.log
-thinkphp
 .env
 .DS_Store
-/config/admin
-/application/admin/controller
-/application/admin/view
