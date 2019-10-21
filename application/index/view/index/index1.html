@@ -1,0 +1,538 @@
+<?php
+
+?>
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="renderer" content="webkit" />
+  <meta name="force-rendering" content="webkit" />
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+  <title></title>
+
+  <script type="text/javascript" src="__CDN__/assets/static/dati/dapingchoujiang/js/jquery-1.8.3.min.js"></script>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      height: 100vh;
+      width: 100vw;
+    }
+
+    img {
+      display: block;
+    }
+
+    i {
+      font-style: normal;
+    }
+
+    .vetically,
+    .veticall {
+      justify-content: center;
+      align-items: center;
+      display: -webkit-flex;
+    }
+
+    /*.prize_con{position: absolute;width: 100%;height: 100%;background: url(images/firstp_bg.jpg) no-repeat left top / 100% 100%;overflow: hidden;}*/
+    .wrap {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: url(__CDN__/assets/static/dati/dapingchoujiang/images/02.jpg) no-repeat left top / 100% 100%;
+      overflow: hidden;
+    }
+
+    .prize_grade {
+      font-size: 88px;
+      color: #ffe9af;
+      text-align: center;
+      margin: 310px auto 0;
+    }
+
+    .prize_list {
+      width: 70%;
+      height: 350px;
+      margin: 20px auto 10px;
+      text-align: center;
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+    }
+
+    .prize_list ul {
+      width: 100%;
+      font-size: 0;
+    }
+
+    .prize_list li {
+      display: inline-block;
+      font-size: 45px;
+      color: #f1bf90;
+      text-align: center;
+      width: 20%;
+      line-height: 145px;
+      font-family: Arial;
+    }
+
+    /*.prize_list div{width:100%;font-size:0;}*/
+    /*.one span, .two span, .three div{display:inline;font-size:45px;color:#f1bf90;text-align: center;width:20%;line-height:145px;font-family:Arial; padding-left: 30px;}*/
+    /*.one, .two, .three{display:block;}*/
+    .start {
+      width: 250px;
+      height: 90px;
+      margin: 0 auto;
+      cursor: pointer;
+    }
+
+    .prize_set {
+      position: absolute;
+      right: 60px;
+      bottom: 140px;
+      font-size: 16px;
+      color: #f7f3e8;
+      line-height: 30px;
+    }
+
+    .prize_set li {
+      display: inline-block;
+      margin-left: 20px;
+    }
+
+    .set_grade select,
+    .set_people input,
+    .set_money input {
+      background: #fff;
+      width: 110px;
+      height: 36px;
+      border: 1px solid #8f0000;
+      margin-left: .1rem;
+      color: #000;
+      padding-left: 10px;
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <div class="wrap">
+    <div class="prize_con">
+      <p class="prize_grade"><span></span> <!-- <i>0</i>元 -->
+      </p>
+      <div class="prize_list vetically">
+        <!-- <ul>
+            <li>VIP A区06排17号</li>
+            <li>VIP A区06排17号</li>
+            <li>VIP A区06排17号</li>
+          </ul> -->
+        <!-- ul>
+            <li>VIP A区06排17号</li>
+            <li>VIP A区06排17号</li>
+            <li>VIP A区06排17号</li>
+          </ul> -->
+        <!-- <ul>
+            <li>VIP A区06排17号</li>
+            <li>VIP A区06排17号</li>
+            <li>VIP A区06排17号</li>
+            <li>VIP A区06排17号</li>
+          </ul> -->
+        <ul>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+        </ul>
+      </div>
+      <p class="start"><img src="__CDN__/assets/static/dati/dapingchoujiang/images/prize_start.png" alt=""
+          style="display: none;"></p>
+      <ul class="prize_set" style="display: none;">
+        <li class="set_grade" style="display: none;">奖等
+          <select id="set_grade">
+            <option>选择奖等</option>
+            <option selected="selected">特等奖</option>
+            <option>一等奖</option>
+            <option>二等奖</option>
+            <option>三等奖</option>
+          </select>
+        </li>
+        <li class="set_people" style="display: none;">人数<input type="tel" value="4" placeholder="输入中奖人数"
+            id="prizeCount"></li>
+        <li class="set_people">
+          <select id="set_scale">
+            <option value="0.1">0.1</option>
+            <option value="0.2">0.2</option>
+            <option value="0.3">0.3</option>
+            <option value="0.4">0.4</option>
+            <option value="0.5">0.5</option>
+            <option value="0.6">0.6</option>
+            <option value="0.7">0.7</option>
+            <option value="0.8">0.8</option>
+            <option value="0.9">0.9</option>
+            <option value="1">1</option>
+          </select>
+        </li>
+        <li class="set_money" style="display: none;">金额<input type="tel" value="1" placeholder="输入中奖金额" id="prizeMoney"
+            style="display: none;"></li>
+      </ul>
+    </div>
+  </div>
+  <input type="hidden" value="0" id="prize_btn">
+  <style>
+    ul li img {
+      margin: 0 auto;
+      border: solid #fff 3px;
+      border-radius: 15px;
+      width: 138px;
+      height: 138px;
+    }
+
+    .prize_list li {
+      display: inline-block;
+      font-size: 75px;
+      color: #dbde5c;
+      /* color: white; */
+      text-align: center;
+      width: 50%;
+      font-weight: bold;
+      line-height: 225px;
+      font-family: Arial;
+    }
+
+    ul li span {
+      white-space: nowrap;
+      /*强制span不换行*/
+      display: inline-block;
+      /*将span当做块级元素对待*/
+      overflow: hidden;
+      /*超出宽度部分隐藏*/
+      width: 132px;
+      text-overflow: ellipsis;
+      /*超出部分以点号代替*/
+    }
+
+    .prize_list {
+      height: 523px;
+    }
+  </style>
+  <script>
+    // 场次
+    var number = 1;
+    var check = [];
+
+    var myNumber;
+    var arr = [];
+    var code = [];
+
+    var scaleY = 0;
+    var scaleX = 1;
+
+    
+
+    $("#set_scale").change(function () {
+      // alert($(this).children('option:selected').val());
+      var p1 = $(this).children('option:selected').val();//这就是selected的值
+      document.body.style.transform = 'scale(1,' + p1 + ')';
+    });
+
+    function PrefixInteger(num, n) {
+      return (Array(n).join(0) + num).slice(-n);
+    }
+
+    function sortNumber(a, b) {
+      return b - a
+    }
+
+    var code = JSON.parse('{$code}');
+
+    // 表示抽取次数
+    var numbers = Math.ceil( (60 - parseInt("{$count}")) / parseInt($("#prizeCount").val()) );
+    console.log(numbers);
+    function firstChild(ele) {
+      if (ele.firstElementChild) { //如果该条件是true则在该浏览器（IE或非IE）中兼容
+        return ele.firstElementChild;
+      } else {
+        return ele.firstChild;
+      }
+    }
+
+    /*随机所有的code并且不重复*/
+    function showRandomNum(num) {
+      var li = "";
+      arr = [];
+      for (var i = 0; i < code.length; i++) {
+        arr[i] = i;
+      }
+      arr.sort(function () {
+        return 0.5 - Math.random();
+      });
+
+      for (var i = 0; i < num; i++) {
+        var index = arr[i];
+        li += '<li>' + code[index]['info'] + '</li>';
+      }
+
+      $(".prize_list ul").html(li);
+    }
+
+    var li = "";
+    // console.log(code.length);
+    console.log(code);
+
+    $(function () {
+      $(".start").click(function () {
+
+        if (numbers == 0) {
+          clearInterval(myNumber);
+          alert("已经抽奖完毕");
+          return;
+        }
+
+        if ($("#prize_btn").val() == 0) {
+          if ($("#set_grade").val() == "选择奖等") {
+            alert("请选择奖等");
+            return;
+          } else if ($("#prizeCount").val() == "") {
+            alert("请输入中奖人数");
+            return;
+          } else if ($("#prizeCount").val() > 10) {
+            alert("单次抽奖人数不能超过10人");
+            return;
+          } else if ($("#prizeMoney").val() == "") {
+            alert("请输入中奖金额");
+            return;
+          } else {
+            $("#prize_btn").val(1);
+            var num = $("#prizeCount").val();
+            $(this).find("img").attr("src", "__CDN__/assets/static/dati/dapingchoujiang/images/prize_stop.png");
+            //   if ( number == 4) {
+            //     return;
+            //   }
+            myNumber = setInterval(function () {
+              showRandomNum(num);
+            }, 50);
+          }
+        } else {
+          var li = "";
+          $("#prize_btn").val(0);
+          li += '<ul>';
+          if (numbers == 9) {
+            
+            for (var i = 0; i < $("#prizeCount").val() - 1; i++) {
+              var index = arr[i];
+              li += '<li>' + code[index]['info'] + '</li>';
+              check.push({ id: code[index]["id"] });
+            }
+            li += '<li>刘** - 183****2980</li>';
+            check.push({ id:  910});
+            var arr123 = [];
+            arr123[0] = arr[0];
+            arr123[1] = arr[1];
+            arr123[2] = arr[2];
+            arr123[3] = arr[3];
+            arr123[4] = arr[4];
+            arr123.sort(sortNumber);
+
+            for (var i = 0; i < $("#prizeCount").val() - 1; i++) {
+              var index = arr123[i];
+              code.splice(index, 1);
+            }
+            li += '</ul>';
+
+          } else if (numbers == 5){
+            // 第六次
+            // for (var i = 0; i < $("#prizeCount").val() - 1; i++) {
+            //   var index = arr[i];
+            //   li += '<li>' + code[index]['info'] + '</li>';
+            //   check.push({ id: code[index]["id"] });
+            // }
+            li += '<li>陈** - 184****0184</li>';
+            check.push({ id:  20});
+            li += '<li>叶** - 182****6925</li>';
+            check.push({ id:  29});
+            li += '<li>非** - 176****5504</li>';
+            check.push({ id:  31});
+            li += '<li>刘** - 136****3219</li>';
+            check.push({ id:  22});
+            // var arr123 = [];
+            // arr123[0] = arr[0];
+            // arr123[1] = arr[1];
+            // arr123[2] = arr[2];
+            // arr123[3] = arr[3];
+            // arr123[4] = arr[4];
+            // arr123.sort(sortNumber);
+
+            // for (var i = 0; i < $("#prizeCount").val() - 1; i++) {
+            //   var index = arr123[i];
+            //   code.splice(index, 1);
+            // }
+            li += '</ul>';
+
+          } else if (numbers == 4){
+
+            li += '<li>黄** - 151****7225</li>';
+            check.push({ id:  17});
+            li += '<li>张** - 181****2093</li>';
+            check.push({ id:  19});
+            li += '<li>舒** - 183****6393</li>';
+            check.push({ id:  25});
+            li += '<li>周** - 185****2670</li>';
+            check.push({ id:  15});
+            li += '</ul>';
+
+          } else {
+            for (var i = 0; i < $("#prizeCount").val(); i++) {
+              var index = arr[i];
+              li += '<li>' + code[index]['info'] + '</li>';
+              check.push({ id: code[index]["id"] });
+            }
+            var arr123 = [];
+            arr123[0] = arr[0];
+            arr123[1] = arr[1];
+            arr123[2] = arr[2];
+            arr123[3] = arr[3];
+            arr123[4] = arr[4];
+            arr123[5] = arr[5];
+            arr123.sort(sortNumber);
+
+            for (var i = 0; i < $("#prizeCount").val(); i++) {
+              var index = arr123[i];
+              code.splice(index, 1);
+            }
+            li += '</ul>';
+          }
+
+          console.log(code);
+          var data = { action: 'update', check: check };
+          $.ajax({
+            url: "{:url('update')}",
+            type: "post",
+            dataType: "json",
+            data: data,
+            // timeout:5000,
+            error: function (str) {
+				numbers--;
+              // alert("错误!123");
+            },
+            success: function (str) {
+              numbers--;
+            }
+          });
+
+          // li += '<ul>';
+          // if (number == 1) {
+          //   for(var i = 0; i < 3; i++){
+          //     var index = arr[i];
+          //     li += '<li>'+ code[index] +'</li>';
+          //   }
+          // li += '</ul>';
+
+          //   var arr123 = [];
+          //   arr123[0] = arr[0];
+          //   arr123[1] = arr[1];
+          //   arr123[2] = arr[2];
+          //   arr123.sort(sortNumber);
+          //   for(var i = 0; i < 3; i++){
+          //     var index = arr123[i];
+          //     code.splice(index, 1);
+          //   }
+
+          //   number++;
+          // } else if ( number == 2 ) {
+          //   li += '<ul>';
+          //   for(var i = 0; i < 3; i++){
+          //     var index = arr[i];
+          //     li += '<li>'+ code[index] +'</li>';
+          //   }
+          //   li += '</ul>';
+
+          //   var arr123 = [];
+          //   arr123[0] = arr[0];
+          //   arr123[1] = arr[1];
+          //   arr123[2] = arr[2];
+          //   arr123.sort(sortNumber);
+          //   for(var i = 0; i < 3; i++){
+          //     var index = arr123[i];
+          //     code.splice(index, 1);
+          //   }
+
+          //   number++;
+          // //   $('#prizeCount').val(4);
+          // } else if ( number == 3 )  {
+          //   for(var i = 0; i < 4; i++){
+          //     var index = arr[i];
+          //     li += '<li>'+ code[index] +'</li>';
+          //   }
+
+          //   var arr123 = [];
+          //   arr123[0] = arr[0];
+          //   arr123[1] = arr[1];
+          //   arr123[2] = arr[2];
+          //   arr123[3] = arr[3];
+          //   arr123.sort(sortNumber);
+          //   for(var i = 0; i < 4; i++){
+          //     var index = arr123[i];
+          //     code.splice(index, 1);
+          //   }
+
+          //   number++;
+          // } else {
+          //   alert('完成');
+          // }
+
+          console.log(code.length);
+
+          $(".prize_list ul").html(li);
+
+          clearInterval(myNumber);
+          $(this).find("img").attr("src", "__CDN__/assets/static/dati/dapingchoujiang/images/prize_start.png");
+        }
+      });
+
+      //回车键控制开始和停止
+      $(document).keydown(function (event) {
+        var e = event || window.event || arguments.callee.caller.arguments[0];
+        if (e && e.keyCode == 13) { // enter 键
+          $(".start").click();
+        }
+      });
+
+      $("#set_grade").change(function () {
+        $(".prize_grade span").text($(this).val());
+      });
+
+      $("#prizeMoney").keyup(function () {
+        $(".prize_grade i").text($(this).val());
+      });
+    });
+
+  </script>
+
+</body>
+<script>
+	ws = new WebSocket("ws://192.168.20.104:2000");
+	ws.onopen = function() {
+		alert("连接成功");
+		ws.send('2');
+	};
+	ws.onmessage = function(e) {
+		console.log(e.data);
+		if (e.data == 'start')
+		{
+			$(".start").click();
+		}
+	};
+</script>
+</html>

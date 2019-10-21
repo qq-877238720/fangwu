@@ -3,12 +3,12 @@
 namespace app\index\controller;
 
 use app\common\controller\Frontend;
-use app\common\library\Sms;
 use think\Config;
 use think\Cookie;
 use think\Hook;
 use think\Session;
 use think\Validate;
+use app\common\library\Sms;
 
 /**
  * 会员中心
@@ -17,7 +17,7 @@ class User extends Frontend
 {
     protected $layout = 'default';
     protected $noNeedLogin = ['login', 'register', 'third'];
-    protected $noNeedRight = ['*'];
+    protected $noNeedRight = ['logout'];
 
     public function _initialize()
     {
@@ -85,13 +85,17 @@ class User extends Frontend
             $password = $this->request->post('password');
             $email = $this->request->post('email');
             $mobile = $this->request->post('mobile', '');
-            $captcha = $this->request->post('captcha');
+            $captcha = $this->request->post('captcha1');
+			
+			$code = $this->request->post('captcha'); // 验证码
+
             $token = $this->request->post('__token__');
             $rule = [
                 'username'  => 'require|length:3,30',
                 'password'  => 'require|length:6,30',
-                'email'     => 'require|email',
+                // 'email'     => 'require|email',
                 'mobile'    => 'regex:/^1\d{10}$/',
+                'captcha'   => 'require|captcha',
                 '__token__' => 'require|token',
             ];
 
@@ -100,8 +104,8 @@ class User extends Frontend
                 'username.length'  => 'Username must be 3 to 30 characters',
                 'password.require' => 'Password can not be empty',
                 'password.length'  => 'Password must be 6 to 30 characters',
-                //'captcha.require'  => 'Captcha can not be empty',
-                //'captcha.captcha'  => 'Captcha is incorrect',
+                'captcha.require'  => 'Captcha can not be empty',
+                'captcha.captcha'  => 'Captcha is incorrect',
                 'email'            => 'Email is incorrect',
                 'mobile'           => 'Mobile is incorrect',
             ];
@@ -110,19 +114,22 @@ class User extends Frontend
                 'password'  => $password,
                 'email'     => $email,
                 'mobile'    => $mobile,
-                //'captcha'   => $captcha,
+                'captcha'   => $captcha,
                 '__token__' => $token,
             ];
-            $ret = Sms::check($mobile, $captcha, 'register');
-            if (!$ret) {
-                $this->error(__('Captcha is incorrect'));
-            }
             $validate = new Validate($rule, $msg);
             $result = $validate->check($data);
             if (!$result) {
                 $this->error(__($validate->getError()), null, ['token' => $this->request->token()]);
             }
-            if ($this->auth->register($username, $password, $email, $mobile)) {
+
+			$ret = Sms::check($mobile, $code, 'register');
+            if (!$ret) {
+                $this->error(__('Captcha is incorrect'));
+            }
+			Sms::flush($mobile, 'register');
+
+            if ($this->auth->register($username, $password, $email, $mobile, [], $username)) {
                 $this->success(__('Sign up successful'), $url ? $url : url('user/index'));
             } else {
                 $this->error($this->auth->getError(), null, ['token' => $this->request->token()]);

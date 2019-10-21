@@ -1,0 +1,42 @@
+<?php
+
+?>
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="renderer" content="webkit" />
+  <meta name="force-rendering" content="webkit" />
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+  <title></title>
+
+  <script type="text/javascript" src="__CDN__/assets/static/dati/dapingchoujiang/js/jquery-1.8.3.min.js"></script>
+
+  <style>
+    
+  </style>
+
+</head>
+
+<body>
+	<h1> TEST  web SOCKET</h1>
+	<button id='btn'>开始抽奖</button>
+</body>
+<script>
+ws = new WebSocket("ws://192.168.20.104:2000");
+ws.onopen = function() {
+    alert("连接成功");
+    ws.send('tom');
+    alert("给服务端发送一个字符串：tom");
+};
+ws.onmessage = function(e) {
+    alert("收到服务端的消息：" + e.data);
+};
+document.getElementById('btn').onclick = function() {
+
+	ws.send('1');
+}
+</script>
+</html>

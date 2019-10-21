@@ -138,6 +138,7 @@ return [
         '__PUBLIC__' => '',
         '__ROOT__'   => '',
         '__CDN__'    => '',
+        '__INDEX__'  => '/assets/static/index'
     ],
     // 默认跳转页面对应的模板文件
     'dispatch_success_tmpl'  => APP_PATH . 'common' . DS . 'view' . DS . 'tpl' . DS . 'dispatch_jump.tpl',
@@ -260,7 +261,7 @@ return [
         //是否开启前台会员中心
         'usercenter'          => true,
         //登录验证码
-        'login_captcha'       => true,
+        'login_captcha'       => false,
         //登录失败超过10次则1天后重试
         'login_failure_retry' => true,
         //是否同一账号同一时间只能在一个地方登录
