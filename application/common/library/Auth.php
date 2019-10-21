@@ -4,6 +4,7 @@ namespace app\common\library;
 
 use app\common\model\User;
 use app\common\model\UserRule;
+use app\common\model\UserCompany;
 use fast\Random;
 use think\Config;
 use think\Db;
@@ -121,9 +122,10 @@ class Auth
      * @param string $email    邮箱
      * @param string $mobile   手机号
      * @param array  $extend   扩展参数
+     * @param string $company  公司名
      * @return boolean
      */
-    public function register($username, $password, $email = '', $mobile = '', $extend = [])
+    public function register($username, $password, $email = '', $mobile = '', $extend = [], $company = '')
     {
         // 检测用户名或邮箱、手机号是否存在
         if (User::getByUsername($username)) {
@@ -170,7 +172,11 @@ class Auth
             $user = User::create($params, true);
 
             $this->_user = User::get($user->id);
-
+            // 添加用户公司表数据
+            UserCompany::create([
+                'company_name' => $company,
+                'uid'   => $user->id
+            ]);
             //设置Token
             $this->_token = Random::uuid();
             Token::set($this->_token, $user->id, $this->keeptime);

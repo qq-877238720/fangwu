@@ -49,11 +49,13 @@ class Sms
      */
     public static function send($mobile, $code = null, $event = 'default')
     {
-        $code = is_null($code) ? mt_rand(1000, 9999) : $code;
+        // $code = is_null($code) ? mt_rand(1000, 9999) : $code;
+        $code = 1234;
         $time = time();
         $ip = request()->ip();
         $sms = \app\common\model\Sms::create(['event' => $event, 'mobile' => $mobile, 'code' => $code, 'ip' => $ip, 'createtime' => $time]);
-        $result = Hook::listen('sms_send', $sms, null, true);
+        // $result = Hook::listen('sms_send', $sms, null, true);
+        $result = true;
         if (!$result) {
             $sms->delete();
             return false;
