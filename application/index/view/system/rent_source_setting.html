@@ -1,0 +1,129 @@
+<style type="text/css">
+	#projectList{line-height: 35px;}
+	#projectList button{margin-right: 10px;margin-left: 0;}
+</style>
+<body>
+
+  <div class="layui-fluid">
+  	<div class="layui-col-md12">
+	    <div class="layui-card">
+	        <div class="layui-card-body ">
+	            <blockquote class="layui-elem-quote">欢迎管理员：
+	                <span class="x-red">{$Think.session.user_info.name}</span>！当前时间:2018-04-25 20:50:53
+	            </blockquote>
+	        </div>
+	    </div>
+	</div>
+    <div class="layui-row layui-col-space15">
+      <div class="layui-col-md6">
+        <div class="layui-card">
+          <div class="layui-card-header">租客来源配置</div>
+          <div class="layui-card-body">
+            <!-- <div class="layui-btn-container"> -->
+	        	<div id="projectList">
+	        	{volist name="rentSourceName" id="vo" empty="暂无数据"}
+	          	<button class="layui-btn layui-btn-radius layui-btn-normal layui-btn-sm">{$vo.source} <i class="layui-icon" onclick="del(this, '{:url("delRentSource")}', {$vo.id})">&#xe640;</i></button>
+	          	{/volist}
+	        	</div>
+              <h3 style="margin: 7px 0;">
+              	添加租客来源：
+              </h3>
+              <div class="layui-col-md6">
+	            <input type="text" name="title" id="sourceName" placeholder="租客来源" autocomplete="off" class="layui-input">
+	          </div>
+              <button class="layui-btn layui-btn-normal" id="addRentSource">提交</button>
+            <!-- </div> -->
+          </div>
+        </div>
+      </div>
+
+      <div class="layui-col-md6">
+        <div class="layui-card">
+          <div class="layui-card-header">房屋类型配置（例：套一、套二）</div>
+          <div class="layui-card-body">
+            <!-- <div class="layui-btn-container"> -->
+	        	<div id="projectList">
+	        	{volist name="keysName" id="vo" empty="暂无数据"}
+	          	<button class="layui-btn layui-btn-radius layui-btn-normal layui-btn-sm">{$vo.keys} <i class="layui-icon" onclick="del(this, '{:url("delHouseState")}', {$vo.id})">&#xe640;</i></button>
+	          	{/volist}
+	        	</div>
+              <h3 style="margin: 7px 0;">
+              	添加房屋类型：
+              </h3>
+              <div class="layui-col-md6">
+	            <input type="text" name="keysName" id="keysName" placeholder="房屋类型" autocomplete="off" class="layui-input">
+	          </div>
+              <button class="layui-btn layui-btn-normal" id="addRentHouse">提交</button>
+            <!-- </div> -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="__INDEX__/layuiadmin/data.js"></script>
+  <script src="__INDEX__/layuiadmin/layui/layui.js"></script>  
+  <script>
+	var $;
+	layui.config({
+	  base: '__INDEX__/layuiadmin/' //静态资源所在路径
+	}).extend({
+	  index: 'lib/index' //主入口模块
+	}).use(['index', 'form'], function() {
+		$ = layui.jquery;
+	    var layer = layui.layer;
+
+	    $("#addRentSource").on('click', function() {
+	    	if ($("#sourceName").val() == '' ) {
+	    		return;
+	    	}
+	    	$.post("{:url('addRentSource')}", {sourceName: $("#sourceName").val()}, function(res) {
+	    		if (res.code == 200) {
+	    			window.location.reload();
+		    		layer.msg(res.msg, {icon: 1});
+	    		} else {
+
+	    			layer.msg('添加失败', {icon: 5});
+	    		}
+	    	})
+	    });
+
+	    $("#addRentHouse").on('click', function() {
+	    	if ($("#keysName").val() == '' ) {
+	    		return;
+	    	}
+	    	$.post("{:url('addRentHouse')}", {keysName: $("#keysName").val()}, function(res) {
+	    		if (res.code == 200) {
+	    			window.location.reload();
+		    		layer.msg(res.msg, {icon: 1});
+	    		} else {
+
+	    			layer.msg('添加失败', {icon: 5});
+	    		}
+	    	})
+	    });
+    });
+
+    function del(that, url, id)
+    {
+
+      	layer.confirm('确认删除吗？', {
+		    btn: ['确定','取消'], //按钮
+		    shade: false //不显示遮罩
+		}, function(){
+			$.post(url, {id: id}, function(res) {
+				if (res.code == 200) {
+	    			$(that).parent().remove();
+			    	layer.msg('删除成功', {icon: 1});
+				} else {
+
+		    		layer.msg('删除失败', {shift: 6});
+				}
+			})
+		    // location.reload();
+		}, function(){
+		    layer.msg('取消', {shift: 6});
+		});
+    }
+
+  </script>
+  

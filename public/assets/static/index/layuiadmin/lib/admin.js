@@ -101,13 +101,10 @@ layui.define('view', function(exports){
             phone: value
           }
           ,success: function(res){
-            if (res.code == 0) {
-
-              layer.msg('验证码已发送至你的手机，请注意查收', {
-                icon: 1
-                ,shade: 0
-              });
-            }
+            layer.msg('验证码已发送至你的手机，请注意查收', {
+              icon: 1
+              ,shade: 0
+            });
             options.elemVercode.focus();
             countDown();
             success && success(res);
@@ -659,88 +656,83 @@ layui.define('view', function(exports){
   
   //监听选项卡切换，改变菜单状态
   admin.on('tabsPage(setMenustatus)', function(router){
-    // console.log(1);
-    // var pathURL = router.url, getData = function(item){
-    //   return {
-    //     list: item.children('.layui-nav-child')
-    //     ,a: item.children('*[lay-href]')
-    //   }
-    // }
-    // ,sideMenu = $('#'+ SIDE_MENU)
-    // ,SIDE_NAV_ITEMD = 'layui-nav-itemed'
+    var pathURL = router.url, getData = function(item){
+      return {
+        list: item.children('.layui-nav-child')
+        ,a: item.children('*[lay-href]')
+      }
+    }
+    ,sideMenu = $('#'+ SIDE_MENU)
+    ,SIDE_NAV_ITEMD = 'layui-nav-itemed'
     
-    // //捕获对应菜单
-    // ,matchMenu = function(list){
-    //   list.each(function(index1, item1){
-    //     var othis1 = $(item1)
-    //     ,data1 = getData(othis1)
-    //     ,listChildren1 = data1.list.children('dd')
-    //     ,matched1 = pathURL === data1.a.attr('lay-href');
+    //捕获对应菜单
+    ,matchMenu = function(list){
+      list.each(function(index1, item1){
+        var othis1 = $(item1)
+        ,data1 = getData(othis1)
+        ,listChildren1 = data1.list.children('dd')
+        ,matched1 = pathURL === data1.a.attr('lay-href');
         
-    //     listChildren1.each(function(index2, item2){
-    //       var othis2 = $(item2)
-    //       ,data2 = getData(othis2)
-    //       ,listChildren2 = data2.list.children('dd')
-    //       ,matched2 = pathURL === data2.a.attr('lay-href');
+        listChildren1.each(function(index2, item2){
+          var othis2 = $(item2)
+          ,data2 = getData(othis2)
+          ,listChildren2 = data2.list.children('dd')
+          ,matched2 = pathURL === data2.a.attr('lay-href');
           
-    //       listChildren2.each(function(index3, item3){
-    //         var othis3 = $(item3)
-    //         ,data3 = getData(othis3)
-    //         ,matched3 = pathURL === data3.a.attr('lay-href');
+          listChildren2.each(function(index3, item3){
+            var othis3 = $(item3)
+            ,data3 = getData(othis3)
+            ,matched3 = pathURL === data3.a.attr('lay-href');
             
-    //         if(matched3){
-    //           var selected = data3.list[0] ? SIDE_NAV_ITEMD : THIS;
-    //           othis3.addClass(selected).siblings().removeClass(selected); //标记选择器
-    //           return false;
-    //         }
+            if(matched3){
+              var selected = data3.list[0] ? SIDE_NAV_ITEMD : THIS;
+              othis3.addClass(selected).siblings().removeClass(selected); //标记选择器
+              return false;
+            }
             
-    //       });
+          });
 
-    //       if(matched2){
-    //         var selected = data2.list[0] ? SIDE_NAV_ITEMD : THIS;
-    //         othis2.addClass(selected).siblings().removeClass(selected); //标记选择器
-    //         return false
-    //       }
+          if(matched2){
+            var selected = data2.list[0] ? SIDE_NAV_ITEMD : THIS;
+            othis2.addClass(selected).siblings().removeClass(selected); //标记选择器
+            return false
+          }
           
-    //     });
+        });
         
-    //     if(matched1){
-    //       var selected = data1.list[0] ? SIDE_NAV_ITEMD : THIS;
-    //       othis1.addClass(selected).siblings().removeClass(selected); //标记选择器
-    //       return false;
-    //     }
+        if(matched1){
+          var selected = data1.list[0] ? SIDE_NAV_ITEMD : THIS;
+          othis1.addClass(selected).siblings().removeClass(selected); //标记选择器
+          return false;
+        }
         
-    //   });
-    // }
+      });
+    }
     
-    // //重置状态
-    // sideMenu.find('.'+ THIS).removeClass(THIS);
+    //重置状态
+    sideMenu.find('.'+ THIS).removeClass(THIS);
     
-    // //移动端点击菜单时自动收缩
-    // if(admin.screen() < 2) admin.sideFlexible();
+    //移动端点击菜单时自动收缩
+    if(admin.screen() < 2) admin.sideFlexible();
     
-    // //开始捕获
-    // matchMenu(sideMenu.children('li'));
+    //开始捕获
+    matchMenu(sideMenu.children('li'));
   });
   
   //监听侧边导航点击事件
   element.on('nav(layadmin-system-side-menu)', function(elem){
-
     if(elem.siblings('.layui-nav-child')[0] && container.hasClass(SIDE_SHRINK)){
       admin.sideFlexible('spread');
       layer.close(elem.data('index'));
     };
-
-    // console.log(admin.tabsPage);
     admin.tabsPage.type = 'nav';
   });
   
   //监听选项卡的更多操作
   element.on('nav(layadmin-pagetabs-nav)', function(elem){
-    // console.log(3);
-    // var dd = elem.parent();
-    // dd.removeClass(THIS);
-    // dd.parent().removeClass(SHOW);
+    var dd = elem.parent();
+    dd.removeClass(THIS);
+    dd.parent().removeClass(SHOW);
   });
   
   //同步路由
