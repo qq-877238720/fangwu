@@ -17,6 +17,7 @@ class User extends Frontend
 {
     protected $layout = 'default';
     protected $noNeedLogin = ['login', 'register', 'third'];
+    // protected $noNeedLogin = ['*'];
     protected $noNeedRight = ['logout'];
 
     public function _initialize()
@@ -71,6 +72,50 @@ class User extends Frontend
         return $this->view->fetch();
     }
 
+    public function addYuanGong()
+    {
+
+        if ($this->request->isPost()) {
+            $username = $this->request->post('username');
+            $password = $this->request->post('password');
+            $group_id = $this->request->post('group_id');
+            $mobile   = $this->request->post('mobile', '');
+            
+            $rule = [
+                'username'  => 'require|length:3,30',
+                'password'  => 'require|length:6,30',
+                'mobile'    => 'regex:/^1\d{10}$/',
+            ];
+
+            $msg = [
+                'username.require' => 'Username can not be empty',
+                'username.length'  => 'Username must be 3 to 30 characters',
+                'password.require' => 'Password can not be empty',
+                'password.length'  => 'Password must be 6 to 30 characters',
+                'mobile'           => 'Mobile is incorrect',
+            ];
+            $data = [
+                'username'  => $username,
+                'password'  => $password,
+                'mobile'    => $mobile,
+            ];
+            $validate = new Validate($rule, $msg);
+            $result = $validate->check($data);
+            if (!$result) {
+                $this->error(__($validate->getError()), null, ['token' => $this->request->token()]);
+            }
+
+            if ($this->auth->addYuanGong($username, $password, $group_id, $mobile, [], $username)) {
+                $this->success(__('Sign up successful'), $url ? $url : url('user/index'));
+            } else {
+                $this->error($this->auth->getError(), null, ['token' => $this->request->token()]);
+            }
+        }
+
+        $this->view->assign('title', __('Register'));
+        return $this->view->fetch('addYuanGong');
+    }
+
     /**
      * 注册会员
      */
@@ -95,7 +140,7 @@ class User extends Frontend
                 'password'  => 'require|length:6,30',
                 // 'email'     => 'require|email',
                 'mobile'    => 'regex:/^1\d{10}$/',
-                'captcha'   => 'require|captcha',
+                // 'captcha'   => 'require|captcha',
                 '__token__' => 'require|token',
             ];
 
@@ -151,7 +196,8 @@ class User extends Frontend
      */
     public function login()
     {
-        $url = $this->request->request('url', '', 'trim');
+        
+        $url = '';
         if ($this->auth->id) {
             $this->success(__('You\'ve logged in, do not login again'), $url ? $url : url('user/index'));
         }

@@ -115,6 +115,71 @@ class Auth
     }
 
     /**
+     * 添加用户
+     *
+     * @param string $username 用户名
+     * @param string $password 密码
+     * @param string $email    邮箱
+     * @param string $mobile   手机号
+     * @param array  $extend   扩展参数
+     * @param string $company  公司名
+     * @return boolean
+     */
+    public function addYuanGong($username, $password, $group_id, $mobile = '', $extend = [], $company = '')
+    {
+        // 检测用户名或邮箱、手机号是否存在
+        if (User::getByUsername($username)) {
+            $this->setError('Username already exist');
+            return false;
+        }
+        
+        if ($mobile && User::getByMobile($mobile)) {
+            $this->setError('Mobile already exist');
+            return false;
+        }
+
+        $ip = request()->ip();
+        $time = time();
+
+        $data = [
+            'username' => $username,
+            'password' => $password,
+            'email'    => '',
+            'mobile'   => $mobile,
+            'level'    => 1,
+            'score'    => 0,
+            'avatar'   => '',
+            'group_id' => $group_id,
+        ];
+        $params = array_merge($data, [
+            'nickname'  => $username,
+            'salt'      => Random::alnum(),
+            'jointime'  => $time,
+            'joinip'    => $ip,
+            'logintime' => $time,
+            'loginip'   => $ip,
+            'prevtime'  => $time,
+            'status'    => 'normal'
+        ]);
+        $params['password'] = $this->getEncryptPassword($password, $params['salt']);
+        $params = array_merge($params, $extend);
+
+        //账号注册时需要开启事务,避免出现垃圾数据
+        Db::startTrans();
+        try {
+            $user = User::create($params, true);
+
+            Db::commit();
+        } catch (Exception $e) {
+            $this->setError($e->getMessage());
+            Db::rollback();
+            return false;
+        }
+        return true;
+    }
+
+
+    /**
      * 注册用户
      *
      * @param string $username 用户名
