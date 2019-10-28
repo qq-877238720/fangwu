@@ -208,7 +208,8 @@ class User extends Frontend
         
         $url = '';
         if ($this->auth->id) {
-            $this->success(__('You\'ve logged in, do not login again'), $url ? $url : url('user/index'));
+            // $this->success(__('You\'ve logged in, do not login again'), $url ? $url : url('index/main'));
+            $this->redirect('index/main');
         }
         if ($this->request->isPost()) {
             $account = $this->request->post('account');
@@ -239,7 +240,7 @@ class User extends Frontend
                 return false;
             }
             if ($this->auth->login($account, $password)) {
-                $this->success(__('Logged in successful'), $url ? $url : url('user/index'));
+                $this->success(__('Logged in successful'), $url ? $url : url('index/main'));
             } else {
                 $this->error($this->auth->getError(), null, ['token' => $this->request->token()]);
             }
@@ -262,7 +263,7 @@ class User extends Frontend
     {
         //注销本站
         $this->auth->logout();
-        $this->success(__('Logout successful'), url('user/index'));
+        $this->success(__('Logout successful'), url('user/login'));
     }
 
     /**

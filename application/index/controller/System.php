@@ -10,7 +10,7 @@ use think\Db;
 
 class System extends Frontend
 {
-    protected $layout = 'default';
+    protected $layout = 'layoutname';
     protected $noNeedLogin = ['login', 'register', 'third'];
     protected $noNeedRight = ['logout'];
 

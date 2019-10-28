@@ -238,10 +238,16 @@ class Auth
 
             $this->_user = User::get($user->id);
             // 添加用户公司表数据
-            UserCompany::create([
+            $userCompany = UserCompany::create([
                 'company_name' => $company,
-                'uid'   => $user->id
+                'user_id'   => $user->id
             ]);
+
+            User::where('id', $user->id)->update([
+                'is_company' => 1,
+                'company_id' => $userCompany->id
+            ]);
+
             //设置Token
             $this->_token = Random::uuid();
             Token::set($this->_token, $user->id, $this->keeptime);
