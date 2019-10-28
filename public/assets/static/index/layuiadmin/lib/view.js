@@ -106,25 +106,24 @@ layui.define(['laytpl', 'layer'], function(exports){
         
         //其它异常
         else {
-          view.exit();
-          // var error = [
-          //   '<cite>Error：</cite> ' + (res[response.msgName] || '返回状态码异常')
-          //   ,debug()
-          // ].join('');
-          // view.error(error);
+          var error = [
+            '<cite>Error：</cite> ' + (res[response.msgName] || '返回状态码异常')
+            ,debug()
+          ].join('');
+          view.error(error);
         }
         
         //只要 http 状态码正常，无论 response 的 code 是否正常都执行 success
         typeof success === 'function' && success(res);
       }
       ,error: function(e, code){
-        // var error = [
-        //   '请求异常，请重试<br><cite>错误信息：</cite>'+ code 
-        //   ,debug()
-        // ].join('');
-        // view.error(error);
-        typeof error === 'function' && error(code);
-        // typeof error === 'function' && error(res);
+        var error = [
+          '请求异常，请重试<br><cite>错误信息：</cite>'+ code 
+          ,debug()
+        ].join('');
+        view.error(error);
+        
+        typeof error === 'function' && error(res);
       }
     }, options));
   };

@@ -1,0 +1,394 @@
+<style type="text/css">
+	.layui-btn-radius{border-radius: 10px;}
+	#freeList{line-height: 35px;}
+	#freeList button{margin-right: 10px;margin-left: 0;}
+</style>
+<body>
+
+  <div class="layui-fluid">
+  	<div class="layui-col-md12">
+	    <div class="layui-card">
+	        <div class="layui-card-body ">
+	            <blockquote class="layui-elem-quote">欢迎管理员：
+	                <span class="x-red">{$Think.session.user_info.qyname}</span>！当前时间:2018-04-25 20:50:53
+	            </blockquote>
+	        </div>
+	    </div>
+	</div>
+    <div class="layui-row layui-col-space15">
+      <div class="layui-col-md12">
+        <div class="layui-card">
+          <div class="layui-card-header">费用模板</div>
+          <div class="layui-card-body">
+            <!-- <div class="layui-btn-container"> -->
+            		
+           	  <h3 style="margin: 7px 0;">已有模板：</h3>
+            <div id="freeList">
+            	{volist name="modelName" id="vo" empty="暂无数据"}
+              <button class="layui-btn layui-btn-radius layui-btn-normal" style="position: relative;" onclick="editTeamplate(this, {$vo.id})">{$vo.modelName}  <i class="layui-icon" onclick="delProject(this, {$vo.id})" style="
+              	position: absolute;
+			    right: -18px;
+			    top: -17px;
+			    z-index: 1008611;
+			    color: #949393;
+			    font-size: 28px;
+    			">&#x1007;</i></button>
+            	{/volist}
+            </div>
+              <h3 style="margin: 7px 0;">
+              	添加模板：
+              </h3>
+              <button class="layui-btn layui-btn-normal" id="addTemplate">添加模板</button>
+            <!-- </div> -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<div style="padding: 15px;display: none;" id="formHTML">
+    <form class="layui-form" action="" id="myform">
+    <div class="layui-card">
+      <div class="layui-card-header">模板名称：</div>
+      <div class="layui-card-body" style="padding: 5px;">
+		  <div class="layui-form-item">
+		    <label class="layui-form-label">模板名称</label>
+		    <div class="layui-input-inline">
+		      <input type="text" required id="freeTeamplateName" lay-verify="required" placeholder="模板名称" autocomplete="off" class="layui-input">
+		    </div>
+		  </div>
+      </div>
+    </div>
+	<div class="layui-card">
+      <div class="layui-card-header">费用：</div>
+      <div class="layui-card-body" style="padding: 5px;" id="guDingFree">
+      	  <div class="layui-form-item">
+		    <label class="layui-form-label name">租金</label>
+		    <div class="layui-input-inline">
+		      <input class="layui-input money" type="number" required  name="租金" lay-verify="validateMoney" placeholder="租金" autocomplete="off">
+		    </div>
+		    <div class="layui-form-mid layui-word-aux unit">元/月</div>
+		  </div>
+
+		  <div class="layui-form-item">
+		    <label class="layui-form-label name">物管费</label>
+		    <div class="layui-input-inline">
+		      <input class="layui-input money" type="number" required  name="物管费" lay-verify="validateMoney" placeholder="物管费" autocomplete="off">
+		    </div>
+		    <div class="layui-form-mid layui-word-aux unit">元/月</div>
+		    <div class="layui-form-mid layui-word-aux del" style="cursor: pointer;"> <i class="layui-icon">&#xe640;</i> </div>
+		  </div>
+
+		  <div class="layui-form-item">
+		    <label class="layui-form-label name">宽带费</label>
+		    <div class="layui-input-inline">
+		      <input type="number" required  lay-verify="validateMoney" placeholder="宽带费" autocomplete="off" class="layui-input money">
+		    </div>
+		    <div class="layui-form-mid layui-word-aux unit">元/月</div>
+		    <div class="layui-form-mid layui-word-aux del" style="cursor: pointer;"> <i class="layui-icon">&#xe640;</i> </div>
+		  </div>
+
+		  <!-- <div class="layui-form-item">
+		    <label class="layui-form-label">服务费</label>
+		    <div class="layui-input-inline">
+		      <input type="number" required  lay-verify="required" placeholder="服务费" autocomplete="off" class="layui-input">
+		    </div>
+		    <div class="layui-form-mid layui-word-aux">元/月</div>
+		    <div class="layui-form-mid layui-word-aux del" style="cursor: pointer;"> <i class="layui-icon">&#xe640;</i> </div>
+		  </div>
+
+		  <div class="layui-form-item">
+		    <label class="layui-form-label">清洁费</label>
+		    <div class="layui-input-inline">
+		      <input type="number" required  lay-verify="required" placeholder="清洁费" autocomplete="off" class="layui-input">
+		    </div>
+		    <div class="layui-form-mid layui-word-aux">元/月</div>
+		    <div class="layui-form-mid layui-word-aux del" style="cursor: pointer;"> <i class="layui-icon">&#xe640;</i> </div>
+		  </div>
+
+		  <div class="layui-form-item">
+		    <label class="layui-form-label">电梯费</label>
+		    <div class="layui-input-inline">
+		      <input type="number" required  lay-verify="required" placeholder="电梯费" autocomplete="off" class="layui-input">
+		    </div>
+		    <div class="layui-form-mid layui-word-aux">元/月</div>
+		    <div class="layui-form-mid layui-word-aux del" style="cursor: pointer;"> <i class="layui-icon">&#xe640;</i> </div>
+		  </div>
+		  <div class="layui-form-item">
+		    <label class="layui-form-label">暖气费</label>
+		    <div class="layui-input-inline">
+		      <input type="number" required  lay-verify="required" placeholder="暖气费" autocomplete="off" class="layui-input">
+		    </div>
+		    <div class="layui-form-mid layui-word-aux">元/月</div>
+		    <div class="layui-form-mid layui-word-aux del" style="cursor: pointer;"> <i class="layui-icon">&#xe640;</i> </div>
+		  </div> -->
+      </div>
+      <div class="layui-input-block">
+	    <button class="layui-btn" type="button" id="addGuDing">添加费用</button>
+	  </div>
+    </div>
+	<!-- <div class="layui-card"> -->
+      <!-- <div class="layui-card-header">计量费用：</div> -->
+      <!-- <div class="layui-card-body" style="padding: 5px;" id="jiLiangFree"> -->
+        <!-- <form class="layui-form" action=""> -->
+
+		  <!-- <div class="layui-form-item">
+		    <label class="layui-form-label name1">水费</label>
+		    <div class="layui-input-inline">
+		      <input type="number" required name="水费" lay-verify="required" placeholder="水费" autocomplete="off" class="layui-input money1">
+		    </div>
+		    <div class="layui-form-mid layui-word-aux unit1">元/月</div>
+		    <div class="layui-form-mid layui-word-aux del" style="cursor: pointer;"> <i class="layui-icon">&#xe640;</i> </div>
+		  </div>
+ -->
+		  <!-- <div class="layui-form-item">
+		    <label class="layui-form-label">电费</label>
+		    <div class="layui-input-inline">
+		      <input type="number" required  lay-verify="required" placeholder="电费" autocomplete="off" class="layui-input">
+		    </div>
+		    <div class="layui-form-mid layui-word-aux">元/度</div>
+		    <div class="layui-form-mid layui-word-aux del" style="cursor: pointer;"> <i class="layui-icon">&#xe640;</i> </div>
+		  </div>
+
+		  <div class="layui-form-item">
+		    <label class="layui-form-label">气费</label>
+		    <div class="layui-input-inline">
+		      <input type="number" required  lay-verify="required" placeholder="气费" autocomplete="off" class="layui-input">
+		    </div>
+		    <div class="layui-form-mid layui-word-aux">元/方</div>
+		    <div class="layui-form-mid layui-word-aux del" style="cursor: pointer;"> <i class="layui-icon">&#xe640;</i> </div>
+		  </div> -->
+      <!-- </div> -->
+      <!-- <div class="layui-input-block">
+	    <button class="layui-btn" type="button" id="addJiLiang">添加计量费用</button>
+	  </div> -->
+    <!-- </div> -->
+    <div class="layui-input-block">
+      <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+    </div>
+	</form>
+
+</div>
+<div style="display: none;" id="addFreeTeamplate">
+	<div class="layui-card">
+      <div class="layui-card-header"></div>
+      <div class="layui-card-body" style="padding: 15px;">
+        <form class="layui-form  layui-form-pane" action="">
+		  <div class="layui-form-item">
+		    <label class="layui-form-label" pane>收费类型</label>
+		    <div class="layui-input-inline">
+		      <input type="text" name="type" placeholder="输入收费类型" autocomplete="off" class="layui-input">
+		    </div>
+		  </div>
+
+		  <div class="layui-form-item">
+		    <label class="layui-form-label" pane>输入金额</label>
+		    <div class="layui-input-inline">
+		      <input type="number" name="money" placeholder="输入金额" autocomplete="off" class="layui-input">
+		    </div>
+		  </div>
+
+		  <div class="layui-form-item">
+		    <div class="layui-input-block">
+		      <button class="layui-btn" type="reset" id="FreeTeamplateBtn" lay-filter="formDemo1">确定</button>
+		      <button type="reset" class="layui-btn layui-btn-primary" id="FreeTeamplateCancel">取消</button>
+		    </div>
+		  </div>
+
+		</form>
+      </div>
+    </div>
+</div>
+<script src="__INDEX__/layuiadmin/layui/layui.js"></script>  
+  <script>
+	var $form;
+	var form;
+	var $;
+
+	// 费用
+	var type;
+	var money;
+	var unit;
+
+	layui.config({
+	  base: '__INDEX__/layuiadmin/' //静态资源所在路径
+	}).extend({
+	  index: 'lib/index' //主入口模块
+	}).use(['index', 'form'], function() {
+		$ = layui.jquery
+	    ,form = layui.form
+	    ,$form = $('form')
+	    ,layer = layui.layer;
+
+	    form.render(null, 'component-form-group');
+
+	    form.on('submit(formDemo)', function(data){
+	    	// console.log(ele);
+	    	// layer.alert(JSON.stringify(data.field), {
+		    //   title: '最终的提交信息'
+		    // })
+		    // 
+	    	var form = document.getElementById("#myform");/* 获取表单引用(对象) */
+	    	var nameElements = document.getElementsByClassName('name');
+	    	var moneyElements = document.getElementsByClassName('money');
+	    	var unitElements = document.getElementsByClassName('unit');
+	    	var afixFees = [];
+	    	for (var j = 0; j < nameElements.length; j++) {
+	    		afixFees.push({'name': $(nameElements[j]).html(), 'money': $(moneyElements[j]).val(), 'unit': $(unitElements[j]).html()});
+	    	}
+
+	    	// var computedFeesNameElements = document.getElementsByClassName('name1');
+	    	// var computedFeesMoneyElements = document.getElementsByClassName('money1');
+	    	// var computedFeesUnitElements = document.getElementsByClassName('unit1');
+	    	// var computedFees = [];
+	    	// for (var j = 0; j < computedFeesNameElements.length; j++) {
+	    	// 	computedFees.push({'name': $(computedFeesNameElements[j]).html(), 'money': $(computedFeesMoneyElements[j]).val(), 'unit': $(computedFeesUnitElements[j]).html()});
+	    	// }
+	    	// 
+		    $.post("{:url('addCostTemplateSetting')}", {'afixFees': afixFees, 'computedFees': [], modelName: $("#freeTeamplateName").val()}, function(res) {
+		    	console.log(res);
+		    	if(res.code == 200) {
+		    		layer.alert('添加成功', {
+				      title: '最终的提交信息',
+				      end: function(){
+				      	// window.location.go(0);
+				      	window.location.reload();
+				      	$("a[layadmin-event='refresh']").click();
+				      	$("i.layui-icon.layui-icon-refresh-3").click();
+				      	layer.closeAll();
+				      }
+				    })
+
+		    	} else {
+		    		layer.msg(res.msg);
+		    	}
+		    })
+	    	return false;
+	    });
+
+	    form.verify({
+		  validateMoney: [
+	　　　　　　/^(0|[1-9][0-9]*)(\.\d+)?$/  //正则表达式
+	　　　　　　,'金额只能为正数'  //提示信息
+	　　　　]
+		});
+	    $('#addTemplate').on('click', function(){
+	      	layer.open({
+	          type: 1,
+	          title: '费用模板',
+	          closeBtn: 0,
+	          shadeClose: true,
+	          area: ['530px', '750px'], //宽高
+	          content: $("#formHTML")
+	        });
+	    });
+
+	    // 添加固定费用
+	    $('#addGuDing').on('click', function(){
+	    	//注意：parent 是 JS 自带的全局对象，可用于操作父页面
+			// var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+	      	var index = layer.open({
+	          type: 1,
+	          title: '固定费用',
+	          closeBtn: 0,
+	          shadeClose: true,
+	          area: ['430px', '350px'], //宽高
+	          content: $('#addFreeTeamplate')
+	        });
+
+			$('#FreeTeamplateBtn').off('click').click(function(){
+			    var type = $("input[name='type']").val();
+			    var money = $("input[name='money']").val();
+			    // var unit = $("input[name='unit']").val();
+			    if(type === '' || money ===''){
+			        parent.layer.msg('请填写内容');
+			        return;
+			    }
+			    $("#guDingFree").append('<div class="layui-form-item"><label class="layui-form-label name">'+type+'</label><div class="layui-input-inline"><input type="number" name="'+type+'" required lay-verify="required" value="'+money+'" autocomplete="off" class="layui-input money"></div><div class="layui-form-mid layui-word-aux unit">元/月</div><div class="layui-form-mid layui-word-aux del" style="cursor: pointer;"> <i class="layui-icon">&#xe640;</i> </div></div>');
+			    $(".del").on('click', function() {
+			    	$(this).parent().remove();
+			    })
+			    // parent.layer.msg('您将标记 [ ' +val + ' ] 成功传送给了父窗口');
+			    layer.close(index);
+			});
+
+	        //关闭iframe
+			$('#FreeTeamplateCancel').click(function(){
+			    layer.close(index);
+			});
+	    });
+
+	    // 添加计量费用
+	    $('#addJiLiang').on('click', function(){
+	    	//注意：parent 是 JS 自带的全局对象，可用于操作父页面
+			// var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+	      	var index = layer.open({
+	          type: 1,
+	          title: '计量费用',
+	          closeBtn: 0,
+	          shadeClose: true,
+	          area: ['430px', '350px'], //宽高
+	          content: $('#addFreeTeamplate')
+	        });
+
+			$('#FreeTeamplateBtn').off('click').click(function(){
+			    var type = $("input[name='type']").val();
+			    var money = $("input[name='money']").val();
+			    // var unit = $("input[name='unit']").val();
+			    if(type === '' || money ===''){
+			        parent.layer.msg('请填写内容');
+			        return;
+			    }
+			    $("#jiLiangFree").append('<div class="layui-form-item"><label class="layui-form-label name">'+type+'</label><div class="layui-input-inline"><input type="text" required lay-verify="required" value="'+money+'" autocomplete="off" class="layui-input money"></div><div class="layui-form-mid layui-word-aux unit">元/月</div><div class="layui-form-mid layui-word-aux del" style="cursor: pointer;"> <i class="layui-icon">&#xe640;</i> </div></div>');
+			    $(".del").on('click', function() {
+			    	$(this).parent().remove();
+			    })
+			    // parent.layer.msg('您将标记 [ ' +val + ' ] 成功传送给了父窗口');
+			    layer.close(index);
+			});
+
+	        //关闭iframe
+			$('#FreeTeamplateCancel').click(function(){
+			    layer.close(index);
+			});
+	    });
+
+    });
+
+	function delProject(that, id)
+    {
+    	window.event? window.event.cancelBubble = true : e.stopPropagation();
+      	layer.confirm('确认删除吗？', {
+		    btn: ['确定','取消'], //按钮
+		    shade: false //不显示遮罩
+		}, function(){
+			$.post("{:url('delTeamplate')}", {id: id}, function(res) {
+				if (res.code == 200) {
+	    			$(that).parent().remove();
+			    	layer.msg('删除成功', {icon: 1});
+				} else {
+
+		    		layer.msg('删除失败', {shift: 6});
+				}
+			})
+		    // location.reload();
+		}, function(){
+		    layer.msg('取消', {shift: 6});
+		});
+    }
+
+    function editTeamplate(that, id)
+    {
+
+    	var index = layer.open({
+          type: 2,
+          title: '修改费用费用',
+          closeBtn: 0,
+          shadeClose: true,
+          area: ['530px', '750px'], //宽高
+          content: "{:url('editCostTemplateSetting')}?id=" + id,
+        });
+    }
+
+  </script>
+  

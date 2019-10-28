@@ -1,202 +1,171 @@
-<style>
-    .profile-avatar-container {
-        position:relative;
-        width:100px;
-    }
-    .profile-avatar-container .profile-user-img{
-        width:100px;
-        height:100px;
-    }
-    .profile-avatar-container .profile-avatar-text {
-        display:none;
-    }
-    .profile-avatar-container:hover .profile-avatar-text {
-        display:block;
-        position:absolute;
-        height:100px;
-        width:100px;
-        background:#444;
-        opacity: .6;
-        color: #fff;
-        top:0;
-        left:0;
-        line-height: 100px;
-        text-align: center;
-    }
-    .profile-avatar-container button{
-        position:absolute;
-        top:0;left:0;width:100px;height:100px;opacity: 0;
-    }
-</style>
+
 <div id="content-container" class="container">
-    <div class="row">
-        <div class="col-md-3">
-            {include file="common/sidenav" /}
-        </div>
-        <div class="col-md-9">
-            <div class="panel panel-default">
-                <div class="panel-body">
-                    <h2 class="page-header">{:__('Profile')}</h2>
-                    <form id="profile-form" class="form-horizontal" role="form" data-toggle="validator" method="POST" action="{:url('api/user/profile')}">
-                        {:token()}
-                        <input type="hidden" name="avatar" id="c-avatar" value="{:$user->getData('avatar')}" />
-                        <div class="form-group">
-                            <label class="control-label col-xs-12 col-sm-2"></label>
-                            <div class="col-xs-12 col-sm-4">
-                                <div class="profile-avatar-container">
-                                    <img class="profile-user-img img-responsive img-circle plupload" src="{$user.avatar|cdnurl}" alt="">
-                                    <div class="profile-avatar-text img-circle">{:__('Click to edit')}</div>
-                                    <button id="plupload-avatar" class="plupload" data-mimetype="png,jpg,jpeg,gif" data-input-id="c-avatar"><i class="fa fa-upload"></i> {:__('Upload')}</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label col-xs-12 col-sm-2">{:__('Username')}:</label>
-                            <div class="col-xs-12 col-sm-4">
-                                <input type="text" class="form-control" id="username" name="username" value="{$user.username|htmlentities}" data-rule="required;username;remote({:url('api/validate/check_username_available')}, id={$user.id})" placeholder="">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label col-xs-12 col-sm-2">{:__('Nickname')}:</label>
-                            <div class="col-xs-12 col-sm-4">
-                                <input type="text" class="form-control" id="nickname" name="nickname" value="{$user.nickname|htmlentities}" data-rule="required" placeholder="">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="c-bio" class="control-label col-xs-12 col-sm-2">{:__('Intro')}:</label>
-                            <div class="col-xs-12 col-sm-8">
-                                <input id="c-bio" data-rule="" data-tip="一句话介绍一下你自己" class="form-control" name="bio" type="text" value="{$user.bio|htmlentities}">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="c-email" class="control-label col-xs-12 col-sm-2">{:__('Email')}:</label>
-                            <div class="col-xs-12 col-sm-4">
-                                <div class="input-group">
-                                    <input type="text" class="form-control" id="c-email" name="email" value="{$user.email|htmlentities}" disabled placeholder="">
-                                    <span class="input-group-btn" style="padding:0;border:none;">
-                                        <a href="javascript:;" class="btn btn-info btn-change" data-type="email">{:__('Change')}</a>
-                                    </span>
-                                </div>
-
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="c-mobile" class="control-label col-xs-12 col-sm-2">{:__('Mobile')}:</label>
-                            <div class="col-xs-12 col-sm-4">
-                                <div class="input-group">
-                                    <input type="text" class="form-control" id="c-mobile" name="mobile" value="{$user.mobile|htmlentities}" disabled placeholder="">
-                                    <span class="input-group-btn" style="padding:0;border:none;">
-                                        <a href="javascript:;" class="btn btn-info btn-change" data-type="mobile">{:__('Change')}</a>
-                                    </span>
-                                </div>
-
-                            </div>
-                        </div>
-                        <div class="form-group normal-footer">
-                            <label class="control-label col-xs-12 col-sm-2"></label>
-                            <div class="col-xs-12 col-sm-8">
-                                <button type="submit" class="btn btn-success btn-embossed disabled">{:__('Ok')}</button>
-                                <button type="reset" class="btn btn-default btn-embossed">{:__('Reset')}</button>
-                            </div>
-                        </div>
-                    </form>
+    <div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+      <div class="layui-col-md12">
+        <div class="layui-card">
+          <div class="layui-card-header">用户中心</div>
+          <div class="layui-card-body" pad15>
+            
+            <div class="layui-form" lay-filter="">
+              <div class="layui-form-item">
+                <label class="layui-form-label">手机号码</label>
+                <div class="layui-input-inline">
+                  <input type="text" name="mobile" value="{$user.mobile}" lay-verify="phone" autocomplete="off" class="layui-input" readonly="readonly">
                 </div>
+                <div class="layui-form-mid layui-word-aux" style="padding: 0 0!important;">
+                  <button class="layui-btn" id="upphone">修改登录手机号</button>
+                </div>
+              </div>
+              <div class="layui-form-item">
+                <label class="layui-form-label">真实姓名</label>
+                <div class="layui-input-inline">
+                  <input type="text" name="name" value="{$user.name}" class="layui-input">
+                </div>
+                <div class="layui-form-mid layui-word-aux">请填写您的真实姓名</div>
+              </div>
+              <div class="layui-form-item">
+                <label class="layui-form-label">企业名称</label>
+                <div class="layui-input-inline">
+                  <input type="text" name="qyname" value="{$user.qyname}" lay-verify="required" autocomplete="off" placeholder="请输入企业名称" class="layui-input">
+                </div>
+              </div>
+              <div class="layui-form-item">
+                <label class="layui-form-label">品牌名称</label>
+                <div class="layui-input-inline">
+                  <input type="text" name="bpname" value="{$user.bpname}" lay-verify="required" autocomplete="off" placeholder="请输入品牌名称" class="layui-input">
+                </div>
+              </div>
+              <div class="layui-form-item">
+                <label class="layui-form-label">联系电话</label>
+                <div class="layui-input-inline">
+                  <input type="text" name="lianxiphone" value="{$user.lianxiphone}" lay-verify="phone" placeholder="请填写联系电话" autocomplete="off" class="layui-input">
+                </div>
+              </div>
+              <div class="layui-form-item">
+                <label class="layui-form-label">联系地址</label>
+                <div class="layui-input-inline">
+                  <input type="text" name="address" value="{$user.address}" autocomplete="off" lay-verify="required" placeholder="请填写联系地址" class="layui-input">
+                </div>
+              </div>
+              <div class="layui-form-item">
+                <div class="layui-input-block">
+                  <button class="layui-btn" lay-submit lay-filter="setmyinfo">确认修改</button>
+                </div>
+              </div>
             </div>
+            
+          </div>
         </div>
+      </div>
     </div>
-</div>
+  </div>
 
-<script type="text/html" id="emailtpl">
-    <form id="email-form" class="form-horizontal form-layer" method="POST" action="{:url('api/user/changeemail')}">
-        <div class="form-body">
-            <input type="hidden" name="action" value="changeemail" />
-            <div class="form-group">
-                <label class="control-label col-xs-12 col-sm-3">{:__('New Email')}:</label>
-                <div class="col-xs-12 col-sm-8">
-                    <input type="text" class="form-control" id="email" name="email" value="" data-rule="required;email;remote({:url('api/validate/check_email_available')}, event=changeemail, id={$user.id})" placeholder="{:__('New email')}">
-                    <span class="msg-box"></span>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="control-label col-xs-12 col-sm-3">{:__('Captcha')}:</label>
-                <div class="col-xs-12 col-sm-8">
-                    <div class="input-group">
-                        <input type="text" name="captcha" id="email-captcha" class="form-control" data-rule="required;length(4);integer[+];remote({:url('api/validate/check_ems_correct')}, event=changeemail, email:#email)" />
-                        <span class="input-group-btn" style="padding:0;border:none;">
-                            <a href="javascript:;" class="btn btn-info btn-captcha" data-url="{:url('api/ems/send')}" data-type="email" data-event="changeemail">获取验证码</a>
-                        </span>
-                    </div>
-                    <span class="msg-box"></span>
-                </div>
-            </div>
-        </div>
-        <div class="form-footer">
-            <div class="form-group" style="margin-bottom:0;">
-                <label class="control-label col-xs-12 col-sm-3"></label>
-                <div class="col-xs-12 col-sm-8">
-                    <button type="submit" class="btn btn-md btn-info">{:__('Submit')}</button>
-                </div>
-            </div>
-        </div>
-    </form>
-</script>
-<script type="text/html" id="mobiletpl">
-    <form id="mobile-form" class="form-horizontal form-layer" method="POST" action="{:url('api/user/changemobile')}">
-        <div class="form-body">
-            <input type="hidden" name="action" value="changemobile" />
-            <div class="form-group">
-                <label for="c-mobile" class="control-label col-xs-12 col-sm-3">{:__('New mobile')}:</label>
-                <div class="col-xs-12 col-sm-8">
-                    <input type="text" class="form-control" id="mobile" name="mobile" value="" data-rule="required;mobile;remote({:url('api/validate/check_mobile_available')}, event=changemobile, id={$user.id})" placeholder="{:__('New mobile')}">
-                    <span class="msg-box"></span>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="mobile-captcha" class="control-label col-xs-12 col-sm-3">{:__('Captcha')}:</label>
-                <div class="col-xs-12 col-sm-8">
-                    <div class="input-group">
-                        <input type="text" name="captcha" id="mobile-captcha" class="form-control" data-rule="required;length(4);integer[+];remote({:url('api/validate/check_sms_correct')}, event=changemobile, mobile:#mobile)" />
-                        <span class="input-group-btn" style="padding:0;border:none;">
-                            <a href="javascript:;" class="btn btn-info btn-captcha" data-url="{:url('api/sms/send')}" data-type="mobile" data-event="changemobile">获取验证码</a>
-                        </span>
-                    </div>
-                    <span class="msg-box"></span>
-                </div>
-            </div>
-        </div>
-        <div class="form-footer">
-            <div class="form-group" style="margin-bottom:0;">
-                <label class="control-label col-xs-12 col-sm-3"></label>
-                <div class="col-xs-12 col-sm-8">
-                    <button type="submit" class="btn btn-md btn-info">{:__('Submit')}</button>
-                </div>
-            </div>
-        </div>
-    </form>
-</script>
-<style>
-    .form-layer {height:100%;min-height:150px;min-width:300px;}
-    .form-body {
-        width:100%;
-        overflow:auto;
-        top:0;
-        position:absolute;
-        z-index:10;
-        bottom:50px;
-        padding:15px;
-    }
-    .form-layer .form-footer {
-        height:50px;
-        line-height:50px;
-        background-color: #ecf0f1;
-        width:100%;
-        position:absolute;
-        z-index:200;
-        bottom:0;
-        margin:0;
-    }
-    .form-footer .form-group{
-        margin-left:0;
-        margin-right:0;
-    }
-</style>
+  <div style="padding: 50px 0; display: none;" id="phone"><div class="layui-form layui-form-pane" lay-filter="">
+    <div class="layui-form-item" style="margin-left: 16px;">
+      <label class="layui-form-label">新手机号码</label>
+      <div class="layui-input-inline">
+        <input type="text" name="phone" id="LAY-user-login-cellphone" value="" lay-verify="phone" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+    <div class="layui-form-item" style="margin-left: 17px;">
+      <div class="layui-input-inline" style="width:184px;">
+        <input type="text" name="vercode" id="LAY-user-code" value="" lay-verify="required" placeholder="填写验证码" autocomplete="off" class="layui-input">
+      </div>
+      <div class="layui-form-mid layui-word-aux" style="padding: 0 0!important;">
+        <button class="layui-btn layui-btn-primary layui-btn-fluid"  id="LAY-user-getsmscode">获取验证码</button>
+      </div>
+    </div>
+    </div>
+  </div>
+</div>
+ <script>
+  layui.config({
+    base: '__INDEX__/layuiadmin/' //静态资源所在路径
+  }).extend({
+    index: 'lib/index' //主入口模块
+  }).use(['index', 'set', 'form', 'user'], function(){
+    var $ = layui.$
+    , layer = layui.layer
+    ,admin = layui.admin
+    ,form = layui.form;
+
+    $('#upphone').on('click',function(){
+      //示范一个公告层
+      layer.open({
+        type: 1
+        ,title: false //不显示标题栏
+        ,closeBtn: false
+        ,area: '330px;'
+        ,shade: 0.3
+        ,shadeClose: true
+        ,id: 'LAY_layuipros' //设定一个id，防止重复弹出
+        ,btn: ['确定修改', '取消']
+        ,btnAlign: 'c'
+        ,moveType: 1 //拖拽模式，0或者1
+        ,content: $("#phone")
+        ,success: function(layero){
+          var btn = layero.find('.layui-layer-btn');
+          btn.find('.layui-layer-btn0').on('click', function(){
+            $.post("{:url('editPhone')}", {'phone': $("#LAY-user-login-cellphone").val(), 'vercode': $("#LAY-user-code").val(), 'id': "{$user.id}"}, function(res){
+              if(res.code == 0 ){
+                //登入成功的提示与跳转
+                layer.msg(res.msg, {
+                  offset: '15px'
+                  ,icon: 1
+                  ,time: 1000
+                }, function(){
+                  //刷新当前
+                  location.reload()
+
+                });
+              } else {
+                //登入成功的提示与跳转
+                layer.msg(res.msg, {
+                  offset: '15px'
+                  ,icon: 5
+                  ,time: 1000
+                });
+              }
+            })
+          });
+          
+        }
+      });
+    })
+    //监听提交
+    form.on('submit(setmyinfo)', function(data){
+      console.log(data);
+      //请求登入接口
+      admin.req({
+        url: "{:url('info')}" //实际使用请改成服务端真实接口
+        ,type: 'post'
+        ,data: data.field
+        ,success: function(res) {
+          if(res.code == 1 ){
+            //登入成功的提示与跳转
+            layer.msg(res.msg, {
+              offset: '15px'
+              ,icon: 1
+              ,time: 1000
+            }, function(){
+              //刷新当前
+              location.reload()
+
+            });
+          }
+        }
+        ,error: function(res) {
+          layer.msg('系统繁忙，请稍后再试', {
+            offset: '15px'
+            ,icon: 5
+            ,time: 1000
+          });
+        }
+        ,done: function(res){
+          
+        }
+      });
+    });
+  });
+  </script>

@@ -47,16 +47,8 @@ layui.define('form', function(exports){
     ,elemPhone: '#LAY-user-login-cellphone'
     ,elemVercode: '#LAY-user-login-vercode'
     ,ajax: {
-      url: "/index/User/sms",
-      success: function(res) {
-        if (res.code === 1) {
-          layer.msg('发送失败', {
-            icon: 5
-            ,shade: 0
-          });
-        }
-      }
-    },
+      url: layui.setter.base + 'json/user/sms.js' //实际使用请改成服务端真实接口
+    }
   });
   
   

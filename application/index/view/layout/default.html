@@ -2,7 +2,6 @@
 <html>
     <head>
         {include file="common/meta" /}
-        <link href="__CDN__/assets/css/user.css?v={$Think.config.site.version}" rel="stylesheet">
 		<style>
 			body{background-color: transparent;}
 		</style>
@@ -10,14 +9,11 @@
 	
     <body>
 
-
+        {include file="common/script" /}
+        
         <main class="content">
             {__CONTENT__}
         </main>
-
-        
-
-        {include file="common/script" /}
 
     </body>
 

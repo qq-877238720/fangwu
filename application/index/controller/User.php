@@ -68,7 +68,16 @@ class User extends Frontend
      */
     public function index()
     {
-        $this->view->assign('title', __('User center'));
+        $this->view->assign('title', __('管理中心'));
+        return $this->view->fetch();
+    }
+
+    /**
+     * dashbord
+     */
+    public function dashbord()
+    {
+        $this->view->assign('title', __('面板'));
         return $this->view->fetch();
     }
 
