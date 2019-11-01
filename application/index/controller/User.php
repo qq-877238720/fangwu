@@ -9,6 +9,7 @@ use think\Hook;
 use think\Session;
 use think\Validate;
 use app\common\library\Sms;
+use think\Db;
 
 /**
  * 会员中心
@@ -83,7 +84,7 @@ class User extends Frontend
 
     public function addYuanGong()
     {
-
+        $this->view->engine->layout('layout/layoutname');
         if ($this->request->isPost()) {
             $username = $this->request->post('username');
             $password = $this->request->post('password');
@@ -271,15 +272,37 @@ class User extends Frontend
      */
     public function profile()
     {
+        $this->view->engine->layout('layout/layoutname');
         $this->view->assign('title', __('Profile'));
+
+
+        $user = $this->auth->getUserInfo();
+        if(!$user){
+            $this->redirect('user/login');
+        }
+        if($this->request->isPost()){
+            $postArr = $this->request->post();
+            // var_dump($postArr);die;
+            $res = Db::table('ho_user')->where('id', $user['id'])->update($postArr);
+            if($res){
+                // session('user_info')['qyname'] = $postArr['qyname'];
+                return json(['code' => 1, 'msg' => '修改成功']);
+            }else{
+                return json(['code' => 481, 'msg' => '修改失败，请稍后再试']);
+            }
+        }
+        $useres = Db::table('ho_user')->where('id', $user['id'])->find();
+        $this->assign("user",$useres);
+
         return $this->view->fetch();
     }
 
-    /**
+    /**$this->view->engine->layout('layout/layoutname');
      * 修改密码
      */
     public function changepwd()
     {
+        $this->view->engine->layout('layout/layoutname');
         if ($this->request->isPost()) {
             $oldpassword = $this->request->post("oldpassword");
             $newpassword = $this->request->post("newpassword");
@@ -322,4 +345,17 @@ class User extends Frontend
         $this->view->assign('title', __('Change password'));
         return $this->view->fetch();
     }
+
+    /**
+     * 成员管理
+     */
+    public function userList()
+    {
+        $this->view->engine->layout('layout/layoutname');
+        
+        $this->view->assign('title', __('成员列表'));
+        return $this->view->fetch();
+    }
+
+    
 }

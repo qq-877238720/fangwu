@@ -1,5 +1,5 @@
-<link rel="stylesheet" href="__INDEX__/layuiadmin/layui/css/layui.css" media="all">
-<link rel="stylesheet" href="__INDEX__/layuiadmin/style/admin.css" media="all">
+<!-- <link rel="stylesheet" href="__INDEX__/layuiadmin/layui/css/layui.css" media="all">
+<link rel="stylesheet" href="__INDEX__/layuiadmin/style/admin.css" media="all"> -->
 
 <body>
 
@@ -86,6 +86,12 @@
       </div>
     </div>
   </div>
-
+    <script>
+    layui.config({
+      base: '__INDEX__/layuiadmin/' //静态资源所在路径
+    }).extend({
+      index: 'lib/index' //主入口模块
+    }).use(['index', 'set']);
+    </script>
 </body>
 </html>
