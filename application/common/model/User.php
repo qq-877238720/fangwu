@@ -20,6 +20,12 @@ class User extends Model
         'url',
     ];
 
+    public function company()
+    {
+        // '关联模型名','外键名','主键名'  User表的company_id 对应 UserCompany的id字段
+        return $this->hasOne('UserCompany', 'id', 'company_id');
+    }
+
     /**
      * 获取个人URL
      * @param   string $value

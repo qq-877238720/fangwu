@@ -121,6 +121,7 @@ class User extends Frontend
             }
         }
 
+        $this->view->engine->layout('layout/layoutname');
         $this->view->assign('title', __('Register'));
         return $this->view->fetch('addYuanGong');
     }
@@ -184,7 +185,7 @@ class User extends Frontend
 			Sms::flush($mobile, 'register');
 
             if ($this->auth->register($username, $password, $email, $mobile, [], $username)) {
-                $this->success(__('Sign up successful'), $url ? $url : url('user/index'));
+                $this->success(__('Sign up successful'), $url ? $url : url('index/index'));
             } else {
                 $this->error($this->auth->getError(), null, ['token' => $this->request->token()]);
             }
@@ -271,6 +272,21 @@ class User extends Frontend
      */
     public function profile()
     {
+        
+        if($this->request->isPost()){
+            $postArr = $this->request->post();
+            // var_dump($postArr);die;
+            $res = $this->auth->getUser()->where('id', $this->auth->id)->update($postArr);
+            if($res){
+                $this->success('修改成功');
+            }else{
+                $this->error('修改失败，请稍后再试');
+            }
+        }
+        // var_dump($useres['company']['company_name']);die;
+        // $useres = Db::table('users')->where('id', $user['id'])->find();
+        $this->assign("user", $this->auth->getUser());
+        $this->view->engine->layout(false);
         $this->view->assign('title', __('Profile'));
         return $this->view->fetch();
     }
@@ -319,6 +335,8 @@ class User extends Frontend
                 $this->error($this->auth->getError(), null, ['token' => $this->request->token()]);
             }
         }
+
+        $this->view->engine->layout('layout/layoutname');
         $this->view->assign('title', __('Change password'));
         return $this->view->fetch();
     }

@@ -210,7 +210,7 @@ class Auth
         $time = time();
 
         $data = [
-            'username' => $username,
+            'username' => '',
             'password' => $password,
             'email'    => $email,
             'mobile'   => $mobile,
