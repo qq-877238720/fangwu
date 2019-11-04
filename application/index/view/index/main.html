@@ -20,9 +20,6 @@
               <i class="layui-icon layui-icon-refresh-3"></i>
             </a>
           </li>
-          <li class="layui-nav-item layui-hide-xs" lay-unselect>
-            <input type="text" placeholder="搜索..." autocomplete="off" class="layui-input layui-input-search" layadmin-event="serach" lay-action="template/search.html?keywords="> 
-          </li>
         </ul>
         <ul class="layui-nav layui-layout-right" lay-filter="layadmin-layout-right">
           <li class="layui-nav-item layui-hide-xs" lay-unselect>
@@ -32,7 +29,7 @@
           </li>
           <li class="layui-nav-item" lay-unselect>
             <a href="javascript:;">
-              <cite>贤心</cite>
+              <cite>{$Think.cookie.username}({$Think.cookie.company_name})</cite>
             </a>
             <dl class="layui-nav-child">
               <dd><a lay-href="set/user/info.html">基本资料</a></dd>
@@ -58,7 +55,7 @@
           
           <ul class="layui-nav layui-nav-tree" lay-shrink="all" id="LAY-system-side-menu" lay-filter="layadmin-system-side-menu">
             
-            <li data-name="get" class="layui-nav-item layui-nav-itemed">
+            <li data-name="get" class="layui-nav-item layui-this">
               <a href="javascript:;" lay-href="home/console.html" lay-tips="控制台" lay-direction="2">
                 <i class="layui-icon layui-icon-auz"></i>
                 <cite>控制台</cite>
@@ -77,7 +74,7 @@
                   <a lay-href="{:url('index/user/changepwd')}">修改密码</a>
                 </dd>
                 <dd data-name="console">
-                  <a lay-href="home/homepage2.html">成员管理</a>
+                  <a lay-href="{:url('index/user/userList')}">成员管理</a>
                 </dd>
                 <dd data-name="console">
                   <a lay-href="{:url('index/user/addYuanGong')}">添加成员</a>
@@ -91,7 +88,7 @@
               </a>
               <dl class="layui-nav-child">
                 <dd data-name="nav">
-                  <a lay-href="component/nav/index.html">添加房源</a>
+                  <a lay-href="{:url('index/rent/addHouse')}">添加房源</a>
                 </dd>
                 <dd data-name="tabs">
                   <a lay-href="component/tabs/index.html">房源中心</a>
@@ -107,19 +104,19 @@
                 <dd data-name="console">
                   <a lay-href="{:url('index/system/housesetting')}">房源模板配置</a>
                 </dd>
-                <dd class="layui-nav-itemed">
+                <dd class="console">
                   <a lay-href="{:url('index/system/costtemplatesetting')}">房源费用模板配置</a>
                 </dd>
-                <dd class="layui-nav-itemed">
+                <dd class="console">
                   <a lay-href="{:url('index/system/listtemplatesetting')}">入住/结算清单模板配置</a>
                 </dd>
-                <dd class="layui-nav-itemed">
+                <dd class="console">
                   <a lay-href="{:url('index/system/tenantssetting')}">租客来源配置</a>
                 </dd>
-                <dd class="layui-nav-itemed">
+                <dd class="console">
                   <a lay-href="{:url('index/system/housestatesetting')}">房屋类型配置</a>
                 </dd>
-                <dd class="layui-nav-itemed">
+                <dd class="console">
                   <a lay-href="{:url('index/system/tenantssetting')}">付款周期配置</a>
                 </dd>
               </dl>

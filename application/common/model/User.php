@@ -18,6 +18,7 @@ class User extends Model
     // 追加属性
     protected $append = [
         'url',
+        'group',
     ];
 
     public function company()
@@ -51,6 +52,17 @@ class User extends Model
             $value = letter_avatar($data['nickname']);
         }
         return $value;
+    }
+
+    /**
+     * 加入时间
+     * @param   string $value
+     * @param   array  $data
+     * @return string
+     */
+    public function getCreatetimeAttr($value, $data)
+    {
+        return date('Y-m-d H:i:s');
     }
 
     /**

@@ -151,4 +151,35 @@ class Frontend extends Controller
         //刷新Token
         $this->request->token();
     }
+
+    /**
+     * 生成查询所需要的条件,排序方式
+     * @param mixed   $searchfields   快速查询的字段
+     * @param boolean $relationSearch 是否关联查询
+     * @return array
+     */
+    protected function buildparams($searchfields = null, $relationSearch = null)
+    {
+        // $searchfields = is_null($searchfields) ? $this->searchFields : $searchfields;
+        // $relationSearch = is_null($relationSearch) ? $this->relationSearch : $relationSearch;
+        // $offset = $this->request->get("offset", 0);
+        $limit = $this->request->get("limit", 0);
+
+        $data = $this->request->get();
+
+        // $offset = $data['offset'];
+        // unset($data['offset']);
+        $limit = $data['limit'];
+        unset($data['limit']);
+
+        foreach ($data as $key => $value) {
+            if (!empty($value)){
+                $map[$key] = ['like','%'.$value.'%'];
+            }
+        }
+
+        var_dump($map);
+        die;
+        return [$map, $offset, $limit];
+    }
 }

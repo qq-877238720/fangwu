@@ -9,6 +9,7 @@ use think\Hook;
 use think\Session;
 use think\Validate;
 use app\common\library\Sms;
+use think\Db;
 
 /**
  * 会员中心
@@ -33,18 +34,26 @@ class User extends Frontend
         Hook::add('user_login_successed', function ($user) use ($auth) {
             $expire = input('post.keeplogin') ? 30 * 86400 : 0;
             Cookie::set('uid', $user->id, $expire);
+            Cookie::set('username', $user->username, $expire);
+            Cookie::set('company_name', $user->company->company_name, $expire);
             Cookie::set('token', $auth->getToken(), $expire);
         });
         Hook::add('user_register_successed', function ($user) use ($auth) {
             Cookie::set('uid', $user->id);
+            Cookie::set('username', $user->username);
+            Cookie::set('company_name', $user->company->company_name);
             Cookie::set('token', $auth->getToken());
         });
         Hook::add('user_delete_successed', function ($user) use ($auth) {
             Cookie::delete('uid');
+            Cookie::delete('username');
+            Cookie::delete('company_name');
             Cookie::delete('token');
         });
         Hook::add('user_logout_successed', function ($user) use ($auth) {
             Cookie::delete('uid');
+            Cookie::delete('username');
+            Cookie::delete('company_name');
             Cookie::delete('token');
         });
     }
@@ -83,6 +92,7 @@ class User extends Frontend
 
     public function addYuanGong()
     {
+        $this->view->engine->layout('layout/layoutname');
 
         if ($this->request->isPost()) {
             $username = $this->request->post('username');
@@ -114,8 +124,10 @@ class User extends Frontend
                 $this->error(__($validate->getError()), null, ['token' => $this->request->token()]);
             }
 
-            if ($this->auth->addYuanGong($username, $password, $group_id, $mobile, [], $username)) {
-                $this->success(__('Sign up successful'), $url ? $url : url('user/index'));
+            $uesrData = $this->auth->getUserinfo();
+            
+            if ($this->auth->addYuanGong($username, $password, $group_id, $mobile, ['company_id' => $uesrData['company_id'], 'company_addr' => $uesrData['addr']])) {
+                $this->success(__('添加员工成功'));
             } else {
                 $this->error($this->auth->getError(), null, ['token' => $this->request->token()]);
             }
@@ -123,6 +135,7 @@ class User extends Frontend
 
         $this->view->engine->layout('layout/layoutname');
         $this->view->assign('title', __('Register'));
+        $this->view->assign('groupList', \app\admin\model\UserGroup::column('id,name'));
         return $this->view->fetch('addYuanGong');
     }
 
@@ -283,21 +296,21 @@ class User extends Frontend
                 $this->error('修改失败，请稍后再试');
             }
         }
-        // var_dump($useres['company']['company_name']);die;
-        // $useres = Db::table('users')->where('id', $user['id'])->find();
+
         $this->assign("user", $this->auth->getUser());
         $this->view->engine->layout(false);
         $this->view->assign('title', __('Profile'));
         return $this->view->fetch();
     }
 
-    /**
+    /**$this->view->engine->layout('layout/layoutname');
      * 修改密码
      */
     public function changepwd()
     {
+        $this->view->engine->layout('layout/layoutname');
         if ($this->request->isPost()) {
-            $oldpassword = $this->request->post("oldpassword");
+            $oldpassword = $this->request->post("oldPassword");
             $newpassword = $this->request->post("newpassword");
             $renewpassword = $this->request->post("renewpassword");
             $token = $this->request->post('__token__');
@@ -340,4 +353,58 @@ class User extends Frontend
         $this->view->assign('title', __('Change password'));
         return $this->view->fetch();
     }
+
+    /**
+     * 成员管理
+     */
+    public function userList()
+    {
+
+        $this->view->assign('groupList', \app\admin\model\UserGroup::column('id,name'));
+        if (empty($this->request->get('page'))) {
+
+            $this->view->engine->layout('layout/layoutname');
+            
+            $this->view->assign('title', __('成员列表'));
+            return $this->view->fetch();
+        }
+
+        $where = [];
+        $page = $this->request->get('page', 1);
+        $limit = $this->request->get('limit', 10);
+
+        if (!empty($this->request->get('username'))) {
+            $where['username'] = ['like','%'.$this->request->get('username').'%'];
+        }
+
+        if (!empty($this->request->get('mobile'))) {
+            $where['mobile'] = ['like','%'.$this->request->get('mobile').'%'];
+        }
+
+        if (!empty($this->request->get('email'))) {
+            $where['email'] = ['like','%'.$this->request->get('email').'%'];
+        }
+
+        if (!empty($this->request->get('group_id'))) {
+            $where['group_id'] = ['=', $this->request->get('group_id')];
+        }
+
+        $where['company_id'] = ['=', $this->auth->getUserinfo()['company_id']];
+
+        $total = $this->auth->getUser()
+            ->where($where)
+            ->count();
+        $list = $this->auth->getUser()
+            ->where($where)
+            ->select();
+
+        return json([
+            'code' => 0,
+            'count' => $total,
+            'data' => $list,
+            'msg' => ''
+        ]);
+    }
+
+    
 }

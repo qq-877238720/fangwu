@@ -1,5 +1,5 @@
-<link rel="stylesheet" href="__INDEX__/layuiadmin/layui/css/layui.css" media="all">
-<link rel="stylesheet" href="__INDEX__/layuiadmin/style/admin.css" media="all">
+<!-- <link rel="stylesheet" href="__INDEX__/layuiadmin/layui/css/layui.css" media="all">
+<link rel="stylesheet" href="__INDEX__/layuiadmin/style/admin.css" media="all"> -->
 
 <body>
 
@@ -7,43 +7,41 @@
     <div class="layui-row layui-col-space15">
       <div class="layui-col-md12">
         <div class="layui-card">
-          <div class="layui-card-header">设置我的资料</div>
+          <div class="layui-card-header">添加员工</div>
           <div class="layui-card-body" pad15>
             
             <div class="layui-form" lay-filter="">
               <div class="layui-form-item">
-                <label class="layui-form-label">我的角色</label>
+                <label class="layui-form-label">角色</label>
                 <div class="layui-input-inline">
-                  <select name="role" lay-verify="">
-                    <option value="1" selected>超级管理员</option>
-                    <option value="2" disabled>普通管理员</option>
-                    <option value="3" disabled>审核员</option>
-                    <option value="4" disabled>编辑人员</option>
+                  <select name="group_id" lay-verify="">
+                    {foreach name="groupList" item="vo"}
+                    <option value="{$key}">{$vo}</option>
+                    {/foreach}
                   </select> 
                 </div>
-                <div class="layui-form-mid layui-word-aux">当前角色不可更改为其它角色</div>
+                <div class="layui-form-mid layui-word-aux"></div>
+              </div>
+              <div class="layui-form-item">
+                <label class="layui-form-label">登陆手机号</label>
+                <div class="layui-input-inline">
+                  <input type="text" name="mobile" value="" lay-verify="phone" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-form-mid layui-word-aux">一般用于后台登入名</div>
               </div>
               <div class="layui-form-item">
                 <label class="layui-form-label">用户名</label>
                 <div class="layui-input-inline">
-                  <input type="text" name="username" value="xianxin" readonly class="layui-input">
+                  <input type="text" name="username" value="" lay-verify="username" autocomplete="off" placeholder="请输入昵称" class="layui-input">
                 </div>
-                <div class="layui-form-mid layui-word-aux">不可修改。一般用于后台登入名</div>
               </div>
               <div class="layui-form-item">
-                <label class="layui-form-label">昵称</label>
+                <label class="layui-form-label">登陆密码</label>
                 <div class="layui-input-inline">
-                  <input type="text" name="nickname" value="贤心" lay-verify="nickname" autocomplete="off" placeholder="请输入昵称" class="layui-input">
+                  <input type="password" name="password" value="" data-rule="required;password" autocomplete="off" placeholder="请输入密码" class="layui-input">
                 </div>
               </div>
-              <div class="layui-form-item">
-                <label class="layui-form-label">性别</label>
-                <div class="layui-input-block">
-                  <input type="radio" name="sex" value="男" title="男">
-                  <input type="radio" name="sex" value="女" title="女" checked>
-                </div>
-              </div>
-              <div class="layui-form-item">
+              <!-- <div class="layui-form-item">
                 <label class="layui-form-label">头像</label>
                 <div class="layui-input-inline">
                   <input name="avatar" lay-verify="required" id="LAY_avatarSrc" placeholder="图片地址" value="http://cdn.layui.com/avatar/168.jpg" class="layui-input">
@@ -54,25 +52,20 @@
                   </button>
                   <button class="layui-btn layui-btn-primary" layadmin-event="avartatPreview">查看图片</button >
                 </div>
-             </div>
-              <div class="layui-form-item">
-                <label class="layui-form-label">手机</label>
-                <div class="layui-input-inline">
-                  <input type="text" name="cellphone" value="" lay-verify="phone" autocomplete="off" class="layui-input">
-                </div>
-              </div>
+             </div> -->
               <div class="layui-form-item">
                 <label class="layui-form-label">邮箱</label>
                 <div class="layui-input-inline">
-                  <input type="text" name="email" value="" lay-verify="email" autocomplete="off" class="layui-input">
+                  <input type="text" name="email" value="" autocomplete="off" class="layui-input">
                 </div>
+                <div class="layui-form-mid layui-word-aux">可选</div>
               </div>
-              <div class="layui-form-item layui-form-text">
+              <!-- <div class="layui-form-item layui-form-text">
                 <label class="layui-form-label">备注</label>
                 <div class="layui-input-block">
                   <textarea name="remarks" placeholder="请输入内容" class="layui-textarea"></textarea>
                 </div>
-              </div>
+              </div> -->
               <div class="layui-form-item">
                 <div class="layui-input-block">
                   <button class="layui-btn" lay-submit lay-filter="setmyinfo">确认修改</button>
@@ -86,6 +79,58 @@
       </div>
     </div>
   </div>
+    <script>
+    layui.config({
+      base: '__INDEX__/layuiadmin/' //静态资源所在路径
+    }).extend({
+      index: 'lib/index' //主入口模块
+    }).use(['index', 'set', 'form'], function() {
+      var $ = layui.$
+      , layer = layui.layer
+      ,admin = layui.admin
+      ,form = layui.form;
+      //监听提交
+      form.on('submit(setmyinfo)', function(data){
+        //请求登入接口
+        $.ajax({
+          url: "{:url('addYuanGong')}" //实际使用请改成服务端真实接口
+          ,type: 'post'
+          ,data: data.field
+          ,success: function(res) {
+            if(res.code == 1 ){
+              //登入成功的提示与跳转
+              layer.msg(res.msg, {
+                offset: '15px'
+                ,icon: 1
+                ,time: 1000
+              }, function(){
+                //刷新当前
+                location.href = "{:url('index/user/addYuanGong')}";
 
+              });
+            }else{
+              layer.msg(res.msg, {
+                offset: '15px'
+                ,icon: 5
+                ,time: 1000
+              }, function(){
+                //刷新当前
+              });
+            }
+          }
+          ,error: function(res) {
+            layer.msg('系统繁忙，请稍后再试', {
+              offset: '15px'
+              ,icon: 5
+              ,time: 1000
+            });
+          }
+          ,done: function(res){
+            
+          }
+        });
+      });
+    });
+    </script>
 </body>
 </html>

@@ -27,7 +27,7 @@ class Auth
     //默认配置
     protected $config = [];
     protected $options = [];
-    protected $allowFields = ['id', 'username', 'nickname', 'mobile', 'avatar', 'score'];
+    protected $allowFields = ['id', 'username', 'nickname', 'mobile', 'avatar', 'score', 'group', 'company_id', 'addr'];
 
     public function __construct($options = [])
     {
@@ -125,7 +125,7 @@ class Auth
      * @param string $company  公司名
      * @return boolean
      */
-    public function addYuanGong($username, $password, $group_id, $mobile = '', $extend = [], $company = '')
+    public function addYuanGong($username, $password, $group_id, $mobile = '', $extend = [])
     {
         // 检测用户名或邮箱、手机号是否存在
         if (User::getByUsername($username)) {
@@ -210,7 +210,7 @@ class Auth
         $time = time();
 
         $data = [
-            'username' => '',
+            'username' => $username,
             'password' => $password,
             'email'    => $email,
             'mobile'   => $mobile,
@@ -236,7 +236,6 @@ class Auth
         try {
             $user = User::create($params, true);
 
-            $this->_user = User::get($user->id);
             // 添加用户公司表数据
             $userCompany = UserCompany::create([
                 'company_name' => $company,
@@ -247,6 +246,8 @@ class Auth
                 'is_company' => 1,
                 'company_id' => $userCompany->id
             ]);
+
+            $this->_user = User::get($user->id);
 
             //设置Token
             $this->_token = Random::uuid();
