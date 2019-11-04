@@ -26,8 +26,47 @@ class Rent extends Frontend
      */
     public function addHouse()
     {
+
         $this->view->assign('title', __('添加房源'));
 
+        if ($this->request->isPost()) {
+            $houstData = $this->request->post();
+            $roomData = $houstData['room'];
+
+            $isxiaoqu = Db::table('house_lists')->where('xiaoquID',$houstData['xiaoquID'])->where('dong',$houstData['dong'])->where('danyuan',$houstData['danyuan'])->where('ceng',$houstData['ceng'])->find();
+            if($isxiaoqu){
+
+                return $this->error('添加失败，已存在该房源！请检查。');
+            }
+
+            $uuid = "HE".date("YmdHis",time()).mt_rand(10000,99999);
+
+            $house_state = Db::table('house_lists')->insert([
+                'uuid'  => $uuid, // 房屋唯一编号
+                'xiaoquID' => $houstData['xiaoquID'],
+                'xiangmuID' => $houstData['xiangmuID'],
+                'cyfs' => $houstData['cyfs'],   // 持有方式
+                'chuzutype' => $houstData['clas'],   // 出租方式
+                'dong'  => $houstData['dong'],
+                'danyuan'  => $houstData['danyuan'],
+                'ceng'  => $houstData['ceng'],
+                'mianji'  => $houstData['mianji'],
+                'fangwutype'  => $houstData['fangwutype'],
+                'beizhu'  => $houstData['beizhu'],
+                'user_id'  => USER_ID,
+            ]);
+
+            $roomListData = [];
+
+            foreach ($roomData as $key => $value) {
+                $value['uuid'] = $uuid;
+                array_push($roomListData, $value);
+            }
+
+            $room_state = Db::table('room_lists')->insertAll($roomListData);
+
+            return $this->success('添加成功');
+        }
 
         $res = Db::table('fees_config')->field('id, modelName')->where('uid', USER_ID)->select();
         $xiaoqu = Db::table('ho_community_lists')->field('id,communityName')->where('uid',USER_ID)->select();

@@ -26,7 +26,7 @@
                                 <div class="layui-form-item">
                                     <label class="layui-form-label">选择小区</label>
                                     <div class="layui-input-block">
-                                        <select name="xiaomuID" lay-verify="required" lay-search="">
+                                        <select name="xiaoquID" lay-verify="required" lay-search="">
                                         <option value="">直接选择或搜索选择小区</option>
                                         <!-- <option value="1">layer</option>
                                         <option value="2">form</option> -->
@@ -82,11 +82,10 @@
                                     <div class="layui-input-block">
                                         {foreach $house_state as $key=>$vo } 
                                             {if condition="$key == 0"} 
-                                            <input type="radio" name="fangwutypeID" value="{$vo.keys}" title="{$vo.keys}" checked="">
+                                            <input type="radio" name="fangwutype" value="{$vo.keys}" title="{$vo.keys}" checked="">
                                             {else/} 
-                                            <input type="radio" name="fangwutypeID" value="{$vo.keys}" title="{$vo.keys}">
+                                            <input type="radio" name="fangwutype" value="{$vo.keys}" title="{$vo.keys}">
                                             {/if} 
-                                        
                                         {/foreach} 
                                     </div>
 
@@ -149,7 +148,7 @@
                           </div>
                       </div>
                     </div>
-                    <div class="layui-col-md6" style="padding: 7.5px;display: none;">
+                    <!-- <div class="layui-col-md6" style="padding: 7.5px;display: none;">
                       <div class="layui-card">
                           <div class="layui-card-header">租客信息</div>
                           <div class="layui-card-body layui-row layui-col-space10"> 
@@ -224,15 +223,11 @@
                                             <input type="hidden" name="chengzhuren_zhengmian" id="chengzhuren_zhengmian" value="">
                                             <input type="hidden" name="chengzhuren_fanmian" id="chengzhuren_fanmian" value="">
                                           <div class="layui-upload">
-                                            <!-- <button type="button" class="layui-btn" id="test-upload-normal">上传图片</button> -->
                                             <div class="layui-upload-drag" id="test-upload-normal1">
                                                 
                                               <img class="zhengmm" src="__CDN__/assets/img/zhengm.png" style="width:90px;height:100px;">
                                             </div>
-                                            <!-- <div class="layui-upload-drag" id="test-upload-normal2">
-                                              
-                                              <img class="fanmm" src="__CDN__/assets/img/fanm.png" style="width:90px;height:100px;">
-                                            </div> -->
+                                            
                                             <div class="layui-upload-drag" style="border: none;">
                                               <p>或者</p>
                                             </div>
@@ -308,20 +303,7 @@
                                         <input type="text" class="layui-input" id="test-laydate-format-range2" placeholder="开始 到 结束">
                                       </div>
                                     </div>
-                                    <!-- <label class="layui-form-label">租赁时间</label> -->
-                                    <!-- <div class="layui-input-inline" style="margin-right: -1px;">
-                                        <input type="text" name="startimes" class="layui-input test-laydate-range-date-star" lay-verify="required" id="test-laydate-range-date-star" placeholder=" 开始时间 ">
-                                    </div>
-                                    <div class="layui-form-mid layui-word-aux test-laydate-range-date-star" style="border:1px solid #e6e6e6;padding: 7.5px 7.5px!important;background: #eee;">
-                                        <i class="layui-icon layui-icon-date" style="color: red;font-weight: bold;"></i>
-                                    </div>
-                                        <div class="layui-form-mid layui-word-aux">到</div>
-                                    <div class="layui-input-inline" style="margin-right: -1px;">
-                                        <input type="text" name="endtimes" class="layui-input test-laydate-range-date-end" lay-verify="required" id="test-laydate-range-date-end" placeholder=" 结束时间 ">
-                                    </div>
-                                    <div class="layui-form-mid layui-word-aux test-laydate-range-date-end cd1" style="border:1px solid #e6e6e6;padding: 7.5px 7.5px!important;background: #eee;">
-                                        <i class="layui-icon layui-icon-date" style="color: red;font-weight: bold;"></i>
-                                    </div> -->
+                                   
                                 </div>
                                 <div class="layui-form-item paymentway" pane="">
                                     <label class="layui-form-label">付款周期</label>
@@ -350,11 +332,10 @@
                                         <textarea placeholder="请输入备注内容" class="layui-textarea" name="userbeizhu"></textarea>
                                     </div>
                                 </div>
-                                <!-- =============================================附加信息 END======================= -->
                               </div>
                           </div>
                       </div>
-                    </div>
+                    </div> -->
                     <div class="layui-col-md12" style="padding: 7.5px;">
                       <div class="layui-card">
                         <div class="layui-card-body layui-row layui-col-space10" style="text-align: center;"> 
@@ -376,7 +357,8 @@
                 var laydate = layui.laydate;
                 var $ = layui.$
                 , layer = layui.layer
-                ,upload = layui.upload;
+                ,upload = layui.upload
+                ,form = layui.form;
                 // element.render();
                 
                 // 租赁时间区间选择 -------- start
@@ -464,8 +446,40 @@
               form.on('submit(subs)', function(data){
                 // $('#subs').attr('disabled','disabled');
                 var form = $("#form").serializeArray();
-                console.log(form)
 
+                $.post({
+                    url: '{:url("addHouse")}',
+                    data: form
+                    ,success: function(res) {
+                        if(res.code == 1 ){
+                          //登入成功的提示与跳转
+                          layer.msg(res.msg, {
+                            offset: '15px'
+                            ,icon: 1
+                            ,time: 1000
+                          }, function(){
+                            //刷新当前
+                            location.href = "{:url('index/Rent/addHouse')}";
+
+                          });
+                        }else{
+                          layer.msg(res.msg, {
+                            offset: '15px'
+                            ,icon: 5
+                            ,time: 1000
+                          }, function(){
+                            //刷新当前
+                          });
+                        }
+                    }
+                    ,error: function(res) {
+                        layer.msg('系统繁忙，请稍后再试', {
+                          offset: '15px'
+                          ,icon: 5
+                          ,time: 1000
+                        });
+                    }
+                });
                 
                 // return false;
               }); 
