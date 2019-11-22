@@ -45,7 +45,7 @@
         <div style="padding-bottom: 10px;">
         </div>
         
-        <table id="LAY-user-back-manage" lay-filter=""></table>  
+        <table id="LAY-user-back-manage" lay-filter="users"></table>  
         <script type="text/html" id="buttonTpl">
           {{#  if(d.check == true){ }}
             <button class="layui-btn layui-btn-xs">已审核</button>
@@ -54,11 +54,16 @@
           {{#  } }}
         </script>
         <script type="text/html" id="table-useradmin-admin">
-          <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
           {{#  if(d.role == '超级管理员'){ }}
             <a class="layui-btn layui-btn-disabled layui-btn-xs"><i class="layui-icon layui-icon-delete"></i>删除</a>
           {{#  } else { }}
             <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i>删除</a>
+          {{#  } }}
+
+          {{#  if(d.role == '超级管理员'){ }}
+            <a class="layui-btn layui-btn-disabled layui-btn-xs"><i class="layui-icon layui-icon-close-fill"></i>禁用</a>
+          {{#  } else { }}
+            <a class="layui-btn layui-btn-waring layui-btn-xs" lay-event="waring"><i class="layui-icon layui-icon-close-fill"></i>禁用</a>
           {{#  } }}
         </script>
       </div>
@@ -101,63 +106,58 @@
       });
     });
   
-    //事件
-    var active = {
-      batchdel: function(){
-        var checkStatus = table.checkStatus('LAY-user-back-manage')
-        ,checkData = checkStatus.data; //得到选中的数据
+    //监听工具条
+    table.on('tool(users)', function(obj){
+      var data = obj.data;
+      console.log(obj)
+      if(obj.event === 'del'){
+        layer.confirm('真的删除行么', function(index){
+          $.post({
+              url: '后台删除接口',
+              data: {
+                id: data.id,
+              }
+              ,success: function(res) {
+                  if(res.code == 1 ){
 
-        if(checkData.length === 0){
-          return layer.msg('请选择数据');
-        }
-        
-        layer.prompt({
-          formType: 1
-          ,title: '敏感操作，请验证口令'
-        }, function(value, index){
-          layer.close(index);
-          
-          layer.confirm('确定删除吗？', function(index) {
-            
-            //执行 Ajax 后重载
-            /*
-            admin.req({
-              url: 'xxx'
-              //,……
-            });
-            */
-            table.reload('LAY-user-back-manage');
-            layer.msg('已删除');
+                  }
+              }
+              ,error: function(res) {
+                  layer.msg('系统繁忙，请稍后再试', {
+                    offset: '15px'
+                    ,icon: 5
+                    ,time: 1000
+                  });
+              }
           });
-        }); 
-      }
-      ,add: function(){
-        layer.open({
-          type: 2
-          ,title: '添加管理员'
-          ,content: 'adminform.html'
-          ,area: ['420px', '420px']
-          ,btn: ['确定', '取消']
-          ,yes: function(index, layero){
-            var iframeWindow = window['layui-layer-iframe'+ index]
-            ,submitID = 'LAY-user-back-submit'
-            ,submit = layero.find('iframe').contents().find('#'+ submitID);
 
-            //监听提交
-            iframeWindow.layui.form.on('submit('+ submitID +')', function(data){
-              var field = data.field; //获取提交的字段
-              
-              //提交 Ajax 成功后，静态更新表格中的数据
-              //$.ajax({});
-              table.reload('LAY-user-front-submit'); //数据刷新
-              layer.close(index); //关闭弹层
-            });  
-            
-            submit.trigger('click');
-          }
-        }); 
+          //页面模拟逻辑索引删除  （不用刷新页面）
+          obj.del();
+          layer.close(index);
+        });
+      } else if(obj.event === 'waring'){
+        layer.confirm('是否禁用该账号', function(index){
+          $.post({
+              url: '后台删除接口',
+              data: {
+                id: data.id,
+              }
+              ,success: function(res) {
+                  if(res.code == 1 ){
+
+                  }
+              }
+              ,error: function(res) {
+                  layer.msg('系统繁忙，请稍后再试', {
+                    offset: '15px'
+                    ,icon: 5
+                    ,time: 1000
+                  });
+              }
+          });
+        });
       }
-    }  
+    });
     $('.layui-btn.layuiadmin-btn-admin').on('click', function(){
       var type = $(this).data('type');
       active[type] ? active[type].call(this) : '';

@@ -91,7 +91,7 @@
                   <a lay-href="{:url('index/rent/addHouse')}">添加房源</a>
                 </dd>
                 <dd data-name="tabs">
-                  <a lay-href="component/tabs/index.html">房源中心</a>
+                  <a lay-href="{:url('index/house/center')}">房源中心</a>
                 </dd>
               </dl>
             </li>
@@ -116,9 +116,9 @@
                 <dd class="console">
                   <a lay-href="{:url('index/system/housestatesetting')}">房屋类型配置</a>
                 </dd>
-                <dd class="console">
+                <!-- <dd class="console">
                   <a lay-href="{:url('index/system/tenantssetting')}">付款周期配置</a>
-                </dd>
+                </dd> -->
               </dl>
             </li>
 
@@ -128,9 +128,9 @@
                 <cite>财务管理</cite>
               </a>
               <dl class="layui-nav-child">
-                <dd><a lay-href="template/personalpage.html">账单查看</a></dd>
-                <dd><a lay-href="template/addresslist.html">流水记账</a></dd>
-                <dd><a lay-href="template/caller.html">账目核销</a></dd>
+                <dd><a lay-href="{:url('index/finance/zhangdan')}">账单查看</a></dd>
+                <dd><a lay-href="{:url('index/finance/liushui')}">流水记账</a></dd>
+                <dd><a lay-href="{:url('index/finance/hexiao')}">账目核销</a></dd>
               </dl>
             </li>
           </ul>
