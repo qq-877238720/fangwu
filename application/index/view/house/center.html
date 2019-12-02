@@ -1,0 +1,354 @@
+<style type="text/css">
+	blockquote#left-header{border-width: 1px 1px 1px 60px;position: relative;}
+	blockquote#left-header .header-name{position: absolute;left: -60px;width: 60px;text-align: center;height:160px;overflow: hidden; }
+	blockquote#left-header .header-name p{ margin: 10px 14px; }
+	blockquote#left-header .layui-row .layui-card{height: 160px;width: 110px;margin-right: 40px;float: left;margin-bottom: 13px;}
+	div#detailCard{background-color: #73a6fb;height: 150px;width: 100%;padding: 5px 10px;color: white;}
+	div#detailCard div.free{height: 30px;line-height: 24px;color: #9a9ca6;background-color: #fff;position: absolute;left: 0;bottom: 0;width: 122px;border: 1px solid #e5e7f0;padding: 0 3px;}
+	
+	div#detailCard div.status{line-height: 50px;width: 100%;}
+	div#detailCard div.status i{box-sizing: border-box;font-style: normal;font-size: 14px;background-color: rgb(12, 198, 100);display: block;width: 30px;height: 30px;line-height: 30px;border-radius: 5px;text-align: center;margin-top: 35px;}
+	div#detailCard div.status0{line-height: 50px;width: 100%;}
+	div#detailCard div.status0 i{box-sizing: border-box;font-style: normal;font-size: 14px;background-color: #73a6fb/*rgb(12, 198, 100)*/;display: block;width: 30px;height: 30px;line-height: 30px;border-radius: 5px;text-align: center;margin-top: 35px;}
+	/* 未租 */
+	div#detailCard.kong{background-color: rgb(63, 214, 161);}
+	div#detailCard.kong .status0 i{background-color: rgb(12, 198, 100)}
+
+	/* 欠费 */
+	div#detailCard.owe{background-color: rgb(246, 191, 116);}
+	div#detailCard.owe .status0 i{background-color: rgb(254, 107, 115)}
+
+	/* 装修 */
+	div#detailCard.zhuangxiu{background-color: rgb(168, 152, 181);}
+	div#detailCard.zhuangxiu .status0 i{background-color: rgb(12, 198, 100)}
+
+	/* 预定 */
+	div#detailCard.yuding{background-color: rgb(152, 189, 93);}
+	div#detailCard.yuding .status0 i{background-color: rgb(107, 179, 254)}
+
+	.detail{ position: relative; }
+
+	.pointers{cursor: pointer;}
+	table {color: #666}
+	table tbody tr {border-bottom: 1px solid #ccc;height: 36px;line-height: 36px;}
+	table tbody tr td{padding-left: 15px;font-weight: 400;background: #fff;}
+	table tbody tr td:nth-child(2){padding-left: 15px;font-weight: 400;vertical-align: top;background: #eaedf5;text-align: center;padding: 0 10px;font-size: 14px;}
+</style>
+<body>
+
+<div class="layui-fluid">
+	<div class="layui-col-md12">
+	    <div class="layui-card">
+	        <div class="layui-card-body ">
+	            <blockquote class="layui-elem-quote">欢迎管理员：
+	                <span class="x-red">{$Think.session.user_info.qyname}</span>！当前时间:{$now}
+	            </blockquote>
+	        </div>
+	    </div>
+	</div>
+	<div class="layui-row layui-col-space15">
+	  <div class="layui-col-md12">
+	    <div class="layui-card">
+	      <div class="layui-card-header">搜索</div>
+	      <div class="layui-card-body layui-form layuiadmin-card-header-auto" lay-filter="example">
+	        <div class="layui-form-item">
+	          <div class="layui-inline">
+	            <label class="layui-form-label">房屋状态：</label>
+	            <input type="radio" name="roomState" value="空置" title="空置" lay-filter="clik"><div class="layui-unselect layui-form-radio"><div>空置</div></div>
+              	<input type="radio" name="roomState" value="欠费" title="欠费" lay-filter="clik"><div class="layui-unselect layui-form-radio layui-form-radioed"><div>欠费</div></div>
+              	<input type="radio" name="roomState" value="装修" title="装修" lay-filter="clik"><div class="layui-unselect layui-form-radio layui-form-radioed"><div>装修</div></div>
+              	<input type="radio" name="roomState" value="预定" title="预定" lay-filter="clik"><div class="layui-unselect layui-form-radio layui-form-radioed"><div>预定</div></div>
+	          </div>
+	          <div class="layui-inline">
+	            <label class="layui-form-label">小区名字：</label>
+	            <div class="layui-input-block">
+	              <select name="communityId" lay-filter="changeCommunity">
+	                <option value="0">不限</option>
+	                {foreach $communityLists as $key=>$vo } 
+	                    <option value="{$vo.id}" {eq name="$communityId"  value="$vo.id" } selected="" {/eq}>{$vo.communityName}</option>
+	                {/foreach} 
+	              </select>
+	            </div>
+	          </div>
+	          <div class="layui-inline">
+	            <label class="layui-form-label">房屋类型：</label>
+	            <div class="layui-input-block">
+	              <select name="roomType" lay-filter="changeHouseState">
+	                <option value="0">不限</option>
+	                {foreach $houseStateLists as $key=>$vo } 
+	                    <option value="{$vo.keys}" {eq name="$roomType"  value="$vo.keys" } selected="" {/eq}>{$vo.keys}</option>
+	                {/foreach}
+	              </select>
+	            </div>
+	          </div>
+	          <div class="layui-inline">
+	            <!-- <button class="layui-btn layuiadmin-btn-useradmin" lay-submit="" lay-filter="LAY-user-front-search">
+	              <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+	            </button> -->
+	            <button class="layui-btn layuiadmin-btn-useradmin" lay-submit="" lay-filter="LAY-user-front-reset">
+	             	重置
+	            </button>
+	          </div>
+	       	</div>
+	      </div>
+	    </div>
+	  </div>
+	  <div class="layui-row layui-col-space15">
+		  {volist name="info" id='value'}
+		  <div class="layui-col-md12">
+		    <div class="layui-card">
+		      <div class="layui-card-header">{$value.name}</div>
+		      <div class="layui-card-body">
+		      	<!-- <blockquote class="layui-elem-quote layui-quote-nm" id="left-header" onclick="">
+		            <div class="header-name">
+		            	<p>13栋
+			          		<br>
+			          		3间</p>
+		            </div>
+		            <div class="layui-row">
+		            	
+		              	<div class="layui-card pointers" style="">
+				          <div class="layui-card-body detail" id="detailCard" style="">
+				          	<p>3室2厅2卫</p>
+				            <p>房号:301</p>
+				            <div class="status0" style="">
+				            	<i></i>
+				            </div>
+				            <div class="free">
+				            	$3500
+				            </div>
+				          </div>
+				        </div>
+				        <div class="layui-card pointers">
+				          <div class="layui-card-body kong detail" id="detailCard">
+				          	<p>1室1厅1卫</p>
+				            <p>房号:302房</p>
+				            <div class="status" style="">
+				            	<i>空</i>
+				            </div>
+				            <div class="free">
+				            	$800
+				            </div>
+				          </div>
+				        </div>
+
+				        <div class="layui-card pointers">
+				          <div class="layui-card-body owe detail" id="detailCard">
+				          	<p>2室1厅1卫</p>
+				            <p>房号:303房</p>
+				            <div class="status0" style="">
+				            	<i>欠</i>
+				            </div>
+				            <div class="free">
+				            	$1700
+				            </div>
+				          </div>
+				        </div>
+		            </div>
+		        </blockquote> -->
+		        {volist name="$value['info']" id='vo'}
+		        <blockquote class="layui-elem-quote layui-quote-nm" id="left-header" onclick="">
+		            <div class="header-name">
+		          		<p>{$key}栋</p>
+		          		<p>{$vo | count}间</p>
+		            </div>
+		            <div class="layui-row">
+		            	{volist name="$vo" id='v'}
+		              	<div class="layui-card  pointers">
+				          <div class="layui-card-body detail
+				            {switch name='$v.roomState'}
+				            {case value='空置'}kong{/case}
+				            {case value='装修'}zhuangxiu{/case}
+				            {default /}
+				            	{eq name='$v.roomState' value='预定'} 
+				            		 yuding
+				            	{else/} 
+				            		{eq name='$v.qianfei_state' value='1'} owe {/eq}
+				            	{/eq}
+				            {/switch}
+				          " 
+				          id="detailCard" 
+				          data-id="{$v.uuid}" style=""
+				          >
+				          	<p>{$v.floorNumber}栋{empty name="$v.unitNumber"} {else /} {$v.unitNumber}单元 {/empty}</p>
+				            <p>房号:{$v.roomNumber} {$v.roomType}</p>
+							{notempty name="$v.diff"}
+							{eq name='$v.qianfei_state' value='1'}<p style="position: absolute;font-size: 12px;">已欠费<span style="color:red;"> {$v.diff | abs}</span> 天</p> {else /} <p style="position: absolute;font-size: 12px;">离下次缴费还有<span style="color:red;"> {$v.diff | abs}</span> 天</p> {/eq}
+							{/notempty}
+				            <div class="
+				            
+				            {eq name='$v.roomState' value='空置'} status {else /} status0 {/eq}
+				            ">
+				            <i>
+				            {switch name='$v.roomState'}
+				            {case value='空置'}空{/case}
+				            {case value='装修'}装{/case}
+				            {default /}
+				            	{eq name='$v.roomState' value='预定'} 
+				            		预 
+				            	{else/} 
+				            		{eq name='$v.qianfei_state' value='1'} 欠 {/eq}
+				            	{/eq}
+				            {/switch}
+				        	</i>
+				            </div>
+				            <div class="free">
+				            	￥{$v.money}
+				            </div>
+				          </div>
+				        </div>
+				        {/volist}
+		            </div>
+		        </blockquote>
+		        {/volist}
+		      </div>
+		    </div>
+		  </div>
+		  {/volist}
+	  </div>
+	</div>
+</div>
+
+
+<style type="text/css">
+	.layui-layer-tips .layui-layer-content{background-color:#fff;color: #333;padding: 0px; }
+	.layui-layer-tips i.layui-layer-TipsR{transform: rotate(-90deg);left: -16px;border-bottom-color:#fff;}
+	.layui-layer-tips{bottom: 0;}
+</style>
+<script src="__INDEX__/layuiadmin/layui/layui.js"></script>  
+  <script>
+	var $form;
+	var form;
+	var $;
+	layui.config({
+	  base: '__INDEX__/layuiadmin/' //静态资源所在路径
+	}).extend({
+	  index: 'lib/index' //主入口模块
+	}).use(['index', 'form'], function() {
+		$ = layui.jquery;
+	    form = layui.form;
+	    $form = $('form');
+	    var layer = layui.layer;
+	    
+	    $('.detail').on('click', function(){
+	    	$this = $(this);
+	    	var uuid = $this.attr('data-id');
+	    	var Yw = $this.offset().left;
+          	var Yh = $this.offset().top;
+          	var width = "330";
+          	var height = "483";
+          	var winWidth = $(window).width();
+          	var winHeight = $(window).height();
+          	if((winWidth - Yw -150) < width){
+          		if(Yw - 350 > 10){
+          			var lefts = parseInt(Yw - 350);
+          		}else{
+          			var lefts = Yw - 110;
+          		}
+          		
+          	}else{
+          		var lefts = Yw + 150;
+          	}
+          	tops = $this.offset().top -300;
+	    	//示范一个公告层
+		    var layerIfreames = layer.open({
+		        type: 2
+		        ,title: false //不显示标题栏
+		        ,closeBtn: false
+		        ,fixed: false    //取消固定定位，因为固定定位是相对body的
+		        // ,scrollbar: false
+		        ,shadeClose: true
+				,shade:0.001
+            	,offset: ['unset', lefts+'px']   //相对定位
+		        ,area: ['360px','415px']
+		        ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
+		        ,content: ["{:url('detail')}?uuid="+uuid, 'no']
+		        ,success: function(layero,index){
+		        	layer.iframeAuto(index);
+		        	var body = layer.getChildFrame('body', index);
+		        	var h = body.height();
+		        	// console.log(h)
+		        	layero.css("height",h+"px")
+		        	// return false;
+		          	// $this.css("position","relative").append(layero);return;   //如果该父级原来没有设置相对定位，那么在追加该弹层之前需要设置
+		          	/*var Yw = $this.offset().left;
+		          	var Yh = $this.offset().top;
+		          	var width = layero.width();
+		          	var height = layero.height();
+		          	var winWidth = $(window).width();
+		          	var winHeight = $(window).height();
+		          	console.log(winHeight)
+		          	console.log(Yh)
+					console.log(height)
+
+		          	if((winWidth - Yw - 150) < width){
+		          		var lefts = "-"+parseInt(width+30);
+		          	}else{
+		          		var lefts = "140";
+		          	}
+
+		          	if((Yh) < height){
+		          		var tops = "-256";
+		          	}else{
+
+		          		var tops = "-400";
+		          	}*/
+		          	// console.log(tops);
+		          	// var lefts = winWidth / width
+		          	// layero.css({"position":"relative","top":"auto","margin-top":tops+"%","left": lefts+"px"}); //type=1
+		          	// layero.css({"margin-top":tops+"%"})
+		        }
+		    });
+		    layer.style(layerIfreames,{
+		    	marginTop: tops+'px',
+		    }) 
+	    })
+	    form.val('example', {
+		    "roomState": "{$roomState}"
+		    ,"communityId": "{$communityId}"
+		})
+
+	    form.on('select(changeCommunity)', function(data){
+
+            var roomState = $("input[name='roomState']:checked").val();
+            var roomType = $("select[name='roomType']").val();
+            window.location.replace("/index/rent_manage/center/communityId/"+data.value+"/roomState/"+roomState+"/roomType/"+roomType);
+        });
+        form.on('select(changeHouseState)', function(data){
+
+            var communityId = $("select[name='communityId']").val();
+            var roomState = $("input[name='roomState']:checked").val();
+            window.location.replace("/index/rent_manage/center/roomType/"+data.value+"/communityId/"+communityId+"/roomState/"+roomState);
+        });
+
+        form.on('radio(clik)', function (data) {
+
+            var communityId = $("select[name='communityId']").val();
+            var roomType = $("select[name='roomType']").val();
+        	window.location.replace("/index/rent_manage/center/roomState/"+data.value+"/communityId/"+communityId+"/roomType/"+roomType);
+        });
+
+        form.on('submit(LAY-user-front-reset)', function() {
+        	window.location.replace('/index/rent_manage/center/roomState');
+        })
+	    // $.get("{:url('detail')}", function(res) {
+
+		    // var str = res;
+		  //   $('.detail').on('click', function(){
+		  //   	layer.open({
+				//   type: 4,
+				//   shadeClose: true,
+				//   shade:0.1,
+				//   closeBtn:0,
+				//   // content: ["{:url('CenterDetail')}", $(this)], //数组第二项即吸附元素选择器或者DOM
+				//   content: [str, $(this)], //数组第二项即吸附元素选择器或者DOM
+				// });  
+		  //   });
+	    // })
+
+    });
+    // function reload()
+    // {
+    // 	window.location.replace("/index/rent_manage/center/test/1");
+    // }
+  </script>
