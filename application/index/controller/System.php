@@ -340,4 +340,19 @@ class System extends Frontend
     }
 
     // end -===== 入住结算清单模板
+    
+
+    public function fukuanzhouqisetting()
+    {
+
+        $res = Db::table('payment_cycle')->field('source,id')->where('uid',USER_ID)->select();
+
+        $res2 = Db::table('house_state')->field('keys,id')->where('uid',USER_ID)->select();
+
+        $this->assign('rentSourceName', $res);
+
+        $this->assign('keysName', $res2);
+
+        return view('fukuanzhouqisetting');
+    }
 }
