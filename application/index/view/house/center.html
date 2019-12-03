@@ -41,7 +41,7 @@
 	    <div class="layui-card">
 	        <div class="layui-card-body ">
 	            <blockquote class="layui-elem-quote">欢迎管理员：
-	                <span class="x-red">{$Think.session.user_info.qyname}</span>！当前时间:{$now}
+	                <span class="x-red">{$Think.session.user_info.qyname}</span>！
 	            </blockquote>
 	        </div>
 	    </div>
@@ -54,10 +54,10 @@
 	        <div class="layui-form-item">
 	          <div class="layui-inline">
 	            <label class="layui-form-label">房屋状态：</label>
-	            <input type="radio" name="roomState" value="空置" title="空置" lay-filter="clik"><div class="layui-unselect layui-form-radio"><div>空置</div></div>
+	            <input type="radio" name="roomState" value="11" title="空置" lay-filter="clik"><div class="layui-unselect layui-form-radio"><div>空置</div></div>
               	<input type="radio" name="roomState" value="欠费" title="欠费" lay-filter="clik"><div class="layui-unselect layui-form-radio layui-form-radioed"><div>欠费</div></div>
-              	<input type="radio" name="roomState" value="装修" title="装修" lay-filter="clik"><div class="layui-unselect layui-form-radio layui-form-radioed"><div>装修</div></div>
-              	<input type="radio" name="roomState" value="预定" title="预定" lay-filter="clik"><div class="layui-unselect layui-form-radio layui-form-radioed"><div>预定</div></div>
+              	<input type="radio" name="roomState" value="12" title="装修" lay-filter="clik"><div class="layui-unselect layui-form-radio layui-form-radioed"><div>装修</div></div>
+              	<input type="radio" name="roomState" value="13" title="预定" lay-filter="clik"><div class="layui-unselect layui-form-radio layui-form-radioed"><div>预定</div></div>
 	          </div>
 	          <div class="layui-inline">
 	            <label class="layui-form-label">小区名字：</label>
@@ -73,10 +73,10 @@
 	          <div class="layui-inline">
 	            <label class="layui-form-label">房屋类型：</label>
 	            <div class="layui-input-block">
-	              <select name="roomType" lay-filter="changeHouseState">
+	              <select name="fangwutype" lay-filter="changeHouseState">
 	                <option value="0">不限</option>
 	                {foreach $houseStateLists as $key=>$vo } 
-	                    <option value="{$vo.keys}" {eq name="$roomType"  value="$vo.keys" } selected="" {/eq}>{$vo.keys}</option>
+	                    <option value="{$vo.keys}" {eq name="$fangwutype"  value="$vo.keys" } selected="" {/eq}>{$vo.keys}</option>
 	                {/foreach}
 	              </select>
 	            </div>
@@ -150,53 +150,104 @@
 		        <blockquote class="layui-elem-quote layui-quote-nm" id="left-header" onclick="">
 		            <div class="header-name">
 		          		<p>{$key}栋</p>
-		          		<p>{$vo | count}间</p>
+		          		<p>{$vo | countRoom}间 </p>
 		            </div>
 		            <div class="layui-row">
-		            	{volist name="$vo" id='v'}
-		              	<div class="layui-card  pointers">
-				          <div class="layui-card-body detail
-				            {switch name='$v.roomState'}
-				            {case value='空置'}kong{/case}
-				            {case value='装修'}zhuangxiu{/case}
-				            {default /}
-				            	{eq name='$v.roomState' value='预定'} 
-				            		 yuding
-				            	{else/} 
-				            		{eq name='$v.qianfei_state' value='1'} owe {/eq}
-				            	{/eq}
-				            {/switch}
-				          " 
-				          id="detailCard" 
-				          data-id="{$v.uuid}" style=""
-				          >
-				          	<p>{$v.floorNumber}栋{empty name="$v.unitNumber"} {else /} {$v.unitNumber}单元 {/empty}</p>
-				            <p>房号:{$v.roomNumber} {$v.roomType}</p>
-							{notempty name="$v.diff"}
-							{eq name='$v.qianfei_state' value='1'}<p style="position: absolute;font-size: 12px;">已欠费<span style="color:red;"> {$v.diff | abs}</span> 天</p> {else /} <p style="position: absolute;font-size: 12px;">离下次缴费还有<span style="color:red;"> {$v.diff | abs}</span> 天</p> {/eq}
-							{/notempty}
-				            <div class="
-				            
-				            {eq name='$v.roomState' value='空置'} status {else /} status0 {/eq}
-				            ">
-				            <i>
-				            {switch name='$v.roomState'}
-				            {case value='空置'}空{/case}
-				            {case value='装修'}装{/case}
-				            {default /}
-				            	{eq name='$v.roomState' value='预定'} 
-				            		预 
-				            	{else/} 
-				            		{eq name='$v.qianfei_state' value='1'} 欠 {/eq}
-				            	{/eq}
-				            {/switch}
-				        	</i>
-				            </div>
-				            <div class="free">
-				            	￥{$v.money}
-				            </div>
-				          </div>
-				        </div>
+		            	{volist name="$vo" id='f'}
+		            		{if condition="$f['chuzutype'] == 0"}
+				            	{volist name="$f['room']" id='v'}
+				              	<div class="layui-card  pointers">
+						          <div class="layui-card-body detail
+						            {switch name='$v.status_text'}
+						            {case value='空置'}kong{/case}
+						            {case value='装修'}zhuangxiu{/case}
+						            {default /}
+						            	{eq name='$v.status_text' value='预定'} 
+						            		 yuding
+						            	{else/} 
+						            		{eq name='$v.qianfei_state' value='1'} owe {/eq}
+						            	{/eq}
+						            {/switch}
+						          " 
+						          id="detailCard" 
+						          data-id="{$v.uuid}" style=""
+						          >
+						          	<p>【{$f.ceng}层】 {$f.fangwutype} </p>
+						          	<p>{$v.fjbh}</p>
+						            
+									{notempty name="$v.diff"}
+									{eq name='$v.qianfei_state' value='1'}<p style="position: absolute;font-size: 12px;">已欠费<span style="color:red;"> {$v.diff | abs}</span> 天</p> {else /} <p style="position: absolute;font-size: 12px;">离下次缴费还有<span style="color:red;"> {$v.diff | abs}</span> 天</p> {/eq}
+									{/notempty}
+						            <div class="
+						            
+						            {eq name='$v.status_text' value='空置'} status {else /} status0 {/eq}
+						            ">
+						            <i>
+						            {switch name='$v.status_text'}
+						            {case value='空置'}空{/case}
+						            {case value='装修'}装{/case}
+						            {default /}
+						            	{eq name='$v.status_text' value='预定'} 
+						            		预 
+						            	{else/} 
+						            		欠
+						            	{/eq}
+						            {/switch}
+						        	</i>
+						            </div>
+						            <div class="free">
+						            	￥0
+						            </div>
+						          </div>
+						        </div>
+						        {/volist}
+					        {else /}
+
+			              	<div class="layui-card  pointers">
+					          <div class="layui-card-body detail
+					            {switch name='$f.status_text'}
+					            {case value='空置'}kong{/case}
+					            {case value='装修'}zhuangxiu{/case}
+					            {default /}
+					            	{eq name='$f.status_text' value='预定'} 
+					            		 yuding
+					            	{else/} 
+					            		{eq name='$f.qianfei_state' value='1'} owe {/eq}
+					            	{/eq}
+					            {/switch}
+					          " 
+					          id="detailCard" 
+					          data-id="{$f.uuid}" style=""
+					          >
+					          		<p>【{$f.ceng}层】 {$f.fangwutype} </p>
+						            
+									{notempty name="$f.diff"}
+									{eq name='$f.qianfei_state' value='1'}<p style="position: absolute;font-size: 12px;">已欠费<span style="color:red;"> {$f.diff | abs}</span> 天</p> {else /} <p style="position: absolute;font-size: 12px;">离下次缴费还有<span style="color:red;"> {$f.diff | abs}</span> 天</p> {/eq}
+									{/notempty}
+						            <div class="
+						            
+						            {eq name='$f.status_text' value='空置'} status {else /} status0 {/eq}
+						            ">
+						            <i>
+						            {switch name='$f.status_text'}
+						            {case value='空置'}空{/case}
+						            {case value='装修'}装{/case}
+						            {default /}
+						            	{eq name='$f.status_text' value='预定'} 
+						            		预 
+						            	{else/} 
+						            		欠
+						            	{/eq}
+						            {/switch}
+						        	</i>
+						            </div>
+						            <div class="free">
+						            	￥0
+						            </div>
+					          </div>
+					        </div>
+					        
+					        {/if}
 				        {/volist}
 		            </div>
 		        </blockquote>
@@ -311,25 +362,25 @@
 	    form.on('select(changeCommunity)', function(data){
 
             var roomState = $("input[name='roomState']:checked").val();
-            var roomType = $("select[name='roomType']").val();
-            window.location.replace("/index/rent_manage/center/communityId/"+data.value+"/roomState/"+roomState+"/roomType/"+roomType);
+            var roomType = $("select[name='fangwutype']").val();
+            window.location.replace("/index/House/center/communityId/"+data.value+"/roomState/"+roomState+"/fangwutype/"+roomType);
         });
         form.on('select(changeHouseState)', function(data){
 
             var communityId = $("select[name='communityId']").val();
             var roomState = $("input[name='roomState']:checked").val();
-            window.location.replace("/index/rent_manage/center/roomType/"+data.value+"/communityId/"+communityId+"/roomState/"+roomState);
+            window.location.replace("/index/House/center/fangwutype/"+data.value+"/communityId/"+communityId+"/roomState/"+roomState);
         });
 
         form.on('radio(clik)', function (data) {
 
             var communityId = $("select[name='communityId']").val();
-            var roomType = $("select[name='roomType']").val();
-        	window.location.replace("/index/rent_manage/center/roomState/"+data.value+"/communityId/"+communityId+"/roomType/"+roomType);
+            var roomType = $("select[name='fangwutype']").val();
+        	window.location.replace("/index/House/center/roomState/"+data.value+"/communityId/"+communityId+"/fangwutype/"+roomType);
         });
 
         form.on('submit(LAY-user-front-reset)', function() {
-        	window.location.replace('/index/rent_manage/center/roomState');
+        	window.location.replace('/index/House/center/roomState');
         })
 	    // $.get("{:url('detail')}", function(res) {
 

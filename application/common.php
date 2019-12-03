@@ -362,3 +362,18 @@ if (!function_exists('hsv2rgb')) {
         ];
     }
 }
+
+
+function countRoom($house_lists)
+{
+
+    $sum = 0;
+    foreach ($house_lists as $key => $value) {
+        if ($value['chuzutype'] == 1) {
+            $sum += 1;
+        } else {
+            $sum += count($value['room']);
+        }
+    }
+    return $sum;
+}

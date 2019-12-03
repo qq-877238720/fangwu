@@ -41,7 +41,7 @@ class Rent extends Frontend
 
             $uuid = "HE".date("YmdHis",time()).mt_rand(10000,99999);
 
-            $house_state = Db::table('house_lists')->insert([
+            $house_id = Db::table('house_lists')->insertGetId([
                 'uuid'  => $uuid, // 房屋唯一编号
                 'xiaoquID' => $houstData['xiaoquID'],
                 'xiangmuID' => $houstData['xiangmuID'],
@@ -60,6 +60,7 @@ class Rent extends Frontend
 
             foreach ($roomData as $key => $value) {
                 $value['uuid'] = $uuid;
+                $value['house_id'] = $house_id;
                 array_push($roomListData, $value);
             }
 
