@@ -37,15 +37,6 @@
 <body>
 
 <div class="layui-fluid">
-	<div class="layui-col-md12">
-	    <div class="layui-card">
-	        <div class="layui-card-body ">
-	            <blockquote class="layui-elem-quote">欢迎管理员：
-	                <span class="x-red">{$Think.session.user_info.qyname}</span>！
-	            </blockquote>
-	        </div>
-	    </div>
-	</div>
 	<div class="layui-row layui-col-space15">
 	  <div class="layui-col-md12">
 	    <div class="layui-card">
@@ -170,7 +161,7 @@
 						            {/switch}
 						          " 
 						          id="detailCard" 
-						          data-id="{$v.uuid}" style=""
+						          data-id="{$v.status_text}" style=""
 						          >
 						          	<p>【{$f.ceng}层】 {$f.fangwutype} </p>
 						          	<p>{$v.fjbh}</p>
@@ -217,10 +208,10 @@
 					            {/switch}
 					          " 
 					          id="detailCard" 
-					          data-id="{$f.uuid}" style=""
+					          data-id="{$f.status_text}" style=""
 					          >
 					          		<p>【{$f.ceng}层】 {$f.fangwutype} </p>
-						            
+						            <p>&nbsp;</p>
 									{notempty name="$f.diff"}
 									{eq name='$f.qianfei_state' value='1'}<p style="position: absolute;font-size: 12px;">已欠费<span style="color:red;"> {$f.diff | abs}</span> 天</p> {else /} <p style="position: absolute;font-size: 12px;">离下次缴费还有<span style="color:red;"> {$f.diff | abs}</span> 天</p> {/eq}
 									{/notempty}
@@ -283,7 +274,7 @@
 	    
 	    $('.detail').on('click', function(){
 	    	$this = $(this);
-	    	var uuid = $this.attr('data-id');
+	    	var uuid = $this.attr('data-id'); //暂时改为  房屋状态
 	    	var Yw = $this.offset().left;
           	var Yh = $this.offset().top;
           	var width = "330";
@@ -313,7 +304,7 @@
             	,offset: ['unset', lefts+'px']   //相对定位
 		        ,area: ['360px','415px']
 		        ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
-		        ,content: ["{:url('detail')}?uuid="+uuid, 'no']
+		        ,content: ["{:url('detail')}?uuid="+uuid, 'no'] //暂时改为  房屋状态
 		        ,success: function(layero,index){
 		        	layer.iframeAuto(index);
 		        	var body = layer.getChildFrame('body', index);

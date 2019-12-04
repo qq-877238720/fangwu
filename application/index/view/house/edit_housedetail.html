@@ -1,0 +1,559 @@
+<script src="__INDEX__/layuiadmin/layui/layui.js"></script>  
+
+<body>
+
+  <div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+      {empty name="$watch"}
+      <div class="layui-col-md12">
+        <div class="layui-card">
+          <div class="layui-card-header">房屋管理</div>
+          <div class="layui-card-body">
+            <!-- <div class="layui-btn-container"> -->
+              <!-- <div class="layui-col-md6">
+	            <input type="text" name="title" placeholder="项目名" autocomplete="off" class="layui-input">
+	          </div> -->
+              <button class="layui-btn layui-btn-normal" onclick="edit()">修改</button>
+              {eq name="$info['roomState']" value="在租" }
+              <button class="layui-btn layui-btn-normal" onclick="tz()">退租</button>
+              {/eq}
+              {eq name="$info['roomState']" value="空置" }
+              <button class="layui-btn layui-btn-normal" onclick="rz()">入住</button>
+              {/eq}
+              {eq name="$info['roomState']" value="空置" }
+              <button class="layui-btn layui-btn-normal">删除</button>
+              {/eq}
+            <!-- </div> -->
+          </div>
+        </div>
+      </div>
+      {/empty}
+      <div class="layui-row layui-col-space15">
+	      <div class="layui-col-md12">
+	        <div class="layui-card">
+	          <div class="layui-card-header">基本信息</div>
+	          <div class="layui-card-body">
+	          	<!-- 基本信息 -->
+	          	<div class="layui-row layui-col-space20" style="border-bottom: 1px solid #ebf4ff;">
+	          		<div class="layui-col-md6">
+	          			<div class="layui-row layui-col-space15">
+	          				<div class="layui-col-md3">
+	          					租约编号:
+	          				</div>
+	          				<div class="layui-col-md6">
+	          					{$info.uuid}
+	          				</div>
+	          			</div>
+	          		</div>
+	          		<div class="layui-col-md6">
+	          			<div class="layui-row layui-col-space15">
+	          				<div class="layui-col-md3">
+	          					房屋状态：
+	          				</div>
+	          				<div class="layui-col-md6">
+	          					{$info.roomState}
+	          				</div>
+	          			</div>
+	          		</div>
+	          	</div>
+	          	<div class="layui-row layui-col-space20" style="border-bottom: 1px solid #ebf4ff;">
+	          		<div class="layui-col-md6">
+	          			<div class="layui-row layui-col-space15">
+	          				<div class="layui-col-md3">
+	          					持有方式:
+	          				</div>
+	          				<div class="layui-col-md6">
+	          					{$info.owntype}
+	          				</div>
+	          			</div>
+	          		</div>
+	          		<div class="layui-col-md6">
+	          			<div class="layui-row layui-col-space15">
+	          				<div class="layui-col-md3">
+								房源信息:
+	          				</div>
+	          				<div class="layui-col-md6">
+	          					{$communityName} - {$info.floorNumber}栋{empty name="$info.unitNumber"} {else /} {$info.unitNumber}单元{/empty}{$info.roomNumber}({$info.roomType})
+	          				</div>
+	          			</div>
+	          		</div>
+	          	</div>
+	          	{eq name="$info['roomState']" value="在租" }
+	          	<div class="layui-row layui-col-space20" style="border-bottom: 1px solid #ebf4ff;">
+	          		<div class="layui-col-md6">
+	          			<div class="layui-row layui-col-space15">
+	          				<div class="layui-col-md3">
+	          					付款方式:
+	          				</div>
+	          				<div class="layui-col-md6">
+	          					{$info.paymentWeeks}
+	          				</div>
+	          			</div>
+	          		</div>
+	          		<div class="layui-col-md6">
+	          			<div class="layui-row layui-col-space15">
+	          				<div class="layui-col-md3">
+								合同类型:
+	          				</div>
+	          				<div class="layui-col-md6">
+	          					纸质合同
+	          				</div>
+	          			</div>
+	          		</div>
+	          	</div>
+	          	<div class="layui-row layui-col-space20" style="border-bottom: 1px solid #ebf4ff;">
+	          		<div class="layui-col-md6">
+	          			<div class="layui-row layui-col-space15">
+	          				<div class="layui-col-md3">
+	          					签约时间:
+	          				</div>
+	          				<div class="layui-col-md6">
+	          					{$info['houseKeepingStart'] | date='Y/m/d'}-{$info['houseKeepingEnd'] | date='Y/m/d'}
+	          				</div>
+	          			</div>
+	          		</div>
+	          		<div class="layui-col-md6">
+	          			<div class="layui-row layui-col-space15">
+	          				<div class="layui-col-md3">
+								租客来源:
+	          				</div>
+	          				<div class="layui-col-md6">
+	          					{$rentSource}
+	          				</div>
+	          			</div>
+	          		</div>
+	          	</div>
+	          	{/eq}
+	          	{eq name="$info['roomState']" value="预定" }
+	          	<div class="layui-row layui-col-space20" style="border-bottom: 1px solid #ebf4ff;">
+	          		<div class="layui-col-md6">
+	          			<div class="layui-row layui-col-space15">
+	          				<div class="layui-col-md3">
+	          					预定金:
+	          				</div>
+	          				<div class="layui-col-md6">
+	          					{$yudingpri}
+	          				</div>
+	          			</div>
+	          		</div>
+	          		<div class="layui-col-md6">
+	          			<div class="layui-row layui-col-space15">
+	          				<div class="layui-col-md3">
+								合同类型:
+	          				</div>
+	          				<div class="layui-col-md6">
+	          					纸质合同
+	          				</div>
+	          			</div>
+	          		</div>
+	          	</div>
+	          	<div class="layui-row layui-col-space20" style="border-bottom: 1px solid #ebf4ff;">
+	          		<div class="layui-col-md6">
+	          			<div class="layui-row layui-col-space15">
+	          				<div class="layui-col-md3">
+	          					签约时间:
+	          				</div>
+	          				<div class="layui-col-md6">
+	          					{$info['houseKeepingStart'] | date='Y/m/d'}-{$info['houseKeepingEnd'] | date='Y/m/d'}
+	          				</div>
+	          			</div>
+	          		</div>
+	          		<div class="layui-col-md6">
+	          			<div class="layui-row layui-col-space15">
+	          				<div class="layui-col-md3">
+								租客来源:
+	          				</div>
+	          				<div class="layui-col-md6">
+	          					{$rentSource}
+	          				</div>
+	          			</div>
+	          		</div>
+	          	</div>
+	          	{/eq}
+	          	<!-- 基本信息end -->
+	          </div>
+	        </div>
+	      </div>
+	      {eq name="$info['roomState']" value="在租" }
+	      <div class="layui-col-md12">
+	        <div class="layui-card">
+	          <div class="layui-card-header">收款周期</div>
+	          <div class="layui-card-body">
+	          	<!-- 基本信息 -->
+	          	<table lay-filter="parse-table-demo">
+		          <thead>
+		            <tr>
+		              <th lay-data="{field:'#', width:200}">期数</th>
+		              <th lay-data="{field:'paydate_start', width:150}">交款开始时间</th>
+		              <th lay-data="{field:'paydate_end', width:150}">交款截至时间</th>
+		              <th lay-data="{field:'rebate'}">优惠金额</th>
+		              <th lay-data="{field:'rent_price'}">实际租金</th>
+		              <th lay-data="{field:'jiaofei_state'}">缴费状态</th>
+		              <th lay-data="{field:'skfs'}">收款方式</th>
+		              <th lay-data="{field:'beizhu'}">备注</th>
+		              <th lay-data="{field:'caozuo'}">操作</th>
+		            </tr> 
+		          </thead>
+		          <tbody>
+		          	<?php foreach(json_decode($paymentCycle['payment_cycle_time'], true) as $key=>$vo): ?>
+		            <tr>
+		              <td>第{$key + 1}期</td>
+		              <td>{$vo['paymentJson']['paydate_start']}</td>
+		              <td>{$vo['paymentJson']['paydate_end']}</td>
+		              <td>{$vo['paymentJson']['rebate']}</td>
+		              <td>{$vo['paymentJson']['rent_price']}</td>
+		              <td>{$vo['paymentJson']['jiaofei_state']}</td>
+		              <td>{$vo['paymentJson']['skfs']}</td>
+		              <td>{$vo['paymentJson']['beizhu']}</td>
+		              <td>
+	      				{eq name="$vo['paymentJson']['jiaofei_state']" value="已缴费" }
+		              	<button class="layui-btn layui-btn-disabled layui-btn-sm" disabled="">已收费</button>
+		              	{else /}
+		              	<button class="layui-btn layui-btn-sm" onclick="rentCollection({$key})">收房租</button>
+	      				{/eq}
+		              </td>
+		            </tr>
+		            <?php endforeach; ?>
+		          </tbody>
+		        </table>
+	          	<!-- 基本信息end -->
+	          </div>
+	        </div>
+	      </div>
+	      <script>
+			layui.use('table', function(){
+			  
+			});
+		  </script>
+	      <div class="layui-col-md12">
+	        <div class="layui-card">
+	          <div class="layui-card-header">入住人基本信息</div>
+	          <div class="layui-card-body">
+	          	<table class="layui-table" lay-skin="line">
+				  <colgroup>
+				    <col width="120">
+				    <col width="60">
+				    <col width="180">
+				    <col width="100">
+				    <col width="200">
+				    <col width="100">
+				    <col width="120">
+				    <col width="120">
+				    <col>
+				  </colgroup>
+				  <thead>
+				    <tr>
+				      <th>入住人姓名</th>
+				      <th>性别</th>
+				      <th>手机号码</th>
+				      <th>证件类型</th>
+				      <th>证件号码</th>
+				      <th>居住状态</th>
+				      <th>入住时间</th>
+				      <th>搬离时间</th>
+				      <th>操作</th>
+				    </tr> 
+				  </thead>
+				  <tbody>
+				  	{foreach $rent_user as $key=>$vo } 
+				    <tr>
+				      <td>{$vo.name}</td>
+				      <td>
+				      	{eq name='$vo.sex' value='1'} 男 {else/} 女 {/eq}
+				      </td>
+				      <td>{$vo.phone}</td>
+				      <td>身份证</td>
+				      <td>{$vo.card}</td>
+				      <td>{$vo.juzhu_state}</td>
+				      <td></td>
+				      <td></td>
+				      <td>编辑 删除 搬离</td>
+				    </tr>
+				    {/foreach}
+				  </tbody>
+				</table>
+	          </div>
+	        </div>
+	      </div>
+	      {/eq}
+	      {eq name="$info['roomState']" value="预定" }
+	      <div class="layui-col-md12">
+	        <div class="layui-card">
+	          <div class="layui-card-header">预定人基本信息</div>
+	          <div class="layui-card-body">
+	          	<table class="layui-table" lay-skin="line">
+				  <colgroup>
+				    <col width="120">
+				    <col width="60">
+				    <col width="180">
+				    <col width="100">
+				    <col width="200">
+				    <col width="100">
+				    <col width="120">
+				    <col width="120">
+				    <col>
+				  </colgroup>
+				  <thead>
+				    <tr>
+				      <th>预定人姓名</th>
+				      <th>性别</th>
+				      <th>手机号码</th>
+				      <th>证件类型</th>
+				      <th>证件号码</th>
+				      <th>居住状态</th>
+				      <th>操作</th>
+				    </tr> 
+				  </thead>
+				  <tbody>
+				  	{foreach $rent_user as $key=>$vo } 
+				    <tr>
+				      <td>{$vo.name}</td>
+				      <td>
+				      	{eq name='$vo.sex' value='1'} 男 {else/} 女 {/eq}
+				      </td>
+				      <td>{$vo.phone}</td>
+				      <td>身份证</td>
+				      <td>{$vo.card}</td>
+				      <td>{$vo.juzhu_state}</td>
+				      <td>编辑 删除 搬离</td>
+				    </tr>
+				    {/foreach}
+				  </tbody>
+				</table>
+	          </div>
+	        </div>
+	      </div>
+	      {/eq}
+	      <div class="layui-col-md12">
+	        <div class="layui-card">
+	          <div class="layui-card-header">签约信息</div>
+
+	          <div class="layui-card-body">
+	          	{foreach $tuizu as $key=>$vo}
+	          	<div class="layui-row layui-col-space20" style="background-color: #f4f9ff;border-bottom: 1px solid #ebf4ff;color: #668ced;">
+	          		<div class="layui-col-md4">
+          				第{$key+1}次签约
+	          		</div>
+	          		<div class="layui-col-md4">
+          				租期起始日：{$vo['ruzhu_at']|date='Y.m.d'}至{$vo['tuizu_at']|date='Y.m.d'}
+	          		</div>
+	          		<div class="layui-col-md4">
+          				<!-- 租期：1年 -->
+	          		</div>
+	          	</div>
+				{/foreach}
+	          	<!-- <div class="layui-row layui-col-space20" style="border-bottom: 1px solid #ebf4ff;">
+	          		<div class="layui-col-md6">
+	          			<div class="layui-row layui-col-space15">
+	          				<div class="layui-col-md3">
+	          					付款方式:
+	          				</div>
+	          				<div class="layui-col-md6">
+	          					付一押一
+	          				</div>
+	          			</div>
+	          		</div>
+	          		<div class="layui-col-md6">
+	          			<div class="layui-row layui-col-space15">
+	          				<div class="layui-col-md3">
+								合同类型:
+	          				</div>
+	          				<div class="layui-col-md6">
+	          					纸质合同
+	          				</div>
+	          			</div>
+	          		</div>
+	          	</div>
+	          	<div class="layui-row layui-col-space20" style="border-bottom: 1px solid #ebf4ff;">
+	          		<div class="layui-col-md6">
+	          			<div class="layui-row layui-col-space15">
+	          				<div class="layui-col-md3">
+	          					房屋租金:
+	          				</div>
+	          				<div class="layui-col-md6">
+	          					1600元/月
+	          				</div>
+	          			</div>
+	          		</div>
+	          		<div class="layui-col-md6">
+	          			<div class="layui-row layui-col-space15">
+	          				<div class="layui-col-md3">
+								签约时间:
+	          				</div>
+	          				<div class="layui-col-md6">
+	          					2019.01.24 14:54:37
+	          				</div>
+	          			</div>
+	          		</div>
+	          	</div>
+	          	<div class="layui-row layui-col-space20" style="border-bottom: 1px solid #ebf4ff;">
+	          		<div class="layui-col-md6">
+	          			<div class="layui-row layui-col-space15">
+	          				<div class="layui-col-md3">
+	          					房屋押金:
+	          				</div>
+	          				<div class="layui-col-md6">
+	          					1600.00元
+	          				</div>
+	          			</div>
+	          		</div>
+	          		<div class="layui-col-md6">
+	          			<div class="layui-row layui-col-space15">
+	          				<div class="layui-col-md3">
+								销售管家:
+	          				</div>
+	          				<div class="layui-col-md6">
+	          					梁晓琴-13881771471
+	          				</div>
+	          			</div>
+	          		</div>
+	          	</div>
+	          	<div class="layui-row layui-col-space20" style="border-bottom: 1px solid #ebf4ff;">
+	          		<div class="layui-col-md6">
+	          			<div class="layui-row layui-col-space15">
+	          				<div class="layui-col-md3">
+	          					其他押金:
+	          				</div>
+	          				<div class="layui-col-md6">
+	          					电卡押金100.00元
+	          				</div>
+	          			</div>
+	          		</div>
+	          		<div class="layui-col-md6">
+	          			
+	          		</div>
+	          	</div>
+	          	<div class="layui-row layui-col-space20" style="border-bottom: 1px solid #ebf4ff;">
+	          		<div class="layui-col-md6">
+	          			<div class="layui-row layui-col-space15">
+	          				<div class="layui-col-md3">
+	          					首期一次性费用:
+	          				</div>
+	          				<div class="layui-col-md6">
+	          					电费 41.60元
+	          				</div>
+	          			</div>
+	          		</div>
+	          		<div class="layui-col-md6">
+	          			
+	          		</div>
+	          	</div>
+	          	<div class="layui-row layui-col-space20" style="border-bottom: 1px solid #ebf4ff;">
+	          		<div class="layui-col-md6">
+	          			<div class="layui-row layui-col-space15">
+	          				<div class="layui-col-md3">
+	          					周期费用:
+	          				</div>
+	          				<div class="layui-col-md6">
+	          					
+	          				</div>
+	          			</div>
+	          		</div>
+	          		<div class="layui-col-md6">
+	          			<div class="layui-col-md3">
+	          					租客来源:
+          				</div>
+          				<div class="layui-col-md6">
+          					自营渠道-全成渠道公司
+          				</div>
+	          		</div>
+	          	</div> -->
+	          </div>
+	        </div>
+	      </div>
+  	  </div>
+    </div>
+  </div>
+
+  <style type="text/css">
+  	.yourclass .layui-col-md3.layui-col-md-offset2{text-align: right;}
+  </style>
+  <script>
+	var $form;
+	var form;
+	var $;
+	var layer;
+	layui.config({
+	  base: '__INDEX__/layuiadmin/' //静态资源所在路径
+	}).extend({
+	  index: 'lib/index' //主入口模块
+	}).use(['index','laydate', 'table'], function() {
+		$ = layui.jquery;
+	    layer = layui.layer;
+	    var table = layui.table;
+			 
+	    table.init('parse-table-demo', { //转化静态表格
+	        //height: 'full-500'
+	    });
+	    var laydate = layui.laydate;
+	    laydate.render({
+		  elem: '#test5'
+		  ,type: 'datetime'
+		});
+    });
+
+	/**
+	 * 退租
+	 */
+    function tz()
+    {
+
+    	layer.open({
+		  type: 2,
+		  title: false,
+		  closeBtn: 0,
+		  shadeClose: true,
+		  skin: 'yourclass',
+		  area: ['470px', '650px'],
+		  content: "{:url('tuizu', ['uuid' => $info['uuid']])}",
+		});
+
+    }
+
+    function rz()
+    {
+
+    	if(top.layui.index){
+        	// top.layui.index.openTabsPage("{:url('rz', ['uuid' => $info['uuid']])}","入住");
+        	layer.open({
+        		type: 2,
+        		area: ['1000px', '100vh'],
+		  		maxmin: true,
+        		content: "{:url('rz', ['uuid' => $info['uuid']])}",
+        	})
+	    }else{
+	        window.open(url)
+	    }
+    }
+
+    function edit() {
+
+    	if(top.layui.index){
+        	top.layui.index.openTabsPage("{:url('edit', ['uuid' => $info['uuid']])}","修改");
+	    }else{
+	        window.open(url)
+	    }
+    }
+
+    /**
+     * 收租
+     * @param  {[type]} id [description]
+     * @return {[type]}    [description]
+     */
+    function rentCollection(id) {
+    	layer.open({
+    		type: 2,
+			title: false,
+			closeBtn: 0,
+			shadeClose: true,
+			skin: 'yourclass',
+			area: ['670px', '758px'],
+    		content: "{:url('rentCollection', ['uuid' => $info['uuid']])}?key="+id,
+    		success: function(layero, index){
+			    var body = layer.getChildFrame('body', index);
+			    var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+			}
+    	})
+    }
+  </script>
+  

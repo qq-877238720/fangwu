@@ -1,0 +1,176 @@
+
+<body>
+	<div>
+		<div class="layui-row layui-col-space15">
+	      <div class="layui-col-md12">
+	        <div class="layui-card">
+	          <div class="layui-card-header">房源基本信息</div>
+	          <div class="layui-card-body">
+	          	<!-- 基本信息 -->
+	          	<div class="layui-row layui-col-space20" style="border-bottom: 1px solid #ebf4ff;">
+	          		<div class="layui-col-md6">
+	          			<div class="layui-row layui-col-space15">
+	          				<div class="layui-col-md3">
+	          					租约编号:
+	          				</div>
+	          				<div class="layui-col-md6">
+	          					0000000000
+	          				</div>
+	          			</div>
+	          		</div>
+	          		<div class="layui-col-md6">
+	          			<div class="layui-row layui-col-space15">
+	          				<div class="layui-col-md3">
+	          					房屋状态：
+	          				</div>
+	          				<div class="layui-col-md6">
+	          					预定
+	          				</div>
+	          			</div>
+	          		</div>
+	          	</div>
+	          	<div class="layui-row layui-col-space20" style="border-bottom: 1px solid #ebf4ff;">
+	          		<div class="layui-col-md6">
+	          			<div class="layui-row layui-col-space15">
+	          				<div class="layui-col-md3">
+	          					持有方式:
+	          				</div>
+	          				<div class="layui-col-md6">
+	          					自持
+	          				</div>
+	          			</div>
+	          		</div>
+	          		<div class="layui-col-md6">
+	          			<div class="layui-row layui-col-space15">
+	          				<div class="layui-col-md3">
+								房源信息:
+	          				</div>
+	          				<div class="layui-col-md6">
+	          					1栋1单元111
+	          				</div>
+	          			</div>
+	          		</div>
+	          	</div>
+	          	
+	          	<div class="layui-row layui-col-space20" style="border-bottom: 1px solid #ebf4ff;">
+	          		<div class="layui-col-md6">
+	          			<div class="layui-row layui-col-space15">
+	          				<div class="layui-col-md3">
+	          					预定金:
+	          				</div>
+	          				<div class="layui-col-md6">
+	          					15000
+	          				</div>
+	          			</div>
+	          		</div>
+	          		<div class="layui-col-md6">
+	          			<div class="layui-row layui-col-space15">
+	          				<div class="layui-col-md3">
+								合同类型:
+	          				</div>
+	          				<div class="layui-col-md6">
+	          					纸质合同
+	          				</div>
+	          			</div>
+	          		</div>
+	          	</div>
+	          	<div class="layui-row layui-col-space20" style="border-bottom: 1px solid #ebf4ff;">
+	          		<div class="layui-col-md6">
+	          			<div class="layui-row layui-col-space15">
+	          				<div class="layui-col-md3">
+	          					预定时间:
+	          				</div>
+	          				<div class="layui-col-md6">
+	          					1111111111111
+	          				</div>
+	          			</div>
+	          		</div>
+	          		<div class="layui-col-md6">
+	          			<div class="layui-row layui-col-space15">
+	          				<div class="layui-col-md3">
+								租客来源:
+	          				</div>
+	          				<div class="layui-col-md6">
+	          					门店
+	          				</div>
+	          			</div>
+	          		</div>
+	          	</div>
+
+	          	<!-- 基本信息end -->
+	          </div>
+	        </div>
+	      </div>
+	      <div class="layui-col-md12">
+	        <div class="layui-card">
+	          <div class="layui-card-header">预定人基本信息</div>
+	          <div class="layui-card-body">
+	          	<table class="layui-table" lay-skin="line">
+				  <colgroup>
+				    <col width="120">
+				    <col width="60">
+				    <col width="180">
+				    <col width="100">
+				    <col width="200">
+				    <col width="100">
+				    <col width="120">
+				    <col width="120">
+				    <col>
+				  </colgroup>
+				  <thead>
+				    <tr>
+				      <th>预定人姓名</th>
+				      <th>性别</th>
+				      <th>手机号码</th>
+				      <th>证件类型</th>
+				      <th>证件号码</th>
+				      <th>居住状态</th>
+				      <th>操作</th>
+				    </tr> 
+				  </thead>
+				  <tbody>
+				    <tr>
+				      <td>测试</td>
+				      <td>
+				      	 男 
+				      </td>
+				      <td>13888888888</td>
+				      <td>身份证</td>
+				      <td>22222222222</td>
+				      <td>预定（未入住）</td>
+				      <td><a href="">取消预定</a> <a href="">入住</a></td>
+				    </tr>
+				  </tbody>
+				</table>
+	          </div>
+	        </div>
+	      </div>
+  	  </div>
+	</div>
+	<script src="__INDEX__/layuiadmin/layui/layui.js"></script>  
+  	<script>
+		var $form;
+		var form;
+		var $;
+		var layer;
+		layui.config({
+		  	base: '__INDEX__/layuiadmin/' //静态资源所在路径
+		}).extend({
+		  	index: 'lib/index' //主入口模块
+		}).use(['index','laydate', 'table'], function() {
+			$ = layui.jquery;
+		    layer = layui.layer;
+		    var table = layui.table;
+				 
+		    table.init('parse-table-demo', { //转化静态表格
+		        //height: 'full-500'
+		    });
+		    var laydate = layui.laydate;
+		    laydate.render({
+			  	elem: '#test5'
+			  	,type: 'datetime'
+			});
+	    });
+  	</script>
+</body>
+

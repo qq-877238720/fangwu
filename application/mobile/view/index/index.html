@@ -1,0 +1,140 @@
+<div class="layui-col-md12">
+	<!-- <div class="layui-card">
+	  <div class="layui-card-header">上传图片</div>
+	  <div class="layui-card-body">
+	    <div class="layui-upload">
+        <div class="layui-upload-drag" id="test-upload-drag">
+          <i class="layui-icon  layui-icon-upload-drag"></i>
+          <p>点击拍照或选择文件</p>
+        </div>
+	      <button type="button" class="layui-btn" id="test-upload-more">上传图片</button> 
+	      <blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
+	        预览图：
+	        <div class="layui-upload-list" id="test-upload-more-list"></div>
+	     </blockquote>
+	    </div>
+	  </div>
+	</div> -->
+</div>
+<style type="text/css">
+  .layui-upload-drag{
+    padding: 10px;
+  }
+</style>
+<div class="layui-col-md12">
+  <div class="layui-card">
+    <div class="layui-card-header">证件照上传</div>
+    <div class="layui-card-body">
+      <div class="layui-upload">
+        <!-- <button type="button" class="layui-btn" id="test-upload-normal">上传图片</button> -->
+        <div class="layui-upload-drag" id="test-upload-normal1">
+          <img src="__LOGIN__/img/zhengm.png" style="width:90px;height:100px;">
+        </div>
+        <div class="layui-upload-drag" id="test-upload-normal2">
+          <!-- <i class="layui-icon layui-icon-add-1" ></i>
+          <p>反面</p> -->
+          <img src="__LOGIN__/img/fanm.png" style="width:90px;height:100px;">
+        </div>
+      </div> 
+      <br>
+      <blockquote class="layui-elem-quote">
+      如果上传错误，请直接点击图片选择正确的照片，重新上传！谢谢 
+      </blockquote>   
+    </div>
+  </div>
+</div>
+<script src="__INDEX__/layuiadmin/layui/layui.js"></script>
+<script>
+  layui.config({
+    base: '__INDEX__layuiadmin/' //静态资源所在路径
+  }).extend({
+    index: 'lib/index' //主入口模块
+  }).use(['index', 'upload'], function(){
+    var $ = layui.jquery
+    ,upload = layui.upload;
+
+    //单图片上传
+    var uploadInst1 = upload.render({
+      elem: '#test-upload-normal1'
+      ,url: '{:url("mobile/index/upload",array("id"=>$id,"uid"=>$uid,"tag"=>"FRONT"))}'
+      ,before: function(obj){
+        //预读本地文件示例，不支持ie8
+        obj.preview(function(index, file, result){
+          // $('#test-upload-normal1').css('padding','10px')
+          $('#test-upload-normal1').html('<img src="' + result + '" id="remove_' + index + '" style="width:90px;height:100px;">'); //图片链接（base64）
+        });
+      }
+      ,done: function(res){
+        //如果上传失败
+        if(res.code == 1){
+            $("#chengzhuren_zhengmian").val(res.data.src);
+            layer.msg(res.msg, {icon: 1});
+        }else{
+            layer.msg(res.msg, {icon: 5});
+        }
+        //上传成功
+      }
+      ,error: function(res){
+        //演示失败状态，并实现重传
+        // layer.msg("请求错误，请稍后再试", {icon: 5});
+        /*demoText.find('.demo-reload').on('click', function(){
+          uploadInst1.upload();
+        });*/
+      }
+    });
+    var uploadInst2 = upload.render({
+      elem: '#test-upload-normal2'
+      ,url: '{:url("mobile/index/upload",array("id"=>$id,"uid"=>$uid,"tag"=>"BACK"))}'
+      ,before: function(obj){
+        //预读本地文件示例，不支持ie8
+        obj.preview(function(index, file, result){
+          // $('#test-upload-normal2').css('padding','10px')
+          $('#test-upload-normal2').html('<img src="' + result + '" id="remove_' + index + '" style="width:90px;height:100px;">'); //图片链接（base64）
+        });
+      }
+      ,done: function(res){
+        //如果上传失败
+        if(res.code == 1){
+            $("#chengzhuren_fanmian").val(res.data.src);
+            layer.msg(res.msg, {icon: 1});
+        }else{
+            layer.msg(res.msg, {icon: 5});
+        }
+        //上传成功
+      }
+      ,error: function(res){
+        //演示失败状态，并实现重传
+        // layer.msg("请求错误，请稍后再试", {icon: 5});
+        /*demoText.find('.demo-reload').on('click', function(){
+          uploadInst1.upload();
+        });*/
+      }
+    });
+    
+    //多图片上传
+    // upload.render({
+    //   elem: '#test-upload-drag'
+    //   ,url: '{:url("mobile/index/upload",array("id"=>$id,"uid"=>$uid))}'
+    //   ,multiple: true
+    //   ,before: function(obj){
+    //     //预读本地文件示例，不支持ie8
+    //     obj.preview(function(index, file, result){
+    //       	$(".layui-upload-list").append('<img src="' + result + '" id="remove_' + index + '" title="双击删除该图片" style="width:135px;height:auto;">');
+    //         $('#remove_' + index).bind('dblclick', function(){
+    //         	delete files[index];//删除指定图片
+    //             $(this).remove();
+    //         })
+    //     });
+    //   }
+    //   ,done: function(res){
+    //     //上传完毕
+    //     if(res.code == 1){
+    //     	layer.msg(res.msg, {icon: 1});
+    //     }else{
+    //     	layer.msg(res.msg, {icon: 5});
+    //     }
+    //   }
+    // });
+  
+  });
+  </script>

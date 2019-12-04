@@ -46,7 +46,7 @@
     </p>
 </div>
 <div class="copyright">
-    <p>Powered by <a href="https://www.fastadmin.net/?ref=jump">FastAdmin</a></p>
+    <p>Powered by <a href="#">唯租公寓</a></p>
 </div>
 {if $url}
     <script type="text/javascript">
