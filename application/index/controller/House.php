@@ -91,7 +91,7 @@ class House extends Frontend
             }
             
             if ($houseLists) {
-                
+
                 if (!empty($floorArr) ) {
 
                     $array = [
@@ -149,12 +149,4 @@ class House extends Frontend
         return $roomArray;
     }
 
-    /**
-     * 处理整租
-     * @return [type] [description]
-     */
-    protected function dealZhengzu()
-    {
-
-    }
 }
