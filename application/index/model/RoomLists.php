@@ -21,7 +21,13 @@ class RoomLists extends Model
 
     public function getFjstatusList()
     {
-        return ['11' => __('在租'), '11' => __('空置'), '12' => __('装修'), '13' => __('预定')];
+        return ['10' => __('在租'), '11' => __('空置'), '12' => __('装修'), '13' => __('预定')];
+    }
+
+    public function getFjstatusNum($value)
+    {
+        $fjstatusList = ['在租' => 10, '空置' => 11, '装修' => 12, '预定' => 13];
+        return $fjstatusList[$value];
     }
 
     public function getStatusTextAttr($value, $data)

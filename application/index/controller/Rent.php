@@ -72,7 +72,7 @@ class Rent extends Frontend
         $res = Db::table('fees_config')->field('id, modelName')->where('uid', USER_ID)->select();
         $xiaoqu = Db::table('ho_community_lists')->field('id,communityName')->where('uid',USER_ID)->select();
         $project = Db::table('ho_pro_lists')->field('id,projectName')->where('uid',USER_ID)->select();
-        $rent_source = Db::table('rent_source')->field('id,source')->where('uid',USER_ID)->select();
+        $rent_source = Db::table('ho_rent_source')->field('id,source')->where('uid',USER_ID)->select();
 
         $house_state = Db::table('house_state')->field('id,keys')->where('uid',USER_ID)->select();
         

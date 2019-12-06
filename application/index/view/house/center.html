@@ -37,15 +37,6 @@
 <body>
 
 <div class="layui-fluid">
-	<div class="layui-col-md12">
-	    <div class="layui-card">
-	        <div class="layui-card-body ">
-	            <blockquote class="layui-elem-quote">欢迎管理员：
-	                <span class="x-red">{$Think.session.user_info.qyname}</span>！
-	            </blockquote>
-	        </div>
-	    </div>
-	</div>
 	<div class="layui-row layui-col-space15">
 	  <div class="layui-col-md12">
 	    <div class="layui-card">
@@ -154,7 +145,7 @@
 		            </div>
 		            <div class="layui-row">
 		            	{volist name="$vo" id='f'}
-		            		{if condition="$f['chuzutype'] == 0"}
+		            		{if condition="$f['chuzutype'] == 0"}   <!-- 出租类型(整租:1或合租:0) -->
 				            	{volist name="$f['room']" id='v'}
 				              	<div class="layui-card  pointers">
 						          <div class="layui-card-body detail
@@ -170,8 +161,11 @@
 						            {/switch}
 						          " 
 						          id="detailCard" 
-						          data-id="{$v.uuid}" style=""
-						          >
+						          data-id="{$v.uuid}"
+						          data-type="1"
+						          data-room_id="{$v.room_id}"
+						          style=""
+						        >
 						          	<p>【{$f.ceng}层】 {$f.fangwutype} </p>
 						          	<p>{$v.fjbh}</p>
 						            
@@ -190,13 +184,13 @@
 						            	{eq name='$v.status_text' value='预定'} 
 						            		预 
 						            	{else/} 
-						            		欠
+						            		{eq name='$v.qianfei_state' value='1'} 欠 {/eq}
 						            	{/eq}
 						            {/switch}
 						        	</i>
 						            </div>
 						            <div class="free">
-						            	￥0
+						            	￥{$v.money}
 						            </div>
 						          </div>
 						        </div>
@@ -217,10 +211,13 @@
 					            {/switch}
 					          " 
 					          id="detailCard" 
-					          data-id="{$f.uuid}" style=""
-					          >
+					          data-id="{$f.uuid}" 
+					          data-type="2"
+						      data-room_id="0"
+					          style=""
+					        >
 					          		<p>【{$f.ceng}层】 {$f.fangwutype} </p>
-						            
+						            <p>&nbsp;</p>
 									{notempty name="$f.diff"}
 									{eq name='$f.qianfei_state' value='1'}<p style="position: absolute;font-size: 12px;">已欠费<span style="color:red;"> {$f.diff | abs}</span> 天</p> {else /} <p style="position: absolute;font-size: 12px;">离下次缴费还有<span style="color:red;"> {$f.diff | abs}</span> 天</p> {/eq}
 									{/notempty}
@@ -234,15 +231,15 @@
 						            {case value='装修'}装{/case}
 						            {default /}
 						            	{eq name='$f.status_text' value='预定'} 
-						            		预 
+						            		预
 						            	{else/} 
-						            		欠
+						            		{eq name='$f.qianfei_state' value='1'} 欠 {/eq}
 						            	{/eq}
 						            {/switch}
 						        	</i>
 						            </div>
 						            <div class="free">
-						            	￥0
+						            	￥{$f.money}
 						            </div>
 					          </div>
 					        </div>
@@ -283,7 +280,10 @@
 	    
 	    $('.detail').on('click', function(){
 	    	$this = $(this);
-	    	var uuid = $this.attr('data-id');
+	    	var uuid = $this.attr('data-id'); //暂时改为  房屋状态
+	    	var type = $this.attr('data-type'); //暂时改为  房屋状态
+	    	var room_id = $this.attr('data-room_id'); //暂时改为  房屋状态
+
 	    	var Yw = $this.offset().left;
           	var Yh = $this.offset().top;
           	var width = "330";
@@ -313,7 +313,7 @@
             	,offset: ['unset', lefts+'px']   //相对定位
 		        ,area: ['360px','415px']
 		        ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
-		        ,content: ["{:url('detail')}?uuid="+uuid, 'no']
+		        ,content: ["{:url('detail')}?uuid="+uuid+"&type="+type+"&room_id="+room_id, 'no'] //暂时改为  房屋状态
 		        ,success: function(layero,index){
 		        	layer.iframeAuto(index);
 		        	var body = layer.getChildFrame('body', index);

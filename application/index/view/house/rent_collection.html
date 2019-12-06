@@ -1,0 +1,171 @@
+<form class="layui-form" action="">
+<div class="yourclass">
+  <div class="layui-card">
+    <div class="layui-card-header">
+      <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+        <legend>收租 {$info.uuid} </legend>
+      </fieldset>
+    </div>
+    <div class="layui-card-body">
+      <div class="layui-row layui-col-space15" style="border-bottom: 1px solid #ebf4ff;">
+        <div class="layui-col-xs3 layui-col-xs-offset1">
+          房号：
+        </div>
+        <div class="layui-col-xs7">
+          {$info.roomNumber}
+        </div>
+      </div>
+      <div class="layui-row layui-col-space15" style="border-bottom: 1px solid #ebf4ff;">
+        <div class="layui-col-xs3 layui-col-xs-offset1">
+          房屋押金：
+        </div>
+        <div class="layui-col-xs7">
+          {$info.deposit}元
+        </div>
+      </div>
+      {volist name="$info['payment']['paymentModel']['afixFees']" id="vo"}
+      <div class="layui-row layui-col-space15" style="border-bottom: 1px solid #ebf4ff;">
+        <div class="layui-col-xs3 layui-col-xs-offset1">
+          {$vo['name']}：
+        </div>
+        <div class="layui-col-xs7">
+          {$vo['money']} {$vo['unit']}
+        </div>
+      </div>
+      {/volist}
+      <div class="layui-row layui-col-space15" style="border-bottom: 1px solid #ebf4ff;">
+        <div class="layui-col-xs3  layui-col-xs-offset1">
+          合计应收：
+        </div>
+        <div class="layui-col-xs7">
+          {$money}
+        </div>
+      </div>
+      <div class="layui-row layui-col-space15" style="border-bottom: 1px solid #ebf4ff;">
+        <div class="layui-col-xs3  layui-col-xs-offset1">
+          租期：
+        </div>
+        <div class="layui-col-xs7">
+          {$info.houseKeepingStart | date='Y-m-d',###} 至 {$info.houseKeepingEnd | date='Y-m-d',###}
+        </div>
+      </div>
+      <div class="layui-row layui-col-space15" style="border-bottom: 1px solid #ebf4ff;">
+        <div class="layui-col-xs3  layui-col-xs-offset1">
+          缴费周期：
+        </div> 
+        <div class="layui-col-xs7">
+          月付
+        </div>
+      </div>
+      <div class="layui-row layui-col-space15">
+        <div class="layui-col-xs3  layui-col-xs-offset1">
+          当前收费期：
+        </div> 
+        <div class="layui-col-xs7">
+          {$info.stage} ({$info['payment']['paymentJson']['paydate_start']} - {$info['payment']['paymentJson']['paydate_end']})
+        </div>
+      </div>
+      <div class="layui-row layui-col-space15">
+        <div class="layui-col-xs3  layui-col-xs-offset1" style="height: 53px;line-height: 38px;">
+          优惠减免：
+        </div>
+        <div class="layui-col-xs7">
+          <input type="number" name="rebate" onchange="change(this)" value="0" class="layui-input">
+        </div>
+      </div>
+      <div class="layui-row layui-col-space15" style="border-bottom: 1px solid #ebf4ff;">
+        <div class="layui-col-xs3  layui-col-xs-offset1">
+          实收：
+        </div>
+        <div class="layui-col-xs7">
+          <span id="shishou">{$money}</span>
+        </div>
+      </div>
+      <div class="layui-row layui-col-space15">
+        <div class="layui-col-xs3  layui-col-xs-offset1" style="height: 53px;line-height: 38px;">
+          收款方式
+        </div>
+        <div class="layui-col-xs8">
+          <input type="radio" name="skfs" value="现金支付" title="现金支付" checked="">
+          <input type="radio" name="skfs" value="转账" title="转账">
+          <input type="radio" name="skfs" value="POS收取" title="POS收取">
+        </div>
+      </div>
+      <div class="layui-row layui-col-space15">
+        <div class="layui-col-xs3  layui-col-xs-offset1">
+          备注：
+        </div>
+        <div class="layui-col-xs7">
+          <textarea placeholder="请输入备注内容" style="height: 125px;" height="158" class="layui-textarea" name="beizhu"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="layui-row">
+      <div class="layui-col-xs10  layui-col-xs-offset1">
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+              <button class="layui-btn" lay-submit="" lay-filter="subs" id="subs">确认</button>
+              <button class="layui-btn" type="button" id="close">取消</button>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+</div>
+</form>
+  <style type="text/css">
+    .yourclass .layui-col-xs3.layui-col-xs-offset1{text-align: right;}
+  </style>
+<script src="__INDEX__/layuiadmin/layui/layui.js"></script>  
+<script>
+  var $;
+  var layer;
+  layui.config({
+    base: '__INDEX__/layuiadmin/' //静态资源所在路径
+  }).extend({
+    index: 'lib/index' //主入口模块
+  }).use(['index','laydate', 'form'], function() {
+    $ = layui.jquery;
+    layer = layui.layer;
+    var form = layui.form;
+    form.render();
+    var laydate = layui.laydate;
+    laydate.render({
+      elem: '#test5'
+      ,type: 'datetime'
+    });
+    $("#close").click(function(){
+      // parent.location.reload()
+      var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+      parent.layer.close(index); //再执行关闭 
+    })
+
+    form.on('submit(subs)', function(data){
+      $.post("{:url('rentCollection')}", {key: "{$id}", beizhu: data.field.beizhu, rebate: data.field.rebate, rent_price: $("#shishou").text(),'uuid': "{$info.uuid}", 'skfs': data.field.skfs, 'room_id': "{$info.room_id}"},function(res) {
+        var jsonObj = JSON.parse(res);
+        if(jsonObj.code == 1) {
+
+          layer.msg('确认成功', {icon: 1, time: 2000}, function() {
+            parent.location.reload();
+            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+            parent.layer.close(index); //再执行关闭 
+          });
+        } else {
+          layer.msg('确认失败', {icon: 5, time: 2000});
+        }
+      })
+      console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
+      return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+    });
+  });
+
+  
+
+  function change(that) {
+
+    var obj = $(that).val();
+    var res = parseInt({$money}) - obj;
+    $("#shishou").text(res);
+  }
+</script>

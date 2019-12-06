@@ -34,6 +34,16 @@ class HouseLists extends Model
         return $this->hasMany('app\index\model\RoomLists', 'house_id');
     }
 
+    /**
+     * 关联小区表
+     * @return [type] [description]
+     */
+    public function community()
+    {
+
+        return $this->hasOne('CommunityLists', 'id', 'xiaoquID');
+    }
+
     public function getChuzutypeTextAttr($value, $data)
     {
         $value = $value ? $value : $data['chuzutype'];
