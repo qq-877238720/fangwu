@@ -96,9 +96,9 @@
 							<ul>
 								<li class=""><i class="layui-icon layui-icon-user"></i> <a onclick="zuyuedetail(0)" style="color: rgb(255, 86, 0)"  href="javascript:;">租约详情</a></li>
 
-								<li class=""><i class="layui-icon layui-icon-user"></i> <a onclick="tz()" style="color: rgb(255, 86, 0)"  href="javascript:;">退房操作</a></li>
+								<li class=""><i class="layui-icon layui-icon-user"></i> <a onclick="tz()" style="color: rgb(255, 86, 0)"  href="javascript:;">退&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;房</a></li>
 
-								<li class=""><i class="layui-icon layui-icon-user"></i> <a onclick="rentCollection('{$info.key}')" style="color: rgb(255, 86, 0)"  href="javascript:;">收租</a></li>
+								<li class=""><i class="layui-icon layui-icon-user"></i> <a onclick="rentCollection('{$info.key}')" style="color: rgb(255, 86, 0)"  href="javascript:;">收&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;租</a></li>
 							</ul>
 						</td>
 					</tr>
@@ -186,7 +186,7 @@
 			  	area: '300px;',
 			  	shade: 0.8,
 			  	btn: ['撤销预定', '取消'],
-			  	content: '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">你知道吗？亲！<br><br><br></div>',
+			  	content: '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">是否撤销预定？<br><br><br></div>',
 			  	yes: function(index, layero){
 			    	//按钮【按钮一】的回调
 			    	$.post("{:url('cexiaoYD')}", {uuid: uuid, room_id: room_id}, function(res){
@@ -224,7 +224,7 @@
 			  	area: '300px;',
 			  	shade: 0.8,
 			  	btn: ['装修完成确定', '取消'],
-			  	content: '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">你知道吗？亲！<br><br><br></div>',
+			  	content: '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">是否确定装修完成？<br><br><br></div>',
 			  	yes: function(i, layero){
 			    	//按钮【按钮一】的回调
 			    	// console.log("确定")
@@ -251,11 +251,8 @@
 	    function rentCollection(id) {
 	    	parent.layer.open({
 	    		type: 2,
-				title: false,
-				closeBtn: 0,
-				shadeClose: true,
-				skin: 'yourclass',
-				area: ['670px', '758px'],
+	    		area: ['700px', '100vh'],
+		  		maxmin: true,
 	    		content: "{:url('rentCollection', ['uuid' => $info['uuid']])}?key="+id+"&uuid="+uuid+'&room_id='+room_id,
 	    		success: function(layero, index){
 				    var body = layer.getChildFrame('body', index);
@@ -271,11 +268,8 @@
 
 	    	parent.layer.open({
 			  type: 2,
-			  title: false,
-			  closeBtn: 0,
-			  shadeClose: true,
-			  skin: 'yourclass',
-			  area: ['470px', '740px'],
+	    		area: ['700px', '100vh'],
+		  		maxmin: true,
 			  content: "{:url('tuizu', ['uuid' => $info['uuid'], 'room_id' => $info.room_id])}",
 			});
 	    }
