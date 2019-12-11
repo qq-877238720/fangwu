@@ -6,7 +6,7 @@
                     <legend>添加房源</legend>
                   </fieldset>
                   <form id="form" class="layui-form layui-form-pane" action="">
-                    <div class="layui-col-md6" style="padding: 7.5px;">
+                    <div class="layui-col-md5" style="padding: 7.5px;">
                       <div class="layui-card">
                           <div class="layui-card-header">房源基本信息</div>
                           <div class="layui-card-body layui-row layui-col-space10"> 
@@ -100,7 +100,7 @@
                           </div>
                       </div>
                     </div>
-                    <div class="layui-col-md6" style="padding: 7.5px;">
+                    <div class="layui-col-md7" style="padding: 7.5px;">
                       <div class="layui-card">
                           <div class="layui-card-header">房源 -- 附加房间信息</div>
                           <div class="layui-card-body layui-row layui-col-space10"> 
@@ -111,7 +111,7 @@
                                     <div class="layui-input-inline">
                                         <input type="text" name="room[0][fjbh]" lay-verify="required" placeholder="房间编号" autocomplete="off" class="layui-input">
                                     </div>
-                                    <div class="layui-form-mid layui-word-aux"> <i class="layui-icon layui-icon-tips"  style="padding-left: 10px;padding-right: 0px;"> </i> <span>合租房命名：建议使用房号加字母，如：301A、301B、301C</span> </div>
+                                    <div class="layui-form-mid layui-word-aux"> <i class="layui-icon layui-icon-tips"  style="padding-left: 10px;padding-right: 0px;"> </i> <span>房间命名规则：建议使用房号加字母，如：301A、301B、301C</span> </div>
                                 </div>
                                 <div class="layui-form-item">
                                     <label class="layui-form-label">房间面积</label>
@@ -136,9 +136,21 @@
                                     </div>
                                 </div>
                                 <fieldset class="layui-elem-field addroomlist">
-                                    <legend>其他房间信息</legend>
+                                    <legend>其他房间信息  <span style="font-size: 12px;"><i class="layui-icon layui-icon-tips" style="padding-left: 10px;padding-right: 0px;"> </i> <span>房间编号命名规则：建议使用房号加字母，如：301B、301C、301D</span></span></legend>
                                     <div class="layui-field-box listInput">
-                                        
+                                        <table id="tabs" class="layui-table layuiadmin-page-table">
+                                          <thead>
+                                            <tr>
+                                              <th style="width: 15%;">房间编号</th>
+                                              <th style="width: 15%;">房间面积/㎡</th>
+                                              <th style="width: 30%;">房间状态</th>
+                                              <th style="width: 33%;">房间备注</th>
+                                              <th style="width: 7%;">操作</th>
+                                            </tr> 
+                                          </thead>
+                                          <tbody class="roomListInput">
+                                          </tbody>
+                                        </table>
                                     </div>
                                 </fieldset>
                                 <div class="layui-form-item roomadd">
@@ -148,194 +160,6 @@
                           </div>
                       </div>
                     </div>
-                    <!-- <div class="layui-col-md6" style="padding: 7.5px;display: none;">
-                      <div class="layui-card">
-                          <div class="layui-card-header">租客信息</div>
-                          <div class="layui-card-body layui-row layui-col-space10"> 
-                              <div class="layui-card-body">
-                                <div class="layui-form-item xingming">
-                                    <label class="layui-form-label">承租人姓名</label>
-                                    <div class="layui-input-block">
-                                        <input type="text" name="user[0][xingming]" lay-verify="xingming" autocomplete="off" placeholder="承租人姓名" class="layui-input usernames">
-                                    </div>
-                                </div>
-                                <div class="layui-form-item sex" pane="">
-                                    <label class="layui-form-label">承租人性别</label>
-                                    <div class="layui-input-block">
-                                        <input type="radio" name="user[0][sex]" value="1" title="男" checked="">
-                                        <input type="radio" name="user[0][sex]" value="2" title="女">
-                                    </div>
-                                </div>
-                                <div class="layui-form-item userphone">
-                                    <label class="layui-form-label">手机号码</label>
-                                    <div class="layui-input-block">
-                                        <input type="text" name="user[0][phone]" lay-verify="phone" autocomplete="off" placeholder="租客手机号码" class="layui-input userphones">
-                                    </div>
-                                </div>
-                                <div class="layui-form-item">
-                                    <label class="layui-form-label">证件类型</label>
-                                    <div class="layui-input-block">
-                                        <select name="cardtype" lay-verify="required" lay-search="">
-                                          <option value="">直接选择或搜索登记证件类型</option>
-                                          <option value="1">居民身份证</option> 
-                                          <option value="2">护照</option> 
-                                          <option value="3">军人证</option> 
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="layui-form-item card">
-                                    <label class="layui-form-label">证件号</label>
-                                    <div class="layui-input-block">
-                                        <input type="text" name="user[0][card]" autocomplete="off" placeholder="租客证件号(身份证、等)" class="layui-input usercards">
-                                    </div>
-                                </div>
-                                <div class="layui-form-item mingzu">
-                                    <label class="layui-form-label">所属民族</label>
-                                    <div class="layui-input-block">
-                                        <input type="text" name="user[0][mingzu]" autocomplete="off" placeholder="所属民族" class="layui-input mingzu">
-                                    </div>
-                                </div>
-                                <div class="layui-form-item addr">
-                                    <label class="layui-form-label">籍贯地址</label>
-                                    <div class="layui-input-block">
-                                        <input type="text" name="user[0][addr]" autocomplete="off" placeholder="籍贯地址" class="layui-input addr">
-                                    </div>
-                                </div>
-                                <fieldset class="layui-elem-field adduserlist" style="display: none;">
-                                    <legend>增加的租客信息</legend>
-                                    <div class="layui-field-box listInput">
-                                        
-                                    </div>
-                                </fieldset>
-                                <div class="layui-form-item useradd">
-                                    <button id="useradd" type="button" class="layui-btn layui-btn-primary layui-btn-radius" data-type="adds">+ 增加一人</button>
-                                </div>
-                                <div class="layui-form-item useradd">
-                                    <style type="text/css">
-                                      .layui-upload-drag{
-                                        padding: 10px;
-                                      }
-                                    </style>
-                                    <div class="layui-col-md12">
-                                      <div class="layui-card">
-                                        <div class="layui-card-header">承租人证件照</div>
-                                        <div class="layui-card-body">
-                                            <input type="hidden" name="chengzhuren_zhengmian" id="chengzhuren_zhengmian" value="">
-                                            <input type="hidden" name="chengzhuren_fanmian" id="chengzhuren_fanmian" value="">
-                                          <div class="layui-upload">
-                                            <div class="layui-upload-drag" id="test-upload-normal1">
-                                                
-                                              <img class="zhengmm" src="__CDN__/assets/img/zhengm.png" style="width:90px;height:100px;">
-                                            </div>
-                                            
-                                            <div class="layui-upload-drag" style="border: none;">
-                                              <p>或者</p>
-                                            </div>
-
-                                            <div class="layui-upload-drag" style="padding: 5px;">
-                                              <img src="{:url('index/RentManage/create',array('rands'=>$rands))}" style="width: 102px;">
-                                            </div>
-                                          </div> 
-                                          <br>
-                                          <blockquote class="layui-elem-quote">
-                                            <p>上传承租人身份证照片，会自动识别承租人信息，并填入上面承租人信息 </p>
-                                            <p>如果上传错误，请直接点击图片选择正确的照片，重新上传！谢谢 </p>
-                                            <p>注意：当前只能识别身份证信息，无法识别护照信息</p>
-                                          </blockquote>   
-                                        </div>
-                                      </div>
-                                    </div>
-                                </div>
-
-                                <div class="layui-form-item pricemodel">
-                                    <label class="layui-form-label">费用模板</label>
-                                    <div class="layui-input-inline">
-                                        <select name="pricemodel" lay-verify="required" lay-search="" lay-filter="pricemodel">
-                                        <option value="">请选择费用信息模板</option>
-                                        {foreach $modelName as $key=>$vo } 
-                                            <option value="{$vo.id}">{$vo.modelName}</option>
-                                        {/foreach}
-                                        </select>
-                                    </div>
-                                </div>
-                                <fieldset class="layui-elem-field showPricemodelContent layui-anim layui-anim-upbit" style="display: none;">
-                                    <legend>费用配置</legend>
-                                    <div class="layui-field-box pricemodelContent">
-                                        <div class="layui-card-header">固定费用：</div>
-                                        <div class="layui-card-body" style="padding: 5px;" id="guDingFree">
-                                              
-                                        </div>
-                                        <div class="layui-card-header" style="display: none;">计量费用：</div>
-                                        <div class="layui-card-body" style="padding: 5px;" id="jiLiangFree">
-                                            
-                                        </div>
-                                    </div>
-                                </fieldset>
-                                <div class="layui-form-item pricemodel">
-                                    <label class="layui-form-label">清单模板</label>
-                                    <div class="layui-input-inline">
-                                        <select name="listtemplate" lay-verify="required" lay-search="" lay-filter="listtemplate">
-                                        <option value="">请选择入住清单模板</option>
-                                        {foreach $listName as $key=>$vo } 
-                                            <option value="{$vo.id}">{$vo.modelName}</option>
-                                        {/foreach}
-                                        </select>
-                                    </div>
-                                </div>
-                                <fieldset class="layui-elem-field showlisttemplateContent layui-anim layui-anim-upbit" style="display: none;">
-                                    <legend>清单配置</legend>
-                                    <div class="layui-field-box listtemplateContent">
-                                        <div class="layui-card-header">清单配置：</div>
-                                        <div class="layui-card-body" style="padding: 5px;" id="guDingFree2">
-                                              
-                                        </div>
-                                        <div class="layui-card-header" style="display: none;">计量费用：</div>
-                                        <div class="layui-card-body" style="padding: 5px;" id="jiLiangFree2">
-                                            
-                                        </div>
-                                    </div>
-                                </fieldset>
-                                <div class="layui-form-item renttimes">
-                                    
-                                    <div class="layui-inline">
-                                      <label class="layui-form-label">租赁时间</label>
-                                      <div class="layui-input-inline">
-                                        <input type="text" class="layui-input" id="test-laydate-format-range2" placeholder="开始 到 结束">
-                                      </div>
-                                    </div>
-                                   
-                                </div>
-                                <div class="layui-form-item paymentway" pane="">
-                                    <label class="layui-form-label">付款周期</label>
-                                    <div class="layui-input-block">
-                                        <input type="radio" name="paymenttimes" class="mm" value="月付" title="月付" checked="">
-                                        <input type="radio" name="paymenttimes" class="jj" value="季付" title="季付">
-                                        <input type="radio" name="paymenttimes" class="bn" value="半年付" title="半年付">
-                                        <input type="radio" name="paymenttimes" class="nn" value="年付" title="年付">
-                                    </div>
-                                </div>
-                                <div class="layui-form-item userorigin">
-                                    <label class="layui-form-label">租客来源</label>
-                                    <div class="layui-input-inline">
-                                        <select name="userorigin" lay-verify="required" lay-search="">
-                                        <option value="">请选择租客来源</option>
-                                        {foreach $rent_source as $key=>$vo } 
-                                            <option value="{$vo.id}">{$vo.source}</option>
-                                        {/foreach} 
-                                        </select>
-                                    </div>
-                                </div>
-                                
-                                <div class="layui-form-item layui-form-text">
-                                    <label class="layui-form-label">租客备注</label>
-                                    <div class="layui-input-block">
-                                        <textarea placeholder="请输入备注内容" class="layui-textarea" name="userbeizhu"></textarea>
-                                    </div>
-                                </div>
-                              </div>
-                          </div>
-                      </div>
-                    </div> -->
                     <div class="layui-col-md12" style="padding: 7.5px;">
                       <div class="layui-card">
                         <div class="layui-card-body layui-row layui-col-space10" style="text-align: center;"> 
@@ -363,127 +187,109 @@
                 
                 // 租赁时间区间选择 -------- start
                 laydate.render({
-                  elem: '#test-laydate-format-range2'
-                  ,range: '~'
+                    elem: '#test-laydate-format-range2'
+                    ,range: '~'
                 });
                 // 租赁时间区间选择 -------end
                 // 
                 // 
                 //点击新增一间房间信息 ------- start
+                var count = 0;
                 $('.roomadd #roomadd').on('click', function(){
-                  var numbers = $('.isroomnum').length;
-                  var index = numbers + 1;
-                  var html = '<fieldset class="layui-elem-field isroomnum">\
-                                  <legend class="dels" style="color: red;margin-left:50px;font-size: 16px;cursor: pointer;">删除</legend>\
-                                  <div class="layui-field-box">\
-                                      <div class="layui-form-item">\
-                                          <label class="layui-form-label">房间编号</label>\
-                                          <div class="layui-input-inline">\
-                                              <input type="text" name="room['+index+'][fjbh]" lay-verify="required" placeholder="房间编号" autocomplete="off" class="layui-input">\
-                                          </div>\
-                                          <div class="layui-form-mid layui-word-aux"> <i class="layui-icon layui-icon-tips"  style="padding-left: 10px;padding-right: 0px;"> </i> <span>合租房命名：建议使用房号加字母，如：301A、301B、301C</span> </div>\
-                                      </div>\
-                                      <div class="layui-form-item">\
-                                          <label class="layui-form-label">房间面积</label>\
-                                          <div class="layui-input-inline">\
-                                              <input type="text" name="room['+index+'][fjarea]" lay-verify="number" placeholder="房间面积" autocomplete="off" class="layui-input">\
-                                          </div>\
-                                          <div class="layui-form-mid layui-word-aux">/㎡</div>\
-                                      </div>\
-                                      <div class="layui-form-item" pane="">\
-                                          <label class="layui-form-label">房间状态</label>\
-                                          <div class="layui-input-block" id="isfjstatus">\
-                                              <input type="radio" name="room['+index+'][fjstatus]" value="10" title="在租" lay-filter="clik" disabled>\
-                                              <input type="radio" name="room['+index+'][fjstatus]" value="11" title="空置" lay-filter="clik" checked="">\
-                                              <input type="radio" name="room['+index+'][fjstatus]" value="12" title="装修" lay-filter="clik">\
-                                              <input type="radio" name="room['+index+'][fjstatus]" value="13" title="预定" lay-filter="clik" disabled>\
-                                          </div>\
-                                      </div>\
-                                      <div class="layui-form-item layui-form-text">\
-                                          <label class="layui-form-label">房间备注</label>\
-                                          <div class="layui-input-block">\
-                                              <textarea placeholder="请输入备注内容" class="layui-textarea" name="room['+index+'][beizhu]"></textarea>\
-                                          </div>\
-                                      </div>\
-                                  </div>\
-                              </fieldset>';
+                    var numbers = $("#tabs tbody").find("tr").length
+                    count += 1;
+                    var html = '<tr style="border-bottom: 1px solid #e6e6e6 ">\
+                                  <td style="padding: 0;border: none;">\
+                                    <input type="text" name="room['+count+'][fjbh]" lay-verify="required" placeholder="房间编号" autocomplete="off" class="layui-input">\
+                                  </td>\
+                                  <td style="padding: 0;border: none;">\
+                                    <input type="text" name="room['+count+'][fjarea]" lay-verify="number" placeholder="房间面积" autocomplete="off" class="layui-input">\
+                                  </td>\
+                                  <td style="padding: 0;border: none;">\
+                                    <input type="radio" name="room['+count+'][fjstatus]" value="11" title="空置" lay-filter="clik" checked="">\
+                                    <input type="radio" name="room['+count+'][fjstatus]" value="12" title="装修" lay-filter="clik">\
+                                  </td>\
+                                  <td style="padding: 0;border: none;">\
+                                    <textarea placeholder="请输入备注内容" rows="1" class="layui-textarea" style="min-height: auto;" name="room['+count+'][beizhu]"></textarea>\
+                                  </td>\
+                                  <td style="border: none;"><button type="button" class="layui-btn layui-btn-danger layui-btn-sm dels">删除</button></td>\
+                                </tr>';
 
-                  if(numbers >= 6){
-                      layer.msg('最多新增六个房间！', {icon: 5});
-                      return false;
-                  }else{
-                      $('.listInput').append(html);
-                      $(".addroomlist").show();
-                      form.render();
-                  }
+                    if(numbers >= 5){
+                        layer.msg('最多新增五个房间！', {icon: 5});
+                        return false;
+                    }else{
+                          $("#tabs tbody").append(html);
+                          form.render();
+                    }
                   
-              });
+                });
               
 
-              $(document).on("click",".dels",function(){
-                  var numbers = $('.isroomnum').length;
-                  var objs = $(this);
-                  layer.confirm('是否取消新增房间？', {
-                      btn: ['确定','取消'] //按钮
-                  }, function(){
-                      if(numbers == 1){
-                          objs.parent().remove();
-                          $(".addroomlist").hide();
-                      }else{
-                          objs.parent().remove();
-                      }
-                      layer.msg('已取消新增', {icon: 1});
-                  }, function(){
+                $(document).on("click",".dels",function(){
+                    var numbers = $("#tabs tbody").find("tr").length
+                    var objs = $(this);
+                    layer.confirm('是否取消该新增的房间？', {
+                        btn: ['确定','取消'] //按钮
+                    }, function(){
+                        if(numbers == 1){
+                            objs.parent().parent().remove();
+                        }else{
+                            objs.parent().parent().remove();
+                        }
+                        form.render();
+                        layer.msg('已取消新增', {icon: 1});
+                    }, function(){
                       // layer.msg('已取消', {
                       //     time: 1000
                       // });
-                  }); 
-              })
-              //点击新增一间房间信息 ------- end
-              //
-              //
-              // 监听表单提交 -------- start
-              form.on('submit(subs)', function(data){
-                // $('#subs').attr('disabled','disabled');
-                var form = $("#form").serializeArray();
+                    }); 
+                })
+                //点击新增一间房间信息 ------- end
+                //
+                //
+                // 监听表单提交 -------- start
+                form.on('submit(subs)', function(data){
+                    // $('#subs').attr('disabled','disabled');
+                    var form = $("#form").serializeArray();
 
-                $.post({
-                    url: '{:url("addHouse")}',
-                    data: form
-                    ,success: function(res) {
-                        if(res.code == 1 ){
-                          //登入成功的提示与跳转
-                          layer.msg(res.msg, {
-                            offset: '15px'
-                            ,icon: 1
-                            ,time: 1000
-                          }, function(){
-                            //刷新当前
-                            location.href = "{:url('index/Rent/addHouse')}";
+                    $.post({
+                        url: '{:url("addHouse")}',
+                        data: form
+                        ,success: function(res) {
+                            if(res.code == 1 ){
+                              //登入成功的提示与跳转
+                              layer.msg(res.msg, {
+                                offset: '15px'
+                                ,icon: 1
+                                ,time: 1000
+                              }, function(){
+                                //刷新当前
+                                location.href = "{:url('index/Rent/addHouse')}";
 
-                          });
-                        }else{
-                          layer.msg(res.msg, {
-                            offset: '15px'
-                            ,icon: 5
-                            ,time: 1000
-                          }, function(){
-                            //刷新当前
-                          });
+                              });
+                            }else{
+                              layer.msg(res.msg, {
+                                offset: '15px'
+                                ,icon: 5
+                                ,time: 1000
+                              }, function(){
+                                //刷新当前
+                              });
+                            }
                         }
-                    }
-                    ,error: function(res) {
-                        layer.msg('系统繁忙，请稍后再试', {
-                          offset: '15px'
-                          ,icon: 5
-                          ,time: 1000
-                        });
-                    }
-                });
+                        ,error: function(res) {
+                            layer.msg('系统繁忙，请稍后再试', {
+                              offset: '15px'
+                              ,icon: 5
+                              ,time: 1000
+                            });
+                        }
+                    });
                 
-                // return false;
-              }); 
-              // 监听表单提交 -------- end
+                    // return false;
+                }); 
+                // 监听表单提交 -------- end
             })
       </script>
     </body>

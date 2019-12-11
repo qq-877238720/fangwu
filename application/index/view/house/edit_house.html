@@ -53,10 +53,16 @@
                                     <div class="layui-input-block" id="isclas">
                                         <input type="radio" name="clas" value="1" title="整租" lay-filter="clik"
                                         {eq name="$info['chuzutype']"  value="1" } checked="" {/eq}
+                                        {if condition="$watch neq 0"} disabled="disabled" {/if}
                                         >
                                         <input type="radio" name="clas" value="0" title="合租" lay-filter="clik"
                                         {eq name="$info['chuzutype']"  value="0" } checked="" {/eq}
+                                        {if condition="$watch neq 0"} disabled="disabled" {/if}
                                         >
+                                        {if condition="$watch neq 0"}
+                                        <input type="hidden" name="clas" value="{$info['chuzutype']}">
+                                        {else /}
+                                        {/if}
                                     </div>
                                 </div>
                                 <div class="layui-form-item">
@@ -135,10 +141,10 @@
                                 <div class="layui-form-item" pane="">
                                     <label class="layui-form-label">房间状态</label>
                                     <div class="layui-input-block" id="isfjstatus">
-                                        <input type="radio" name="room[0][fjstatus]" value="10" title="在租" lay-filter="clik" disabled="disabled">
-                                        <input type="radio" name="room[0][fjstatus]" value="11" {eq name="$info.room[0]['fjstatus']"  value="11" } checked="" {/eq} title="空置" lay-filter="clik" checked="">
-                                        <input type="radio" name="room[0][fjstatus]" value="12" {eq name="$info.room[0]['fjstatus']"  value="12" } checked="" {/eq} title="装修" lay-filter="clik">
-                                        <input type="radio" name="room[0][fjstatus]" value="13" title="预定" lay-filter="clik" disabled="disabled">
+                                        <input type="radio" name="room[0][fjstatus]" value="10" title="在租" lay-filter="clik" {eq name="$info.room[0]['fjstatus']" value="10" }checked=""{/eq} disabled="disabled">
+                                        <input type="radio" name="room[0][fjstatus]" value="11" {eq name="$info.room[0]['fjstatus']" value="11" }checked=""{else/}{eq name="$info.room[0]['fjstatus']"  value="12" }{else/}disabled{/eq}{/eq} title="空置" lay-filter="clik">
+                                        <input type="radio" name="room[0][fjstatus]" value="12" {eq name="$info.room[0]['fjstatus']" value="12" }checked=""{else/}{eq name="$info.room[0]['fjstatus']"  value="11" }{else/}disabled{/eq}{/eq} title="装修" lay-filter="clik">
+                                        <input type="radio" name="room[0][fjstatus]" value="13" title="预定" lay-filter="clik" {eq name="$info.room[0]['fjstatus']" value="13" }checked=""{/eq} disabled="disabled">
                                     </div>
                                 </div>
                                 <div class="layui-form-item layui-form-text">
@@ -147,7 +153,7 @@
                                         <textarea placeholder="请输入备注内容" class="layui-textarea" name="room[0][beizhu]">{$info.room[0]['beizhu']}</textarea>
                                     </div>
                                 </div>
-                                <fieldset class="layui-elem-field addroomlist">
+                                <!-- <fieldset class="layui-elem-field addroomlist">
                                     <legend>其他房间信息</legend>
                                     <div class="layui-field-box listInput">
                                         {volist name="$info.room" id="vo" offset="1"}
@@ -173,7 +179,7 @@
                                                   <label class="layui-form-label">房间状态</label>
                                                   <div class="layui-input-block" id="isfjstatus">
                                                       <input type="radio" name="room[{$key}][fjstatus]" value="10" title="在租" lay-filter="clik" disabled>
-                                                      <input type="radio" name="room[{$key}][fjstatus]" value="11" title="空置" {eq name="$vo['fjstatus']"  value="12" } checked="" {/eq} lay-filter="clik" checked="">
+                                                      <input type="radio" name="room[{$key}][fjstatus]" value="11" title="空置" {eq name="$vo['fjstatus']"  value="11" } checked="" {/eq} lay-filter="clik" checked="">
                                                       <input type="radio" name="room[{$key}][fjstatus]" value="12" title="装修" {eq name="$vo['fjstatus']"  value="12" } checked="" {/eq} lay-filter="clik">
                                                       <input type="radio" name="room[{$key}][fjstatus]" value="13" title="预定" lay-filter="clik" disabled>
                                                   </div>
@@ -187,6 +193,45 @@
                                           </div>
                                         </fieldset>
                                         {/volist}
+                                    </div>
+                                </fieldset> -->
+                                <fieldset class="layui-elem-field addroomlist">
+                                    <legend>其他房间信息  <span style="font-size: 12px;"><i class="layui-icon layui-icon-tips" style="padding-left: 10px;padding-right: 0px;"> </i> <span>房间编号命名规则：建议使用房号加字母，如：301B、301C、301D</span></span></legend>
+                                    <div class="layui-field-box listInput">
+                                        <table id="tabs" class="layui-table layuiadmin-page-table">
+                                          <thead>
+                                            <tr>
+                                              <th style="width: 15%;">房间编号</th>
+                                              <th style="width: 15%;">房间面积/㎡</th>
+                                              <th style="width: 30%;">房间状态</th>
+                                              <th style="width: 33%;">房间备注</th>
+                                              <th style="width: 7%;">操作</th>
+                                            </tr> 
+                                          </thead>
+                                          <tbody class="roomListInput">
+                                            {volist name="$info.room" id="vo" offset="1"}
+                                            <input type="hidden" name="room[{$key}][room_id]" value="{$vo['room_id']}">
+                                            <tr style="border-bottom: 1px solid #e6e6e6 ">
+                                              <td style="padding: 0;border: none;">
+                                                <input type="text" name="room[{$key}][fjbh]" lay-verify="required" placeholder="房间编号" autocomplete="off" class="layui-input" value="{$vo.fjbh}">
+                                              </td>
+                                              <td style="padding: 0;border: none;">
+                                                <input type="text" name="room[{$key}][fjarea]" lay-verify="number" placeholder="房间面积" autocomplete="off" class="layui-input" value="{$vo.fjarea}">
+                                              </td>
+                                              <td style="padding: 0;border: none;">
+                                                <input type="radio" name="room[{$key}][fjstatus]" value="10" title="在租" lay-filter="clik" {eq name="$vo['fjstatus']"  value="10" } checked="" {/eq} disabled>
+                                                <input type="radio" name="room[{$key}][fjstatus]" value="11" title="空置" lay-filter="clik" {eq name="$vo['fjstatus']"  value="11" } checked="" {else/} {eq name="$vo['fjstatus']"  value="12" }{else/}disabled{/eq} {/eq}>
+                                                <input type="radio" name="room[{$key}][fjstatus]" value="12" title="装修" lay-filter="clik" {eq name="$vo['fjstatus']"  value="12" } checked="" {else/} {eq name="$vo['fjstatus']"  value="11" }{else/}disabled{/eq} {/eq}>
+                                                <input type="radio" name="room[{$key}][fjstatus]" value="13" title="预定" lay-filter="clik" {eq name="$vo['fjstatus']"  value="13" } checked="" {/eq} disabled>
+                                              </td>
+                                              <td style="padding: 0;border: none;">
+                                                <textarea placeholder="请输入备注内容" rows="1" class="layui-textarea" style="min-height: auto;" name="room[{$key}][beizhu]">{$vo.beizhu}</textarea>
+                                              </td>
+                                              <td style="border: none;"><button type="button" class="layui-btn layui-btn-danger layui-btn-sm dels">删除</button></td>
+                                            </tr>
+                                          </tbody>
+                                          {/volist}
+                                        </table>
                                     </div>
                                 </fieldset>
                                 <div class="layui-form-item roomadd">
@@ -230,119 +275,99 @@
                 // 
                 // 
                 //点击新增一间房间信息 ------- start
+                var count = 0;
                 $('.roomadd #roomadd').on('click', function(){
-                  var numbers = $('.isroomnum').length;
-                  var index = numbers + 1;
-                  var html = '<fieldset class="layui-elem-field isroomnum">\
-                                  <legend class="dels" style="color: red;margin-left:50px;font-size: 16px;cursor: pointer;">删除</legend>\
-                                  <div class="layui-field-box">\
-                                      <div class="layui-form-item">\
-                                          <label class="layui-form-label">房间编号</label>\
-                                          <div class="layui-input-inline">\
-                                              <input type="text" name="room['+index+'][fjbh]" lay-verify="required" placeholder="房间编号" autocomplete="off" class="layui-input">\
-                                          </div>\
-                                          <div class="layui-form-mid layui-word-aux"> <i class="layui-icon layui-icon-tips"  style="padding-left: 10px;padding-right: 0px;"> </i> <span>合租房命名：建议使用房号加字母，如：301A、301B、301C</span> </div>\
-                                      </div>\
-                                      <div class="layui-form-item">\
-                                          <label class="layui-form-label">房间面积</label>\
-                                          <div class="layui-input-inline">\
-                                              <input type="text" name="room['+index+'][fjarea]" lay-verify="number" placeholder="房间面积" autocomplete="off" class="layui-input">\
-                                          </div>\
-                                          <div class="layui-form-mid layui-word-aux">/㎡</div>\
-                                      </div>\
-                                      <div class="layui-form-item" pane="">\
-                                          <label class="layui-form-label">房间状态</label>\
-                                          <div class="layui-input-block" id="isfjstatus">\
-                                              <input type="radio" name="room['+index+'][fjstatus]" value="10" title="在租" lay-filter="clik" disabled>\
-                                              <input type="radio" name="room['+index+'][fjstatus]" value="11" title="空置" lay-filter="clik" checked="">\
-                                              <input type="radio" name="room['+index+'][fjstatus]" value="12" title="装修" lay-filter="clik">\
-                                              <input type="radio" name="room['+index+'][fjstatus]" value="13" title="预定" lay-filter="clik" disabled>\
-                                          </div>\
-                                      </div>\
-                                      <div class="layui-form-item layui-form-text">\
-                                          <label class="layui-form-label">房间备注</label>\
-                                          <div class="layui-input-block">\
-                                              <textarea placeholder="请输入备注内容" class="layui-textarea" name="room['+index+'][beizhu]"></textarea>\
-                                          </div>\
-                                      </div>\
-                                  </div>\
-                              </fieldset>';
+                    var numbers = $("#tabs tbody").find("tr").length
+                    count += 1;
+                    var html = '<tr style="border-bottom: 1px solid #e6e6e6 ">\
+                                  <td style="padding: 0;border: none;">\
+                                    <input type="text" name="room['+count+'][fjbh]" lay-verify="required" placeholder="房间编号" autocomplete="off" class="layui-input">\
+                                  </td>\
+                                  <td style="padding: 0;border: none;">\
+                                    <input type="text" name="room['+count+'][fjarea]" lay-verify="number" placeholder="房间面积" autocomplete="off" class="layui-input">\
+                                  </td>\
+                                  <td style="padding: 0;border: none;">\
+                                    <input type="radio" name="room['+count+'][fjstatus]" value="11" title="空置" lay-filter="clik" checked="">\
+                                    <input type="radio" name="room['+count+'][fjstatus]" value="12" title="装修" lay-filter="clik">\
+                                  </td>\
+                                  <td style="padding: 0;border: none;">\
+                                    <textarea placeholder="请输入备注内容" rows="1" class="layui-textarea" style="min-height: auto;" name="room['+count+'][beizhu]"></textarea>\
+                                  </td>\
+                                  <td style="border: none;"><button type="button" class="layui-btn layui-btn-danger layui-btn-sm dels">删除</button></td>\
+                                </tr>';
 
-                  if(numbers >= 6){
-                      layer.msg('最多新增六个房间！', {icon: 5});
-                      return false;
-                  }else{
-                      $('.listInput').append(html);
-                      $(".addroomlist").show();
-                      form.render();
-                  }
-                  
-              });
+                    if(numbers >= 5){
+                        layer.msg('最多新增五个房间！', {icon: 5});
+                        return false;
+                    }else{
+                          $("#tabs tbody").append(html);
+                          form.render();
+                    }
+                });
               
 
-              $(document).on("click",".dels",function(){
-                  var numbers = $('.isroomnum').length;
-                  var objs = $(this);
-                  layer.confirm('是否取消新增房间？', {
-                      btn: ['确定','取消'] //按钮
-                  }, function(){
-                      if(numbers == 1){
-                          objs.parent().remove();
-                          $(".addroomlist").hide();
-                      }else{
-                          objs.parent().remove();
-                      }
-                      layer.msg('已取消修改', {icon: 1});
-                  }, function(){
-                      // layer.msg('已取消', {
-                      //     time: 1000
-                      // });
-                  }); 
-              })
+            $(document).on("click",".dels",function(){
+                var numbers = $("#tabs tbody").find("tr").length
+                var objs = $(this);
+                layer.confirm('是否取消该新增的房间？', {
+                    btn: ['确定','取消'] //按钮
+                }, function(){
+                    if(numbers == 1){
+                        objs.parent().parent().remove();
+                    }else{
+                        objs.parent().parent().remove();
+                    }
+                    form.render();
+                    layer.msg('已取消新增', {icon: 1});
+                }, function(){
+                  // layer.msg('已取消', {
+                  //     time: 1000
+                  // });
+                }); 
+            })
               //点击新增一间房间信息 ------- end
               //
               //
               // 监听表单提交 -------- start
-              form.on('submit(subs)', function(data){
-                // $('#subs').attr('disabled','disabled');
-                var form = $("#form").serializeArray();
+                form.on('submit(subs)', function(data){
+                    // $('#subs').attr('disabled','disabled');
+                    var form = $("#form").serializeArray();
 
-                $.post({
-                    url: '{:url("edit")}',
-                    data: form
-                    ,success: function(res) {
-                        if(res.code == 1 ){
-                          //登入成功的提示与跳转
-                          layer.msg(res.msg, {
-                            offset: '15px'
-                            ,icon: 1
-                            ,time: 1000
-                          }, function(){
-                            //刷新当前
-                            location.href = "{:url('edit', ['uuid' => $info.uuid])}";
+                    $.post({
+                        url: '{:url("edit")}',
+                        data: form
+                        ,success: function(res) {
+                            if(res.code == 1 ){
+                              //登入成功的提示与跳转
+                              layer.msg(res.msg, {
+                                offset: '15px'
+                                ,icon: 1
+                                ,time: 1000
+                              }, function(){
+                                //刷新当前
+                                location.href = "{:url('edit', ['uuid' => $info.uuid])}";
 
-                          });
-                        }else{
-                          layer.msg(res.msg, {
-                            offset: '15px'
-                            ,icon: 5
-                            ,time: 1000
-                          }, function(){
-                            //刷新当前
-                          });
+                              });
+                            }else{
+                              layer.msg(res.msg, {
+                                offset: '15px'
+                                ,icon: 5
+                                ,time: 1000
+                              }, function(){
+                                //刷新当前
+                              });
+                            }
                         }
-                    }
-                    ,error: function(res) {
-                        layer.msg('系统繁忙，请稍后再试', {
-                          offset: '15px'
-                          ,icon: 5
-                          ,time: 1000
-                        });
-                    }
-                });
-                
+                        ,error: function(res) {
+                            layer.msg('系统繁忙，请稍后再试', {
+                              offset: '15px'
+                              ,icon: 5
+                              ,time: 1000
+                            });
+                        }
+                    });
                 // return false;
-              }); 
+                }); 
               // 监听表单提交 -------- end
             })
       </script>

@@ -8,7 +8,7 @@ class RoomLists extends Model
 {
 
     // 表名
-    protected $table = 'room_lists';
+    protected $table = 'ho_room_lists';
     // 自动写入时间戳字段
     protected $autoWriteTimestamp = 'int';
     // 定义时间戳字段名

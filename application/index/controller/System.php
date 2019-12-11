@@ -209,7 +209,7 @@ class System extends Frontend
     public function tenantssetting()
     {
 
-        $res = Db::table('rent_source')->field('source,id')->where('uid',USER_ID)->select();
+        $res = Db::table('ho_rent_source')->field('source,id')->where('uid',USER_ID)->select();
 
         $res2 = Db::table('house_state')->field('keys,id')->where('uid',USER_ID)->select();
 
@@ -225,7 +225,7 @@ class System extends Frontend
 
         $sourceName = $this->request->post('sourceName');
 
-        $res = Db::table('rent_source')->insert([
+        $res = Db::table('ho_rent_source')->insert([
             'uid'  => USER_ID,
             'source' => $sourceName,
         ]);
@@ -237,7 +237,7 @@ class System extends Frontend
     {
 
         $id = $this->request->post('id');
-        Db::table('rent_source')->where('uid', USER_ID)->where('id', $id)->delete();
+        Db::table('ho_rent_source')->where('uid', USER_ID)->where('id', $id)->delete();
         return json(['code' =>200, 'msg' => '删除成功']);
     }
 
@@ -245,7 +245,7 @@ class System extends Frontend
     public function housestatesetting()
     {
 
-        $res = Db::table('rent_source')->field('source,id')->where('uid',USER_ID)->select();
+        $res = Db::table('ho_rent_source')->field('source,id')->where('uid',USER_ID)->select();
 
         $res2 = Db::table('house_state')->field('keys,id')->where('uid',USER_ID)->select();
 

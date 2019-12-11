@@ -19,13 +19,13 @@
 					<td>
 						<h2 style="font-weight: 400;font-size: 16px;padding: 3px 0;">房源信息</h2>
 						<ul><li>房源编号：{$info.uuid}</li> <li>房间面积：{$info.fjarea} ㎡</li> <li>房租价格：{$info.money}元/月</li>
-						<li>付款方式：</li>
+						<li>付款方式：{$info.payment_weeks}</li>
 						<li>所属项目：金科</li></ul>
 					</td>
 					<td>
 						<ul>
 							<li class="right-li"><i class="layui-icon layui-icon-home"></i> <a onclick="bianji(0)" href="javascript:;">编辑房源</a></li>
-							<li class="right-li"><i class="layui-icon layui-icon-home"></i> <a onclick="zuyuedetail(0)" href="javascript:;">租约详情</a></li>
+							<!-- <li class="right-li"><i class="layui-icon layui-icon-home"></i> <a onclick="zuyuedetail(0)" href="javascript:;">租约详情</a></li> -->
 						</ul>
 					</td>
 				</tr>
@@ -94,11 +94,11 @@
 						</td>
 						<td>
 							<ul>
-								<li class=""><i class="layui-icon layui-icon-user"></i> <a onclick="addRent()" style="color: rgb(255, 86, 0)"  href="javascript:;">租约详情</a></li>
+								<li class=""><i class="layui-icon layui-icon-user"></i> <a onclick="zuyuedetail(0)" style="color: rgb(255, 86, 0)"  href="javascript:;">租约详情</a></li>
 
-								<li class=""><i class="layui-icon layui-icon-user"></i> <a onclick="addRent()" style="color: rgb(255, 86, 0)"  href="javascript:;">退房操作</a></li>
+								<li class=""><i class="layui-icon layui-icon-user"></i> <a onclick="tz()" style="color: rgb(255, 86, 0)"  href="javascript:;">退房操作</a></li>
 
-								<li class=""><i class="layui-icon layui-icon-user"></i> <a onclick="addRent()" style="color: rgb(255, 86, 0)"  href="javascript:;">收租</a></li>
+								<li class=""><i class="layui-icon layui-icon-user"></i> <a onclick="rentCollection('{$info.key}')" style="color: rgb(255, 86, 0)"  href="javascript:;">收租</a></li>
 							</ul>
 						</td>
 					</tr>
@@ -189,12 +189,18 @@
 			  	content: '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">你知道吗？亲！<br><br><br></div>',
 			  	yes: function(index, layero){
 			    	//按钮【按钮一】的回调
-			    	console.log("确定")
+			    	$.post("{:url('cexiaoYD')}", {uuid: uuid, room_id: room_id}, function(res){
+			    		// alert(res.msg);
+			    		parent.layer.close(index);
+			    	})
 			  	},
 			  	btn2: function(index, layero){
 			    	//按钮【按钮二】的回调
 			    	console.log("取消")
-			  	}
+			  	},
+			  	end: function () { //最后执行reload
+	                parent.location.reload();
+	            }
 			});
 	    }
 	    //查看预定
@@ -209,7 +215,7 @@
 
 	    //装修完成确定
 	    function zhuangxQD(id){
-	    	parent.layer.open({
+	    	var index = parent.layer.open({
 			  	type: 1,
 			  	title: false,
 			  	closeBtn: 0,
@@ -219,17 +225,60 @@
 			  	shade: 0.8,
 			  	btn: ['装修完成确定', '取消'],
 			  	content: '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">你知道吗？亲！<br><br><br></div>',
-			  	yes: function(index, layero){
+			  	yes: function(i, layero){
 			    	//按钮【按钮一】的回调
-			    	console.log("确定")
+			    	// console.log("确定")
+			    	$.post("{:url('zhuangxQD')}", {uuid: uuid, room_id: room_id}, function(res){
+			    		// alert(res.msg);
+			    		parent.layer.close(index);
+			    	})
 			  	},
-			  	btn2: function(index, layero){
+			  	btn2: function(i, layero){
 			    	//按钮【按钮二】的回调
 			    	console.log("取消")
-			  	}
+			  	},
+			  	end: function () { //最后执行reload
+	                parent.location.reload();
+	            }
 			});
 	    }
 
+	    /**
+	     * 收租
+	     * @param  {[type]} id [description]
+	     * @return {[type]}    [description]
+	     */
+	    function rentCollection(id) {
+	    	parent.layer.open({
+	    		type: 2,
+				title: false,
+				closeBtn: 0,
+				shadeClose: true,
+				skin: 'yourclass',
+				area: ['670px', '758px'],
+	    		content: "{:url('rentCollection', ['uuid' => $info['uuid']])}?key="+id+"&uuid="+uuid+'&room_id='+room_id,
+	    		success: function(layero, index){
+				    var body = layer.getChildFrame('body', index);
+				    var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+				}
+	    	})
+	    }
+		/**
+		 * 退租
+		 */
+	    function tz()
+	    {
+
+	    	parent.layer.open({
+			  type: 2,
+			  title: false,
+			  closeBtn: 0,
+			  shadeClose: true,
+			  skin: 'yourclass',
+			  area: ['470px', '740px'],
+			  content: "{:url('tuizu', ['uuid' => $info['uuid'], 'room_id' => $info.room_id])}",
+			});
+	    }
 
 	    //租客登记（添加入住信息）
 	    function rentDj(id){

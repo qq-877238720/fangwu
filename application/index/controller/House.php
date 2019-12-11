@@ -77,7 +77,7 @@ class House extends Frontend
                         $v['status_text'] = $room_value['status_text'];
                     }
 
-                    $rent = Db::table('rent_lists')->where('uuid', $v['uuid'])->where('rentstatus','在租')->find();
+                    $rent = Db::table('ho_rent_lists')->where('uuid', $v['uuid'])->where('rentstatus','在租')->find();
                     $paymentCycle = Db::table('ho_payment_cycle')->where('rent_id', $rent['rent_id'])->find();
 
                     if ($paymentCycle) {
@@ -137,7 +137,7 @@ class House extends Frontend
                         $v['status_text'] = $room_value['status_text'];
                         $room_value['qianfei_state'] = 0;
 
-                        $rent = Db::table('rent_lists')->where('room_id', $room_value['room_id'])->where('rentstatus','在租')->find();
+                        $rent = Db::table('ho_rent_lists')->where('room_id', $room_value['room_id'])->where('rentstatus','在租')->find();
                         $paymentCycle = Db::table('ho_payment_cycle')->where('rent_id', $rent['rent_id'])->find();
 
                         if ($paymentCycle) {
@@ -292,7 +292,7 @@ class House extends Frontend
         if ($roomId == "0") {
 
             $roomListsModel = (new \app\index\model\RoomLists)->where('uuid', $uuid)->find(); // 整租
-            $rent = Db::table('rent_lists')
+            $rent = Db::table('ho_rent_lists')
                     ->alias('r')
                     ->where('r.uuid', $uuid)
                     ->where('r.rentstatus','在租')
@@ -301,7 +301,7 @@ class House extends Frontend
         } else {
 
             $roomListsModel = (new \app\index\model\RoomLists)->where('room_id', $roomId)->find(); // 合租
-            $rent = Db::table('rent_lists')
+            $rent = Db::table('ho_rent_lists')
                     ->alias('r')
                     ->where('r.room_id', $roomId)
                     ->where('r.rentstatus','在租')
@@ -317,6 +317,29 @@ class House extends Frontend
                 $money += $afixV['money'];
             }
         }
+
+        // 租客付款周期表
+        // if ($roomId == "0") {
+        //     $rentRes = Db::table('ho_rent_lists')->where('uuid', $uuid)->where('rentstatus','在租')->find(); // 整租
+        //     $paymentCycle = Db::table('ho_payment_cycle')->where('rent_id', $rentRes['rent_id'])->find();
+        // } else {
+
+        //     $rentRes = Db::table('ho_rent_lists')->where('room_id', $roomId)->where('rentstatus','在租')->find();
+        //     $paymentCycle = Db::table('ho_payment_cycle')->where('rent_id', $rentRes['rent_id'])->find();
+        // }
+        // echo "<pre>";
+        // var_dump($rent);die;
+        $key = null;
+        if (!empty($rent)) {
+            foreach(json_decode($rent['payment_cycle_time'], true) as $k=>$vo):
+                if ($vo['paymentJson']['jiaofei_state'] == '已缴费') {
+                    continue;
+                } else {
+                    $key = $k;
+                    break;
+                }
+            endforeach;
+        }
         
         $result = [];
 
@@ -329,8 +352,10 @@ class House extends Frontend
                 'beizhu'      => $roomListsModel['beizhu'],
                 'room_id'     => $roomId,
                 'money'       => sprintf("%.2f",$money),
+                'payment_weeks'=> $rent['payment_weeks'],
                 'start_time'       => $rent['payment_cycle_start_time'],
-                'end_time'       => $rent['payment_cycle_end_time']
+                'end_time'       => $rent['payment_cycle_end_time'],
+                'key'         => $key,
             ];
         // }
 
@@ -340,7 +365,7 @@ class House extends Frontend
     }
 
     /**
-     * 编辑房源
+     * 租约详情
      * @return [type] [description]
      */
     public function editHousedetail()
@@ -358,7 +383,7 @@ class House extends Frontend
         if ($roomId == "0") {
 
             $roomListsModel = (new \app\index\model\RoomLists)->where('uuid', $uuid)->find(); // 整租
-            $rent = Db::table('rent_lists')
+            $rent = Db::table('ho_rent_lists')
                     ->alias('r')
                     ->where('r.uuid', $uuid)
                     ->where('r.rentstatus','在租')
@@ -368,7 +393,7 @@ class House extends Frontend
         } else {
 
             $roomListsModel = (new \app\index\model\RoomLists)->where('room_id', $roomId)->find(); // 合租
-            $rent = Db::table('rent_lists')
+            $rent = Db::table('ho_rent_lists')
                     ->alias('r')
                     ->where('r.room_id', $roomId)
                     ->where('r.rentstatus','在租')
@@ -403,11 +428,11 @@ class House extends Frontend
         // $tuizu = Db::table('tuizu')->field('ruzhu_at, tuizu_at')->where('house_uuid', $this->request->param('uuid'))->order('id asc')->select();
 
         if ($result['status_text'] == '预定') {
-            $this->assign('rent_user', Db::table('rent_lists')->where('uuid', $uuid)->where('rentstatus', '预定')->select());
+            $this->assign('rent_user', Db::table('ho_rent_lists')->where('uuid', $uuid)->where('rentstatus', '预定')->select());
         }
 
         if ($result['status_text'] == '在租') {
-            $this->assign('rent_user', Db::table('rent_lists')->where('uuid', $uuid)->where('rentstatus', '在租')->select());
+            $this->assign('rent_user', Db::table('ho_rent_lists')->where('uuid', $uuid)->where('rentstatus', '在租')->select());
         }
         
         // $this->assign('tuizu', $tuizu);
@@ -481,7 +506,7 @@ class House extends Frontend
                 $roomListsModel = (new \app\index\model\RoomLists)->where('room_id', $postArr['room_id'])->find();
             }
 
-            if($roomListsModel['housestate'] !== '空置') {
+            if($roomListsModel['fjstatus'] != 11) {
                 return;
             } 
 
@@ -531,7 +556,7 @@ class House extends Frontend
                 $userArr['xingming'] = $userlist[$i]['username'];
                 $userArr['sex'] = $userlist[$i]['sex'];//租客性别 1： 男 2 女
                 $userArr['phone'] = $userlist[$i]['userphone'];
-                $userArr['cardtype'] = 1;
+                $userArr['cardtype'] = $userlist[$i]['cardtype'];
                 if ( isset($userlist[$i]['usercard']) ) {
                     $userArr['card'] = $userlist[$i]['usercard'];
                 }
@@ -565,7 +590,7 @@ class House extends Frontend
                     // $userArr['validdate'] = "";//证件有效期
                     // $userArr['authority'] = "";//签发机关
                 }
-                $rent_id = Db::table('rent_lists')->insertGetId($userArr);
+                $rent_id = Db::table('ho_rent_lists')->insertGetId($userArr);
             }
             //租客信息end
             
@@ -573,6 +598,7 @@ class House extends Frontend
             $paymentArr = [
                 'rent_id'   => $rent_id,
                 'uuid'      => $postArr['uuid'],
+                'payment_weeks' => $postArr['paymenttimes']
             ];
 
             //===========区分是在租还是预定==========
@@ -615,19 +641,19 @@ class House extends Frontend
             $statusNum = (new \app\index\model\RoomLists)->getFjstatusNum($postArr['housestate']);
             
             if ($postArr['room_id'] == "0") {
-                $res = Db::table('room_lists')->where('uuid', $postArr['uuid'])->update([
+                $res = Db::table('ho_room_lists')->where('uuid', $postArr['uuid'])->update([
                     'fjstatus' => $statusNum
                 ]);
 
             } else {
-                $res = Db::table('room_lists')->where('room_id', $postArr['room_id'])->update([
+                $res = Db::table('ho_room_lists')->where('room_id', $postArr['room_id'])->update([
                     'fjstatus' => $statusNum
                 ]);
 
             }
 
             if($res){
-                $msg = ['code'=>1,'data'=>$postArr['uuid'],'msg'=>"添加成功",'url'=>""];
+                $msg = ['code'=>1,'data'=>['uuid' => $postArr['uuid'], 'room_id' => $postArr['room_id']],'msg'=>"添加成功",'url'=>""];
                 return json_encode($msg);
             }else{
                 $msg = ['code'=>0,'data'=>"",'msg'=>"添加失败",'url'=>""];
@@ -655,7 +681,7 @@ class House extends Frontend
     }
 
     /**
-     * 修改房屋信息
+     * 修改房屋信息(编辑房源)
      * @return [type] [description]
      */
     public function edit()
@@ -665,9 +691,22 @@ class House extends Frontend
             $houstData = $this->request->post();
             $roomData = $houstData['room'];
 
+            $houseResult = (new \app\index\model\HouseLists)->where('user_id', USER_ID)->where('uuid', $houstData['uuid'])->with('room')->find();
+
+            // 如果房屋有一间已出租，不能修改状态
+            if ( ($houseResult['chuzutype'] == '0' && $houstData['clas'] == 1) ||  
+                  ($houseResult['chuzutype'] == '1' && $houstData['clas'] == 0) ) {
+
+                foreach ($houseResult['room'] as $key => $value) {
+                    if ($value['fjstatus'] == 10) {
+                        return;
+                    }
+                }
+            }
+
             // 房屋详情
             // $houseResult = (new \app\index\model\HouseLists)->where('user_id', USER_ID)->where('uuid', $uuid)->with('room')->find();
-            $house_id = Db::table('house_lists')->where('uuid', $houstData['uuid'])->update([
+            $house_id = Db::table('ho_house_lists')->where('uuid', $houstData['uuid'])->update([
                 'xiaoquID' => $houstData['xiaoquID'],
                 'xiangmuID' => $houstData['xiangmuID'],
                 'cyfs' => $houstData['cyfs'],   // 持有方式
@@ -681,10 +720,11 @@ class House extends Frontend
             ]);
 
             foreach ($roomData as $key => $value) {
-                $room_state = Db::table('room_lists')->where('room_id', $value['room_id'])->update([
+                $room_state = Db::table('ho_room_lists')->where('room_id', $value['room_id'])->update([
                     'fjbh'    => $value['fjbh'],
                     'fjarea'  => $value['fjarea'],
                     'beizhu'  => $value['beizhu'],
+                    'fjstatus'  => $value['fjstatus'],
                 ]);
 
                 // TODO: 房屋增减情况
@@ -707,6 +747,15 @@ class House extends Frontend
         // 房屋类型
         $house_state = Db::table('house_state')->field('id,keys')->where('uid',USER_ID)->select();
 
+        // 判断房屋是否已经出租，或者预定，
+        // 如果已经出租 预定 则不能修改 房屋出租类型(整租 合租)
+        $watch = 0;
+        foreach ($houseResult['room'] as $key => $value) {
+            if ($value['fjstatus'] == 10 || $value['fjstatus'] == 12) {
+                $watch = 1;
+            }
+        }
+
         $this->assign("project",$project);
         $this->assign("xiaoqu",$communityLists);
         $this->assign("modelName",$feesConfig);
@@ -714,6 +763,7 @@ class House extends Frontend
 
         $this->assign("info",$houseResult);
         $this->assign("rands",Random::alnum(16));
+        $this->assign("watch", $watch);
 
         return view('edit_house');
     }
@@ -734,12 +784,14 @@ class House extends Frontend
             $roomId = $this->request->param('room_id');
 
             if ($roomId == "0") {
-                $rentRes = Db::table('rent_lists')->where('uuid', $uuid)->where('rentstatus','在租')->find(); // 整租
+                $rentRes = Db::table('ho_rent_lists')->where('uuid', $uuid)->where('rentstatus','在租')->find(); // 整租
                 $paymentCycle = Db::table('ho_payment_cycle')->where('rent_id', $rentRes['rent_id'])->find();
+                $renttype = '整租';
             } else {
 
-                $rentRes = Db::table('rent_lists')->where('room_id', $roomId)->where('rentstatus','在租')->find();
+                $rentRes = Db::table('ho_rent_lists')->where('room_id', $roomId)->where('rentstatus','在租')->find();
                 $paymentCycle = Db::table('ho_payment_cycle')->where('rent_id', $rentRes['rent_id'])->find();
+                $renttype = '合租';
             }
 
             $paymentCycle['payment_cycle_time'] = json_decode($paymentCycle['payment_cycle_time'], true);
@@ -748,6 +800,42 @@ class House extends Frontend
             $paymentCycle['payment_cycle_time'][$postArr['key']]['paymentJson']['rent_price'] = $postArr['rent_price'];
             $paymentCycle['payment_cycle_time'][$postArr['key']]['paymentJson']['skfs'] = $postArr['skfs'];
             $paymentCycle['payment_cycle_time'][$postArr['key']]['paymentJson']['jiaofei_state'] = '已缴费';
+
+            $financeArr = [];
+            // 表示第一次收租，需要添加押金
+            if ($postArr['key'] == 0) {
+
+                Db::table('ho_finance')->insert([
+                    'user_id' => USER_ID,
+                    'rent_id' => $rentRes['rent_id'],
+                    'uuid'    => $uuid,
+                    'room_id' => $roomId,
+                    'money'   => $rentRes['yajin'],
+                    'moneytype' => '押金',
+                    'way'     => '收入',
+                    'renttype' => $renttype,
+                    'createtime' => time(),
+                    'updatetime' => time(),
+                ]);
+            }
+
+            // 循环导入 每项费用模板
+            foreach ($paymentCycle['payment_cycle_time'][$postArr['key']]['paymentModel']['afixFees'] as $key => $value) {
+
+                Db::table('ho_finance')->insert([
+                    'user_id' => USER_ID,
+                    'rent_id' => $rentRes['rent_id'],
+                    'uuid'    => $uuid,
+                    'room_id' => $roomId,
+                    'money'   => $value['money'],
+                    'moneytype' => $value['name'],
+                    'way'     => '收入',
+                    'renttype' => $renttype,
+                    'createtime' => time(),
+                    'updatetime' => time(),
+                ]);
+            }
+
 
             $cycle['payment_cycle_time'] = json_encode($paymentCycle['payment_cycle_time']);
 
@@ -775,7 +863,7 @@ class House extends Frontend
         if ($roomId == "0") {
 
             $roomListsModel = (new \app\index\model\RoomLists)->where('uuid', $uuid)->find(); // 整租
-            $rent = Db::table('rent_lists')
+            $rent = Db::table('ho_rent_lists')
                     ->alias('r')
                     ->where('r.uuid', $uuid)
                     ->where('r.rentstatus','在租')
@@ -784,7 +872,7 @@ class House extends Frontend
         } else {
 
             $roomListsModel = (new \app\index\model\RoomLists)->where('room_id', $roomId)->find(); // 合租
-            $rent = Db::table('rent_lists')
+            $rent = Db::table('ho_rent_lists')
                     ->alias('r')
                     ->where('r.room_id', $roomId)
                     ->where('r.rentstatus','在租')
@@ -812,7 +900,7 @@ class House extends Frontend
             $money += $rent['yajin'];
         }
         // echo "<pre>";
-        // var_dump($result['payment']['paymentModel']['afixFees']);die;
+        // var_dump($result);die;
         foreach ($result['payment']['paymentModel']['afixFees'] as $value) {
             
             $money += $value['money'];
@@ -850,16 +938,18 @@ class House extends Frontend
             $roomModel = (new \app\index\model\RoomLists);
 
             if ($roomId == "0") {
-                $rentRes = Db::table('rent_lists')->where('uuid', $uuid)->where('rentstatus','在租')->update([
+                $rent_id = Db::table('ho_rent_lists')->where('uuid', $uuid)->where('rentstatus','在租')->find()['rent_id'];
+                $rentRes = Db::table('ho_rent_lists')->where('uuid', $uuid)->where('rentstatus','在租')->update([
                     'rentstatus' => '退租'
                 ]); // 整租
                 $roomListsModel = $roomModel->where('uuid', $uuid)->update([
                     'fjstatus'  => $roomModel->getFjstatusNum('空置')
                 ]); // 整租
-                
+                $renttype = '整租';
             } else {
 
-                $rentRes = Db::table('rent_lists')->where('room_id', $roomId)->where('rentstatus','在租')->update([
+                $rent_id = Db::table('ho_rent_lists')->where('room_id', $roomId)->where('rentstatus','在租')->find()['rent_id'];
+                $rentRes = Db::table('ho_rent_lists')->where('room_id', $roomId)->where('rentstatus','在租')->update([
                     'rentstatus' => '退租'
                 ]);
                 
@@ -867,7 +957,45 @@ class House extends Frontend
                 $roomListsModel = $roomModel->where('room_id', $roomId)->update([
                     'fjstatus'  => $roomModel->getFjstatusNum('空置')
                 ]); // 合租
+                $renttype = '合租';
             }
+
+            $shou = $this->request->post('shou');
+            $tui  = $this->request->post('tui');
+            $data = [];
+            if ($shou > 0) {
+                $data[] = [
+                    'user_id' => USER_ID,
+                    'rent_id' => $rent_id,
+                    'uuid'    => $uuid,
+                    'room_id' => $roomId,
+                    'money'   => $shou,
+                    'moneytype' => '退租时收入',
+                    'way'     => '收入',
+                    'finance_beizhu'  => $this->request->post('beizhu'),
+                    'renttype' => $renttype,
+                    'createtime' => time(),
+                    'updatetime' => time(),
+                ];
+            }
+
+            if ($tui > 0) {
+                $data[] = [
+                    'user_id' => USER_ID,
+                    'rent_id' => $rent_id,
+                    'uuid'    => $uuid,
+                    'room_id' => $roomId,
+                    'money'   => $tui,
+                    'moneytype' => '退租时退款',
+                    'way'     => '支出',
+                    'finance_beizhu'  => $this->request->post('beizhu'),
+                    'renttype' => $renttype,
+                    'createtime' => time(),
+                    'updatetime' => time(),
+                ];
+            }
+
+            Db::table('ho_finance')->insertAll($data);
 
             if($roomListsModel){
                 $msg = ['code'=>1,'data'=>"",'msg'=>"退租成功",'url'=>""];
@@ -885,7 +1013,7 @@ class House extends Frontend
         if ($roomId == "0") {
 
             $roomListsModel = (new \app\index\model\RoomLists)->where('uuid', $uuid)->find(); // 整租
-            $rent = Db::table('rent_lists')
+            $rent = Db::table('ho_rent_lists')
                     ->alias('r')
                     ->where('r.uuid', $uuid)
                     ->where('r.rentstatus','在租')
@@ -894,7 +1022,7 @@ class House extends Frontend
         } else {
 
             $roomListsModel = (new \app\index\model\RoomLists)->where('room_id', $roomId)->find(); // 合租
-            $rent = Db::table('rent_lists')
+            $rent = Db::table('ho_rent_lists')
                     ->alias('r')
                     ->where('r.room_id', $roomId)
                     ->where('r.rentstatus','在租')
@@ -902,7 +1030,7 @@ class House extends Frontend
                     ->find();
         }
 
-        // $result = Db::table('house_lists')->where('uid', USER_ID)->where('uuid',$uuid)->find();
+        // $result = Db::table('ho_house_lists')->where('uid', USER_ID)->where('uuid',$uuid)->find();
 
         $result = [
             'uuid'        => $uuid,
@@ -921,6 +1049,66 @@ class House extends Frontend
         $this->assign('info', $result);
 
         return view();
+    }
+
+
+    /**
+     * 装修完毕
+     * @return [type] [description]
+     */
+    public function zhuangxQD()
+    {
+
+        if ($this->request->isPost()) {
+
+            $uuid = $this->request->post('uuid');
+            $roomId = $this->request->post('room_id');
+
+            $this->editHouseStatus($uuid, $roomId) ? $this->success('修改成功') : $this->error('fail');
+        }
+    }
+
+    /**
+     * 撤销预定
+     * @return [type] [description]
+     */
+    public function cexiaoYD()
+    {
+
+        if ($this->request->isPost()) {
+
+            $uuid = $this->request->post('uuid');
+            $roomId = $this->request->post('room_id');
+
+            $this->editHouseStatus($uuid, $roomId) ? $this->success('修改成功') : $this->error('fail');
+        }
+    }
+
+    /**
+     * 修改房屋状态
+     */
+    public function editHouseStatus($uuid, $roomId, $status = '空置')
+    {
+        
+        $houseResult = (new \app\index\model\HouseLists)->where('user_id', USER_ID)->where('uuid', $uuid)->find();
+        $roomModel = (new \app\index\model\RoomLists);
+        $fjstatus = $roomModel->getFjstatusNum($status);
+
+        if ($roomId == "0") {
+            $res = $roomModel->where('uuid', $uuid)->update([
+                'fjstatus'  => $fjstatus
+            ]);
+        } else {
+            $res = $roomModel->where('room_id', $roomId)->update([
+                'fjstatus'  => $fjstatus
+            ]);
+        }
+
+        if ($res) {
+            return true;
+        }
+
+        return false;
     }
     
 

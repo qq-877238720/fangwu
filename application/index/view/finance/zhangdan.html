@@ -2,9 +2,9 @@
  
 <script type="text/html" id="toolbarDemo">
   <div class="layui-btn-container">
-    <button class="layui-btn layui-btn-sm" lay-event="getCheckData">获取选中行数据</button>
+<!--     <button class="layui-btn layui-btn-sm" lay-event="getCheckData">获取选中行数据</button>
     <button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>
-    <button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button>
+    <button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button> -->
   </div>
 </script>
 <script type="text/html" id="barDemo">
@@ -22,7 +22,8 @@ layui.use('table', function(){
   
   table.render({
     elem: '#test'
-    ,url:'__INDEX__/demo3.json'
+    ,url:"{:url('zhangdanDetail')}"
+    ,limit: 3
     ,response: {
       statusName: 'status' //规定数据状态的字段名称，默认：code
       ,statusCode: 200 //规定成功的状态码，默认：0
@@ -35,19 +36,43 @@ layui.use('table', function(){
     ,totalRow: true
     ,cols: [[
       {type: 'checkbox', fixed: 'left'}
-      ,{field:'id', title:'ID', width:80, fixed: 'left', unresize: true, sort: true, totalRowText: '合计'}
-      ,{field:'username', title:'用户名', width:120, edit: 'text'}
-      ,{field:'email', title:'邮箱', width:150, edit: 'text', templet: function(res){
-        return '<em>'+ res.email +'</em>'
+      ,{field:'finance_id', title:'ID', width:80, fixed: 'left', unresize: true, sort: true, totalRowText: '合计'}
+      ,{field:'way', title:'收入类型', width:100, fixed: 'left', unresize: true, sort: true}
+      ,{field:'communityName', title:'小区名', templet: function(res){
+        return res.xingming
       }}
-      ,{field:'experience', title:'积分', width:80, sort: true, totalRow: true}
-      ,{field:'sex', title:'性别', width:80, edit: 'text', sort: true}
-      ,{field:'logins', title:'登入次数', width:100, sort: true, totalRow: true}
-      ,{field:'sign', title:'签名'}
-      ,{field:'city', title:'城市', width:100}
-      ,{field:'ip', title:'IP', width:120}
-      ,{field:'joinTime', title:'加入时间', width:120}
-      ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}
+      ,{field:'house', title:'方源', templet: function(res){
+        return res.dong + '栋' + res.danyuan + '单元' + res.ceng + '层' + "(" + res.fangwutype + ")"
+      }}
+      ,{field:'renttype', title:'租赁状态', width:100}
+      ,{field:'xingming', title:'租客姓名', width:120, edit: 'text', templet: function(res){
+        return '<em>'+ res.xingming +'</em>'
+      }}
+      ,{field:'phone', title:'租客电话'}
+      // ,{field:'room_id', title:'性别', width:80, edit: 'text', sort: true}
+      ,{field:'money', title:'金额', width:100, sort: true, totalRow: true}
+      ,{field:'moneytype', title:'金额类型'}
+      ,{field:'createtime', title:'收租时间', templet: function(res){
+        var date = new Date(res.createtime * 1000);
+        Y = date.getFullYear() + '-';
+        M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+        D = date.getDate() + ' ';
+        h = date.getHours() + ':';
+        m = date.getMinutes() + ':';
+        s = date.getSeconds();
+        return Y+M+D+h+m+s;
+      }}
+      ,{field:'updatetime', title:'核销时间', templet: function(res){
+        var date = new Date(res.updatetime * 1000);
+        Y = date.getFullYear() + '-';
+        M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+        D = date.getDate() + ' ';
+        h = date.getHours() + ':';
+        m = date.getMinutes() + ':';
+        s = date.getSeconds();
+        return Y+M+D+h+m+s;
+      }}
+      ,{field:'op', title:'操作'}
     ]]
     ,page: true
   });

@@ -8,7 +8,7 @@ class HouseLists extends Model
 {
 
     // 表名
-    protected $table = 'house_lists';
+    protected $table = 'ho_house_lists';
     // 自动写入时间戳字段
     protected $autoWriteTimestamp = 'int';
     // 定义时间戳字段名

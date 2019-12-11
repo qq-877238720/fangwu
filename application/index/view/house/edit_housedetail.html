@@ -4,30 +4,6 @@
 
   <div class="layui-fluid">
     <div class="layui-row layui-col-space15">
-      {empty name="$watch"}
-      <div class="layui-col-md12">
-        <div class="layui-card">
-          <div class="layui-card-header">房屋管理</div>
-          <div class="layui-card-body">
-            <!-- <div class="layui-btn-container"> -->
-              <!-- <div class="layui-col-md6">
-	            <input type="text" name="title" placeholder="项目名" autocomplete="off" class="layui-input">
-	          </div> -->
-              <button class="layui-btn layui-btn-normal" onclick="edit()">修改</button>
-              {eq name="$info['status_text']" value="在租" }
-              <button class="layui-btn layui-btn-normal" onclick="tz()">退租</button>
-              {/eq}
-              {eq name="$info['status_text']" value="空置" }
-              <button class="layui-btn layui-btn-normal" onclick="rz()">入住</button>
-              {/eq}
-              {eq name="$info['status_text']" value="空置" }
-              <button class="layui-btn layui-btn-normal">删除</button>
-              {/eq}
-            <!-- </div> -->
-          </div>
-        </div>
-      </div>
-      {/empty}
       <div class="layui-row layui-col-space15">
 	      <div class="layui-col-md12">
 	        <div class="layui-card">
@@ -264,12 +240,19 @@
 				      	{eq name='$vo.sex' value='1'} 男 {else/} 女 {/eq}
 				      </td>
 				      <td>{$vo.phone}</td>
-				      <td>身份证</td>
+				      <td>
+				      	{switch name="$vo.cardtype" }
+						    {case value="1"}身份证{/case}
+						    {case value="2"}护照{/case}
+						    {default /}军人证
+						{/switch}
+				      </td>
 				      <td>{$vo.card}</td>
 				      <td>{$vo.rentstatus}</td>
+				      <td>{$vo.createtime | date='Y-m-d',###}</td>
 				      <td></td>
 				      <td></td>
-				      <td>编辑 删除 搬离</td>
+				      <!-- <td>编辑 删除 搬离</td> -->
 				    </tr>
 				    {/foreach}
 				  </tbody>
@@ -326,7 +309,7 @@
 	        </div>
 	      </div>
 	      {/eq}
-	      <div class="layui-col-md12">
+	      <div class="layui-col-md12" style="display: none;">
 	        <div class="layui-card">
 	          <div class="layui-card-header">签约信息</div>
 
