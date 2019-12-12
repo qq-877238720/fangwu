@@ -76,6 +76,8 @@
 						</td>
 						<td>
 							<ul>
+								<li class=""><i class="layui-icon layui-icon-user"></i> <a onclick="querenRZ(id=1)" style="color: rgb(255, 86, 0)"  href="javascript:;">确认入住</a></li>
+
 								<li class=""><i class="layui-icon layui-icon-user"></i> <a onclick="cexiaoYD(id=1)" style="color: rgb(255, 86, 0)"  href="javascript:;">撤销预定</a></li>
 
 								<li class=""><i class="layui-icon layui-icon-user"></i> <a onclick="chakanYD(id=1)" style="color: rgb(255, 86, 0)"  href="javascript:;">查看预定</a></li>
@@ -209,7 +211,17 @@
 	    		type: 2,
 	    		area: ['1000px', '100vh'],
 		  		maxmin: true,
-	    		content: "{:url('chakanYD', ['uuid' => 0000])}",
+	    		content: "{:url('chakanYD')}?uuid="+uuid+'&room_id='+room_id,
+	    	})
+	    }
+	    // 预定 确认入住
+	    function querenRZ()
+	    {
+			var index = parent.layer.open({
+	    		type: 2,
+	    		area: ['1000px', '100vh'],
+		  		maxmin: true,
+	    		content: "{:url('querenRZ')}?uuid="+uuid+'&room_id='+room_id,
 	    	})
 	    }
 

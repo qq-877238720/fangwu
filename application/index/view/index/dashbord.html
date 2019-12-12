@@ -10,7 +10,7 @@
             <span class="layui-badge layui-bg-blue layuiadmin-badge">本账户</span>
           </div>
           <div class="layui-card-body layuiadmin-card-list">
-            <p class="layuiadmin-big-font">9,999,666</p>
+            <p class="layuiadmin-big-font">{$info.count}</p>
           </div>
         </div>
       </div>
@@ -21,19 +21,19 @@
             <span class="layui-badge layui-bg-cyan layuiadmin-badge">当月</span>
           </div>
           <div class="layui-card-body layuiadmin-card-list">
-            <p class="layuiadmin-big-font">33,555</p>
+            <p class="layuiadmin-big-font">{$info.kong}</p>
           </div>
         </div>
       </div>
       <div class="layui-col-sm6 layui-col-md3">
         <div class="layui-card">
           <div class="layui-card-header">
-            欠费房源
+            预定房源
             <span class="layui-badge layui-bg-green layuiadmin-badge">当月</span>
           </div>
           <div class="layui-card-body layuiadmin-card-list">
 
-            <p class="layuiadmin-big-font">999,666</p>
+            <p class="layuiadmin-big-font">{$info.yuding}</p>
           </div>
         </div>
       </div>
@@ -45,12 +45,12 @@
           </div>
           <div class="layui-card-body layuiadmin-card-list">
 
-            <p class="layuiadmin-big-font">66,666</p>
+            <p class="layuiadmin-big-font">{$info.zhuangxiu}</p>
           </div>
         </div>
       </div>   
 
-      <div class="layui-col-sm6">
+      <div class="layui-col-sm12">
         <div class="layui-row layui-col-space15">
           <div class="layui-col-sm12">
             <div class="layui-card">
@@ -66,48 +66,15 @@
                     </tr> 
                   </thead>
                   <tbody>
+                    {foreach $info.rent as $key=>$vo } 
                     <tr>
-                      <td><span class="first">胡歌</span></td>
-                      <td><i class="layui-icon layui-icon-log"> 11:20</i></td>
+                      <td><span class="first">{$vo.xingming}</span></td>
+                      <td><i class="layui-icon layui-icon-log"> {$vo.payment_cycle_start_time | date='Y-m-d',###} - {$vo.payment_cycle_end_time | date='Y-m-d',###}</i></td>
                       <td style="color: red"><i>欠费</i></td>
-                      <td><button type="button" class="layui-btn layui-btn-danger layui-btn-sm">确认收租</button></td>
+                      <td><button onclick="rentCollection('{$vo.key}', '{$vo.uuid}', '{$vo.room_id}')" type="button" class="layui-btn layui-btn-danger layui-btn-sm">确认收租</button></td>
                     </tr>
-                    <tr>
-                      <td><span class="second">彭于晏</span></td>
-                      <td><i class="layui-icon layui-icon-log"> 10:40</i></td>
-                      <td style="color: red"><i>欠费</i></td>
-                      <td><button type="button" class="layui-btn layui-btn-danger layui-btn-sm">确认收租</button></td>
-                    </tr>
-                    <tr>
-                      <td><span class="third">靳东</span></td>
-                      <td><i class="layui-icon layui-icon-log"> 01:30</i></td>
-                      <td style="color: red"><i>欠费</i></td>
-                      <td><button type="button" class="layui-btn layui-btn-danger layui-btn-sm">确认收租</button></td>
-                    </tr>
-                    <tr>
-                      <td>吴尊</td>
-                      <td><i class="layui-icon layui-icon-log"> 21:18</i></td>
-                      <td style="color: red"><i>欠费</i></td>
-                      <td><button type="button" class="layui-btn layui-btn-danger layui-btn-sm">确认收租</button></td>
-                    </tr>
-                    <tr>
-                      <td>许上进</td>
-                      <td><i class="layui-icon layui-icon-log"> 09:30</i></td>
-                      <td style="color: red"><i>欠费</i></td>
-                      <td><button type="button" class="layui-btn layui-btn-danger layui-btn-sm">确认收租</button></td>
-                    </tr>
-                    <tr>
-                      <td>小蚊子</td>
-                      <td><i class="layui-icon layui-icon-log"> 21:18</i></td>
-                      <td style="color: red"><i>欠费</i></td>
-                      <td><button type="button" class="layui-btn layui-btn-danger layui-btn-sm">确认收租</button></td>
-                    </tr>
-                    <tr>
-                      <td>贤心</td>
-                      <td><i class="layui-icon layui-icon-log"> 09:30</i></td>
-                      <td style="color: red"><i>欠费</i></td>
-                      <td><button type="button" class="layui-btn layui-btn-danger layui-btn-sm">确认收租</button></td>
-                    </tr>
+                    {/foreach}
+
                   </tbody>
                 </table>
               </div>
@@ -116,7 +83,7 @@
         </div>
       </div>
 
-      <div class="layui-col-sm6">
+      <!-- <div class="layui-col-sm6">
         <div class="layui-row layui-col-space15">
           <div class="layui-col-sm12">
             <div class="layui-card">
@@ -201,9 +168,29 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
         
       </div>
     </div>
   </div>
 </div>
+
+<script type="text/javascript">
+  /**
+   * 收租
+   * @param  {[type]} id [description]
+   * @return {[type]}    [description]
+   */
+  function rentCollection(id, uuid, room_id) {
+    parent.layer.open({
+      type: 2,
+      area: ['700px', '100vh'],
+      maxmin: true,
+      content: "{:url('index/house/rentCollection')}?key="+id+"&uuid="+uuid+'&room_id='+room_id,
+      success: function(layero, index){
+        var body = layer.getChildFrame('body', index);
+        var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+    }
+    })
+  }
+</script>

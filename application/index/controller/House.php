@@ -468,9 +468,275 @@ class House extends Frontend
      */
     public function chakanYd()
     {
+
         $uuid = $this->request->get('uuid');
-        $this->assign('uuid', $uuid);
+        $roomId = $this->request->get('room_id');
+
+        $houseResult = (new \app\index\model\HouseLists)->where('user_id', USER_ID)->where('uuid', $uuid)->with('community')->find();
+
+        if ($roomId == "0") {
+
+            $roomListsModel = (new \app\index\model\RoomLists)->where('uuid', $uuid)->find(); // 整租
+            $rent = Db::table('ho_rent_lists')
+                    ->alias('r')
+                    ->where('r.uuid', $uuid)
+                    ->where('r.rentstatus','预定')
+                    ->join('rent_source rs', 'rs.id = r.laiyuan')
+                    ->find();
+        } else {
+
+            $roomListsModel = (new \app\index\model\RoomLists)->where('room_id', $roomId)->find(); // 合租
+            $rent = Db::table('ho_rent_lists')
+                    ->alias('r')
+                    ->where('r.room_id', $roomId)
+                    ->where('r.rentstatus','预定')
+                    ->join('rent_source rs', 'rs.id = r.laiyuan')
+                    ->find();
+        }
+
+        $result = [
+            'uuid' => $uuid,
+            // 'room_id'     => $roomId,
+
+            'cyfs'        => $houseResult['cyfs'],
+            'communityName' => $houseResult['community']['communityName'],
+            'dong'        => $houseResult['dong'],
+            'ceng'        => $houseResult['ceng'],
+            'fangwutype'  => $houseResult['fangwutype'],
+
+            'rentSource'  => $rent['source'],
+            'yudingpri'   => $rent['dingjinprice'], // 预定金
+            'createtime'  => $rent['createtime'],  // 预定时间
+        ];
+
+
+        $this->assign('rent_user', Db::table('ho_rent_lists')->where('uuid', $uuid)->where('rentstatus', '预定')->select());
+
+        $this->assign('info', $result);
         return view();
+    }
+
+    /**
+     * 预定到 确认入住
+     * @return [type] [description]
+     */
+    public function querenRZ()
+    {
+
+        if ($this->request->isPost()) {
+            
+
+            $postArr = $this->request->post();
+
+            $houseResult = (new \app\index\model\HouseLists)->where('user_id', USER_ID)->where('uuid', $postArr['uuid'])->find();
+            
+            if ($postArr['room_id'] == "0") {
+                $roomListsModel = (new \app\index\model\RoomLists)->where('uuid', $postArr['uuid'])->find();
+            } else {
+                $roomListsModel = (new \app\index\model\RoomLists)->where('room_id', $postArr['room_id'])->find();
+            }
+
+            if($roomListsModel['fjstatus'] != 13) {
+                return;
+            } 
+
+            // 1.添加租客信息
+            $userArr = [
+                'room_id'   => $postArr['room_id'],
+                'uuid'      => $postArr['uuid'],
+                'laiyuan'   => $postArr['userorigin'],
+                'user_id'   => USER_ID
+            ];
+            
+            $userArr['yajin'] = $postArr['deposit'];  // 押金
+
+            $userlist = $postArr['user'];
+
+            $imgArr = array ( 
+                array ( 
+                    'tag'=>'FRONT',
+                    'url'=>$postArr['chengzhuren_zhengmian']
+                ), array  ( 
+                    'tag'=>'BACK',
+                    'url'=>$postArr['chengzhuren_fanmian']
+                )
+            );
+            
+             //费用模板
+            if(!isset($postArr['model'])){
+                $userArr['feemodeljson'] = "";
+            }else{
+                $postArr['model']['computedFees'] = [];
+                $userArr['feemodeljson'] = json_encode($postArr['model']); //费用配置
+            }
+
+            if(!isset($postArr['listtemplate'])){
+                $userArr['qingdanmodeljson'] = "";
+            }else{
+                $userArr['qingdanmodeljson'] = json_encode($postArr['listtemplate']); //清单配置
+            }
+
+
+            for ($i=0; $i < count($userlist); $i++) {
+
+                $userArr['xingming'] = $userlist[$i]['username'];
+                $userArr['sex'] = $userlist[$i]['sex'];//租客性别 1： 男 2 女
+                $userArr['phone'] = $userlist[$i]['userphone'];
+                $userArr['cardtype'] = $userlist[$i]['cardtype'];
+                if ( isset($userlist[$i]['usercard']) ) {
+                    $userArr['card'] = $userlist[$i]['usercard'];
+                }
+
+                // if ( isset($userlist[$i]['huzhao']) ) {
+                //     $userArr['huzhao'] = $userlist[$i]['huzhao'];//租客护照号
+                // }
+
+                $userArr['rentstatus'] = "在租";
+                $userArr['createtime'] = time();
+
+                if($i==0){
+                    $userArr['chengzurentag'] = 1;
+                    $userArr['headimgjson'] = json_encode($imgArr);//租客证件照片 
+                    $userArr['nation'] = $userlist[$i]['nation'];//籍贯
+                    $userArr['address'] = $userlist[$i]['address'];//籍贯地址
+                    // $userArr['validdate'] = $userlist[$i]['validdate'];//证件有效期
+                    // $userArr['authority'] = $userlist[$i]['authority'];//签发机关
+                }else{
+                    $userArr['chengzurentag'] = 0;  // 是否为承租人
+                    $userArr['headimgjson'] = "";//租客证件照片
+                    $userArr['nation'] = "";//籍贯
+                    $userArr['address'] = "";//籍贯地址
+                    // $userArr['validdate'] = "";//证件有效期
+                    // $userArr['authority'] = "";//签发机关
+                }
+
+                if ($i == 0) {
+                    $rent_id = Db::table('ho_rent_lists')->where('rent_id', $userlist[$i]['rent_id'])->update($userArr);
+                } else {
+                    $rent_id = Db::table('ho_rent_lists')->insertGetId($userArr);
+                }
+                
+            }
+            //租客信息end
+            
+            // 2.添加周期
+            $paymentArr = [
+                'rent_id'   => $userlist[0]['rent_id'],
+                'uuid'      => $postArr['uuid'],
+                'payment_weeks' => $postArr['paymenttimes']
+            ];
+
+            //===========区分是在租还是预定==========
+            if($postArr['housestate'] == "预定"){
+                $paymentArr['payment_cycle_start_time'] = ""; //租赁开始时间
+                $paymentArr['payment_cycle_end_time'] = ""; //租赁结束时间
+                // $paymentArr['paymentWeeks'] = ""; //付款周期
+                $paymentArr['payment_cycle_time'] = "";//付款周期
+            }else{
+                $paymentArr['payment_cycle_start_time'] = strtotime($postArr['startimes']); //租赁开始时间
+                $paymentArr['payment_cycle_end_time'] = strtotime($postArr['endtimes']); //租赁结束时间
+                // $paymentArr['paymentWeeks'] = $postArr['paymenttimes']; // 付款周期
+
+                $qujian = $this->get_ld_times($postArr['startimes'],$postArr['endtimes'],$postArr['paymenttimes']);
+                $paymentJson_data = [];
+
+                for ($i=0; $i < count($qujian); $i++) { 
+                    list($paydate_start, $paydate_end)  = explode(",", $qujian[$i]);
+                    $paymentJson = array(
+                        'paydate_start'     => $paydate_start, // 付款开始时间
+                        'paydate_end'       => $paydate_end, // 付款结束时间
+                        'rebate'            => "", //优惠金额
+                        'rent_price'        => "", //实际租金
+                        'jiaofei_state'     => "", //缴费状态
+                        'skfs'              => "", //收款方式
+                        'paymentWeeks'      => $postArr['paymenttimes'], //付款模式
+                        'beizhu'            => "", //备注
+                    );
+                    $paymentJson_data[$i]['paymentJson'] = $paymentJson;
+                    $paymentJson_data[$i]['paymentModel'] = isset($postArr['model'])?$postArr['model']:'';
+                }
+                $paymentArr['payment_cycle_time'] = json_encode($paymentJson_data);//付款周期
+            }
+            //===========end 区分是在租还是预定==========
+            
+            $respaydate = Db::table('ho_payment_cycle')->where('rent_id', $userlist[0]['rent_id'])->update($paymentArr);
+
+            // 3, 更新房屋状态
+            $statusNum = (new \app\index\model\RoomLists)->getFjstatusNum($postArr['housestate']);
+            
+            if ($postArr['room_id'] == "0") {
+                $res = Db::table('ho_room_lists')->where('uuid', $postArr['uuid'])->update([
+                    'fjstatus' => $statusNum
+                ]);
+
+            } else {
+                $res = Db::table('ho_room_lists')->where('room_id', $postArr['room_id'])->update([
+                    'fjstatus' => $statusNum
+                ]);
+
+            }
+
+            if($res){
+                $msg = ['code'=>1,'data'=>['uuid' => $postArr['uuid'], 'room_id' => $postArr['room_id']],'msg'=>"添加成功",'url'=>""];
+                return json_encode($msg);
+            }else{
+                $msg = ['code'=>0,'data'=>"",'msg'=>"添加失败",'url'=>""];
+                return json_encode($msg);
+            }
+        }
+
+
+        $result = [
+            'room_id' => $this->request->get('room_id'),
+            'uuid'    => $this->request->get('uuid')
+        ];
+
+        $houseResult = (new \app\index\model\HouseLists)->where('user_id', USER_ID)->where('uuid', $result['uuid'])->with('community')->find();
+
+        if ($result['room_id'] == "0") {
+
+            $roomListsModel = (new \app\index\model\RoomLists)->where('uuid', $result['uuid'])->find(); // 整租
+            $rent = Db::table('ho_rent_lists')
+                    ->alias('r')
+                    ->where('r.uuid', $result['uuid'])
+                    ->where('r.rentstatus','预定')
+                    ->join('rent_source rs', 'rs.id = r.laiyuan')
+                    ->find();
+        } else {
+
+            $roomListsModel = (new \app\index\model\RoomLists)->where('room_id', $result['room_id'])->find(); // 合租
+            $rent = Db::table('ho_rent_lists')
+                    ->alias('r')
+                    ->where('r.room_id', $result['room_id'])
+                    ->where('r.rentstatus','预定')
+                    ->join('rent_source rs', 'rs.id = r.laiyuan')
+                    ->find();
+        }
+
+        $result = array_merge($result, [
+            'xingming' => $rent['xingming'],
+            'sex'      => $rent['sex'],
+            'phone'    => $rent['phone'],
+            'cardtype'      => $rent['cardtype'],
+            'card'      => $rent['card'],
+            'nation'      => $rent['nation'],
+            'address'      => $rent['address'],
+            'rent_id'      => $rent['rent_id'],
+        ]);
+
+        // 费用模板
+        $feesConfig = Db::table('fees_config')->field('id, modelName')->where('uid', USER_ID)->select();
+        // 租客来源
+        $rent_source = Db::table('ho_rent_source')->field('id,source')->where('uid',USER_ID)->select();
+        // 入住清单：包含固定资产内容和数量及水、气初始度数，电卡余额
+        $listTemplate = Db::table('list_config_template')->field('id, modelName')->where('uid', USER_ID)->select();
+
+        $this->assign("rent_source",$rent_source);
+        $this->assign("modelName",$feesConfig);
+        $this->assign("listName",$listTemplate);
+        $this->assign("info", $result);
+        $this->assign("rands",Random::alnum(16));
+        return view('queren_rz');
     }
 
     /**
@@ -538,7 +804,7 @@ class House extends Frontend
 
              //费用模板
             if(!isset($postArr['model'])){
-                $userArr['fees'] = "";
+                $userArr['feemodeljson'] = "";
             }else{
                 $postArr['model']['computedFees'] = [];
                 $userArr['feemodeljson'] = json_encode($postArr['model']); //费用配置
@@ -590,7 +856,11 @@ class House extends Frontend
                     // $userArr['validdate'] = "";//证件有效期
                     // $userArr['authority'] = "";//签发机关
                 }
-                $rent_id = Db::table('ho_rent_lists')->insertGetId($userArr);
+                if ($i==0) {
+                    $rent_id = Db::table('ho_rent_lists')->insertGetId($userArr);
+                } else {
+                    $rent    = Db::table('ho_rent_lists')->insertGetId($userArr);
+                }
             }
             //租客信息end
             

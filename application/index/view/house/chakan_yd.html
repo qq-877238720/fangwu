@@ -14,7 +14,7 @@
 	          					租约编号:
 	          				</div>
 	          				<div class="layui-col-md6">
-	          					0000000000
+	          					{$info.uuid}
 	          				</div>
 	          			</div>
 	          		</div>
@@ -36,7 +36,9 @@
 	          					持有方式:
 	          				</div>
 	          				<div class="layui-col-md6">
-	          					自持
+	          					{if condition="($info.cyfs == 0)"} 自持
+	          					{else /} 收租
+								{/if}
 	          				</div>
 	          			</div>
 	          		</div>
@@ -46,7 +48,7 @@
 								房源信息:
 	          				</div>
 	          				<div class="layui-col-md6">
-	          					1栋1单元111
+	          					{$info.communityName} - {$info.dong}栋{empty name="$info.unitNumber"} {else /} {$info.unitNumber}单元{/empty}{$info.ceng}层({$info.fangwutype})
 	          				</div>
 	          			</div>
 	          		</div>
@@ -59,7 +61,7 @@
 	          					预定金:
 	          				</div>
 	          				<div class="layui-col-md6">
-	          					15000
+	          					{$info.yudingpri}
 	          				</div>
 	          			</div>
 	          		</div>
@@ -81,7 +83,7 @@
 	          					预定时间:
 	          				</div>
 	          				<div class="layui-col-md6">
-	          					1111111111111
+	          					{$info.createtime | date='Y-m-d H:i:s',###}
 	          				</div>
 	          			</div>
 	          		</div>
@@ -91,7 +93,7 @@
 								租客来源:
 	          				</div>
 	          				<div class="layui-col-md6">
-	          					门店
+	          					{$info.rentSource}
 	          				</div>
 	          			</div>
 	          		</div>
@@ -129,17 +131,26 @@
 				    </tr> 
 				  </thead>
 				  <tbody>
+				  	{foreach $rent_user as $key=>$vo } 
 				    <tr>
-				      <td>测试</td>
+				      <td>{$vo.xingming}</td>
 				      <td>
-				      	 男 
+				      	{eq name='$vo.sex' value='1'} 男 {else/} 女 {/eq}
 				      </td>
-				      <td>13888888888</td>
-				      <td>身份证</td>
-				      <td>22222222222</td>
-				      <td>预定（未入住）</td>
-				      <td><a href="">取消预定</a> <a href="">入住</a></td>
+				      <td>{$vo.phone}</td>
+				      <td>
+				      	{switch name="$vo.cardtype" }
+						    {case value="1"}身份证{/case}
+						    {case value="2"}护照{/case}
+						    {default /}军人证
+						{/switch}
+				      </td>
+				      <td>{$vo.card}</td>
+				      <td>{$vo.rentstatus}</td>
+				      <td>确认入住</td>
+				      <!-- <td>编辑 删除 搬离</td> -->
 				    </tr>
+				    {/foreach}
 				  </tbody>
 				</table>
 	          </div>

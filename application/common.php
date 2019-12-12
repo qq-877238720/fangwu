@@ -363,7 +363,11 @@ if (!function_exists('hsv2rgb')) {
     }
 }
 
-
+/**
+ * 计算房源数量
+ * @param  [type] $house_lists [description]
+ * @return [type]              [description]
+ */
 function countRoom($house_lists)
 {
 
