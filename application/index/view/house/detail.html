@@ -293,6 +293,19 @@
 	    		area: ['1000px', '100vh'],
 		  		maxmin: true,
 	    		content: "{:url('addRent')}?uuid="+uuid+'&room_id='+room_id,
+	    		end: function() {
+	    			// parent.location.reload();
+	    			var index = parent.layer.open({
+	                    type: 2,
+	                    area: ['1000px', '100vh'],
+	                    maxmin: true,
+	                    content: "{:url('editHousedetail')}?uuid="+uuid+'&room_id='+room_id,
+	                    end: function() {
+			    			parent.location.reload();
+		    			}
+                    });
+                    parent.layer.full(index);
+	    		}
 	    	})
 	    }
 	    //添加预定用户信息（房源预定） （暂未使用，直接在租客登记处操作）

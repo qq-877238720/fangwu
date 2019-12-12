@@ -719,7 +719,7 @@
                     var form = $("#form").serializeArray();
                     var statesh = data.field.housestate;
                     if(data.field.housestate == '在租'){
-                        layer.open({
+                        var i = layer.open({
                             type:1
                             ,content: '<div style="padding: 20px 100px;">请仔细检查 租赁时间 是否选择正确，添加后如有付费则无法进行修改</div>'
                             ,btn: ['确认无误', '再看一下']
@@ -741,13 +741,18 @@
                                             $('.showPricemodelContent').hide();
                                             $('#guDingFree').html("");
                                             $('#jiLiangFree').html("");
-                                            var index = parent.layer.open({
-                                              type: 2,
-                                              area: ['1000px', '100vh'],
-                                              maxmin: true,
-                                              content: "{:url('editHousedetail')}?uuid="+jsonObj.data.uuid+'&room_id='+jsonObj.data.room_id
-                                            });
-                                            parent.layer.full(index);
+                                            // var index = parent.layer.open({
+                                            //   type: 2,
+                                            //   area: ['1000px', '100vh'],
+                                            //   maxmin: true,
+                                            //   content: "{:url('editHousedetail')}?uuid="+jsonObj.data.uuid+'&room_id='+jsonObj.data.room_id,
+                                            //   end: function() {
+                                            //     console.log(123);
+                                            //     parent.parent.location.reload();
+                                            //   }
+                                            // });
+                                            // parent.layer.full(index);
+                                            parent.layer.close(layer.index);
                                         }else{
                                             layer.msg(jsonObj.msg, {icon: 5});
                                         }
@@ -764,6 +769,9 @@
                                 //按钮【按钮二】的回调
                                 $('#subs').removeAttr('disabled');
                                 //return false 开启该代码可禁止点击该按钮关闭
+                            }
+                            ,end: function(index, layero){
+                                $('#subs').removeAttr('disabled');
                             }
                         })
                     }else{
@@ -783,6 +791,7 @@
                                     $('.showPricemodelContent').hide();
                                     $('#guDingFree').html("");
                                     $('#jiLiangFree').html("");
+                                    parent.location.reload();
                                 }else{
                                     layer.msg(jsonObj.msg, {icon: 5});
                                 }

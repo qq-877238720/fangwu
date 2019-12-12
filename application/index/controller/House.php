@@ -538,7 +538,13 @@ class House extends Frontend
 
             if($roomListsModel['fjstatus'] != 13) {
                 return;
-            } 
+            }
+
+            // 判断租约时间
+            if(strtotime($postArr['startimes']) > strtotime($postArr['endtimes'])) {
+                $msg = ['code'=>0,'data'=>"",'msg'=>"添加失败,请检查租赁时间",'url'=>""];
+                return json_encode($msg);
+            }
 
             // 1.添加租客信息
             $userArr = [
@@ -774,7 +780,13 @@ class House extends Frontend
 
             if($roomListsModel['fjstatus'] != 11) {
                 return;
-            } 
+            }
+
+            // 判断租约时间
+            if(strtotime($postArr['startimes']) > strtotime($postArr['endtimes'])) {
+                $msg = ['code'=>0,'data'=>"",'msg'=>"添加失败,请检查租赁时间",'url'=>""];
+                return json_encode($msg);
+            }
 
             // 1.添加租客信息
             $userArr = [

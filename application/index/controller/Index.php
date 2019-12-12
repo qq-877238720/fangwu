@@ -60,6 +60,7 @@ class Index extends Frontend
 
         $rent = Db::table('ho_rent_lists')
                 ->alias('r')
+                ->where('user_id',USER_ID)
                 ->where('rentstatus','在租')
                 ->join('payment_cycle p', 'p.rent_id = r.rent_id')
                 ->select();
@@ -118,7 +119,6 @@ class Index extends Frontend
 
             $v['key'] = $key;
         }
-
         // echo "<pre>";
         // var_dump($rent);die;
         $result = [
@@ -159,12 +159,11 @@ class Index extends Frontend
 
     protected function countRoom($house_lists)
     {
-        
 
         $sum = 0;
         foreach ($house_lists as $key => $value) {
 
-            if (empty($value['room']))  return 0;
+            if (empty($value['room']))  continue;
 
             if ($value['chuzutype'] == 1) {
                 $sum += 1;
