@@ -774,8 +774,10 @@ class House extends Frontend
 
             if ($postArr['room_id'] == "0") {
                 $roomListsModel = (new \app\index\model\RoomLists)->where('uuid', $postArr['uuid'])->find();
+                $renttype = '整租';
             } else {
                 $roomListsModel = (new \app\index\model\RoomLists)->where('room_id', $postArr['room_id'])->find();
+                $renttype = '合租';
             }
 
             if($roomListsModel['fjstatus'] != 11) {
@@ -889,6 +891,18 @@ class House extends Frontend
                 $paymentArr['payment_cycle_end_time'] = ""; //租赁结束时间
                 // $paymentArr['paymentWeeks'] = ""; //付款周期
                 $paymentArr['payment_cycle_time'] = "";//付款周期
+                Db::table('ho_finance')->insert([
+                    'user_id' => USER_ID,
+                    'rent_id' => $rent_id,
+                    'uuid'    => $postArr['uuid'],
+                    'room_id' => $postArr['room_id'],
+                    'money'   => $postArr['yudingpri'],
+                    'moneytype' => '预定金',
+                    'way'     => '收入',
+                    'renttype' => $renttype,
+                    'createtime' => time(),
+                    'updatetime' => time(),
+                ]);
             }else{
                 $paymentArr['payment_cycle_start_time'] = strtotime($postArr['startimes']); //租赁开始时间
                 $paymentArr['payment_cycle_end_time'] = strtotime($postArr['endtimes']); //租赁结束时间
@@ -1184,8 +1198,20 @@ class House extends Frontend
         // echo "<pre>";
         // var_dump($result);die;
         foreach ($result['payment']['paymentModel']['afixFees'] as $value) {
-            
-            $money += $value['money'];
+            switch ($houseInfo['paymentWeeks']) {
+                case '季付':
+                    $money += $value['money']*3;
+                    break;
+                case '年付':
+                    $money += $value['money']*12;
+                    break;
+                case '半年付':
+                    $money += $value['money']*6;
+                    break;
+                default:
+                    $money += $value['money'];
+                    break;
+            }
         }
         $this->assign('money', $money);
         $this->assign('info', $result);
